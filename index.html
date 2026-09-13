@@ -1,293 +1,246 @@
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
-  <title>د افغانستان د نفوس آنلاین شمېرنه</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #222;
-    }
-
-    header {
-      background: #075e54;
-      color: white;
-      padding: 30px 20px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0 0 10px;
-      font-size: 28px;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      margin: 0 0 10px;
-      color: #075e54;
-    }
-
-    .card p {
-      font-size: 25px;
-      font-weight: bold;
-      margin: 0;
-    }
-
-    .form-box {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .form-box h2 {
-      color: #075e54;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      background: #075e54;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #064c44;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      margin-top: 40px;
-      background: #222;
-      color: white;
-    }
-
-    .notice {
-      background: #fff3cd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-    }
-  </style>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fa;color:#222}
+header{background:#075e54;color:white;padding:30px 15px;text-align:center}
+.container{max-width:900px;margin:25px auto;padding:15px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
+.card,.form{background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px #0001}
+.card{text-align:center}
+.card h3{color:#075e54}
+.number{font-size:28px;font-weight:bold}
+.form{margin-top:25px}
+label{display:block;margin-top:15px;font-weight:bold}
+input,select{width:100%;padding:12px;margin-top:6px;box-sizing:border-box;border:1px solid #ccc;border-radius:7px;font-size:16px}
+button{width:100%;padding:14px;margin-top:20px;background:#075e54;color:white;border:0;border-radius:7px;font-size:17px}
+.notice{background:#fff3cd;padding:15px;border-radius:8px;margin-bottom:20px}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>🇦🇫 د افغانستان د نفوس آنلاین شمېرنه</h1>
-  <p>د کورنیو او نفوس د معلوماتو د ثبت او احصائیې سیستم</p>
+<h1>🇦🇫 د افغانستان د نفوس آنلاین شمېرنه</h1>
+<p>د کورنیو د معلوماتو د ثبت آنلاین سیستم</p>
 </header>
 
 <div class="container">
 
-  <div class="notice">
-    <strong>یادونه:</strong>
-    دا یوه آنلاین سروې ده. ثبت شوي معلومات د افغانستان د رسمي نفوس د شمېرنې بدیل نه دي.
-  </div>
+<div class="notice">
+<strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.
+</div>
 
-  <div class="stats">
+<div class="stats">
 
-    <div class="card">
-      <h2>ټولې کورنۍ</h2>
-      <p id="households">0</p>
-    </div>
+<div class="card">
+<h3>ټولې کورنۍ</h3>
+<div class="number" id="totalHouseholds">0</div>
+</div>
 
-    <div class="card">
-      <h2>ټول نفوس</h2>
-      <p id="population">0</p>
-    </div>
+<div class="card">
+<h3>ټول نفوس</h3>
+<div class="number" id="totalPopulation">0</div>
+</div>
 
-    <div class="card">
-      <h2>نارینه</h2>
-      <p id="male">0</p>
-    </div>
+<div class="card">
+<h3>نارینه</h3>
+<div class="number" id="totalMale">0</div>
+</div>
 
-    <div class="card">
-      <h2>ښځینه</h2>
-      <p id="female">0</p>
-    </div>
-
-  </div>
-
-  <div class="form-box">
-
-    <h2>📝 خپله کورنۍ ثبت کړئ</h2>
-
-    <form id="censusForm">
-
-      <label>ولایت</label>
-
-      <select id="province" required>
-        <option value="">ولایت انتخاب کړئ</option>
-        <option>کابل</option>
-        <option>ننګرهار</option>
-        <option>پکتیا</option>
-        <option>کندهار</option>
-        <option>هرات</option>
-        <option>بلخ</option>
-        <option>پروان</option>
-        <option>لغمان</option>
-        <option>کنړ</option>
-        <option>خوست</option>
-        <option>لوګر</option>
-        <option>وردګ</option>
-        <option>غزني</option>
-        <option>بامیان</option>
-        <option>بدخشان</option>
-        <option>تخار</option>
-        <option>کندز</option>
-        <option>فاریاب</option>
-        <option>جوزجان</option>
-        <option>سرپل</option>
-        <option>سمنګان</option>
-        <option>دایکندي</option>
-        <option>ارزګان</option>
-        <option>زابل</option>
-        <option>پکتیکا</option>
-        <option>فراه</option>
-        <option>نیمروز</option>
-        <option>هلمند</option>
-        <option>بادغیس</option>
-        <option>غور</option>
-        <option>کاپیسا</option>
-        <option>پنجشېر</option>
-        <option>نورستان</option>
-      </select>
-
-      <label>د کورنۍ د غړو شمېر</label>
-
-      <input
-        type="number"
-        id="members"
-        min="1"
-        max="100"
-        placeholder="مثلاً 7"
-        required
-      >
-
-      <label>د نارینه وو شمېر</label>
-
-      <input
-        type="number"
-        id="maleInput"
-        min="0"
-        placeholder="مثلاً 4"
-        required
-      >
-
-      <label>د ښځینه وو شمېر</label>
-
-      <input
-        type="number"
-        id="femaleInput"
-        min="0"
-        placeholder="مثلاً 3"
-        required
-      >
-
-      <button type="submit">
-        ✅ معلومات ثبت کړئ
-      </button>
-
-    </form>
-
-  </div>
+<div class="card">
+<h3>ښځینه</h3>
+<div class="number" id="totalFemale">0</div>
+</div>
 
 </div>
 
-<footer>
-  Afghanistan Population Census © 2026
-</footer>
+<div class="form">
+
+<h2>📝 د کورنۍ ثبت</h2>
+
+<form id="censusForm">
+
+<label>ولایت</label>
+
+<select id="province" required>
+<option value="">ولایت انتخاب کړئ</option>
+<option>کابل</option>
+<option>ننګرهار</option>
+<option>پکتیا</option>
+<option>کندهار</option>
+<option>هرات</option>
+<option>بلخ</option>
+<option>کندز</option>
+<option>تخار</option>
+<option>بدخشان</option>
+<option>لغمان</option>
+<option>کنړ</option>
+<option>خوست</option>
+<option>پکتیکا</option>
+<option>لوګر</option>
+<option>غزني</option>
+<option>زابل</option>
+<option>هلمند</option>
+<option>فراه</option>
+<option>نیمروز</option>
+<option>غور</option>
+<option>بادغیس</option>
+<option>فاریاب</option>
+<option>جوزجان</option>
+<option>سرپل</option>
+<option>سمنګان</option>
+<option>بامیان</option>
+<option>دایکندي</option>
+<option>ارزګان</option>
+<option>وردګ</option>
+<option>پروان</option>
+<option>کاپیسا</option>
+<option>پنجشېر</option>
+<option>نورستان</option>
+</select>
+
+<label>د کورنۍ د غړو شمېر</label>
+<input type="number" id="members" min="1" required>
+
+<label>د نارینه وو شمېر</label>
+<input type="number" id="male" min="0" required>
+
+<label>د ښځینه وو شمېر</label>
+<input type="number" id="female" min="0" required>
+
+<button type="submit" id="submitBtn">
+معلومات ثبت کړئ
+</button>
+
+</form>
+</div>
+
+</div>
 
 <script>
 
-  let households = 0;
-  let population = 0;
-  let male = 0;
-  let female = 0;
+const SUPABASE_URL =
+"https://bloawlfqbcicuixuzwwu.supabase.co";
 
-  document.getElementById("censusForm").addEventListener("submit", function(event) {
+const SUPABASE_KEY =
+"sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
 
-    event.preventDefault();
+const db = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-    const members = Number(document.getElementById("members").value);
-    const maleCount = Number(document.getElementById("maleInput").value);
-    const femaleCount = Number(document.getElementById("femaleInput").value);
 
-    if (maleCount + femaleCount !== members) {
-      alert("د نارینه او ښځینه شمېر باید د ټولې کورنۍ له شمېر سره برابر وي.");
-      return;
-    }
+// د معلوماتو شمېرل
+async function loadStatistics(){
 
-    households++;
-    population += members;
-    male += maleCount;
-    female += femaleCount;
+const {data,error} = await db
+.from("households")
+.select("members,male,female");
 
-    document.getElementById("households").textContent = households;
-    document.getElementById("population").textContent = population;
-    document.getElementById("male").textContent = male;
-    document.getElementById("female").textContent = female;
+if(error){
+console.error(error);
+return;
+}
 
-    alert("ستاسې معلومات په دې Demo نسخه کې ثبت شول.");
+let households = data.length;
+let population = 0;
+let male = 0;
+let female = 0;
 
-    document.getElementById("censusForm").reset();
+data.forEach(row=>{
+population += Number(row.members || 0);
+male += Number(row.male || 0);
+female += Number(row.female || 0);
+});
 
-  });
+document.getElementById("totalHouseholds").textContent=households;
+document.getElementById("totalPopulation").textContent=population;
+document.getElementById("totalMale").textContent=male;
+document.getElementById("totalFemale").textContent=female;
+
+}
+
+
+// د کورنۍ ثبتول
+document.getElementById("censusForm")
+.addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+const province =
+document.getElementById("province").value;
+
+const members =
+Number(document.getElementById("members").value);
+
+const male =
+Number(document.getElementById("male").value);
+
+const female =
+Number(document.getElementById("female").value);
+
+
+// شمېر باید برابر وي
+if(male + female !== members){
+
+alert("❌ د نارینه او ښځینه شمېر باید د ټولې کورنۍ له شمېر سره برابر وي.");
+
+return;
+}
+
+const button =
+document.getElementById("submitBtn");
+
+button.disabled=true;
+button.textContent="⏳ معلومات ثبتېږي...";
+
+
+const {error} = await db
+.from("households")
+.insert([{
+province:province,
+members:members,
+male:male,
+female:female
+}]);
+
+
+if(error){
+
+console.error(error);
+
+alert("❌ معلومات ثبت نه شول.");
+
+button.disabled=false;
+button.textContent="معلومات ثبت کړئ";
+
+return;
+}
+
+
+alert("✅ د کورنۍ معلومات په بریالیتوب سره ثبت شول.");
+
+document.getElementById("censusForm").reset();
+
+button.disabled=false;
+button.textContent="معلومات ثبت کړئ";
+
+loadStatistics();
+
+});
+
+
+loadStatistics();
 
 </script>
 
 </body>
-  </html>
+</html>
