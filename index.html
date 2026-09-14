@@ -513,6 +513,31 @@ data.female || 0;
 }
 
 loadDashboard();
+  async function loadProvinceStats(){
+
+  const {data,error}=await db.rpc("get_province_stats");
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const box=document.getElementById("provinceStats");
+
+  if(!data || data.length===0){
+    box.innerHTML="تر اوسه معلومات نشته";
+    return;
+  }
+
+  box.innerHTML=data.map(item=>`
+    <div style="padding:10px;border-bottom:1px solid #ddd;">
+      <strong>📍 ${item.province}</strong>
+      <span style="float:left;">${item.population} کسان</span>
+    </div>
+  `).join("");
+}
+
+loadProvinceStats();
 </script>
 
 </body>
