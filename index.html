@@ -2,243 +2,298 @@
 <html lang="ps" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fa;color:#222}
-header{background:#075e54;color:white;padding:30px 15px;text-align:center}
-.container{max-width:900px;margin:25px auto;padding:15px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
-.card,.form{background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px #0001}
-.card{text-align:center}
-.card h3{color:#075e54}
-.number{font-size:28px;font-weight:bold}
-.form{margin-top:25px}
-label{display:block;margin-top:15px;font-weight:bold}
-input,select{width:100%;padding:12px;margin-top:6px;box-sizing:border-box;border:1px solid #ccc;border-radius:7px;font-size:16px}
-button{width:100%;padding:14px;margin-top:20px;background:#075e54;color:white;border:0;border-radius:7px;font-size:17px}
-.notice{background:#fff3cd;padding:15px;border-radius:8px;margin-bottom:20px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7f9;color:#222}
+header{background:#075e54;color:#fff;text-align:center;padding:25px 15px}
+header h1{margin:0 0 10px}
+.lang button{padding:8px 14px;margin:3px;border:0;border-radius:6px;cursor:pointer}
+.container{max-width:900px;margin:auto;padding:15px}
+.card,.form{background:white;padding:20px;margin-top:20px;border-radius:12px;box-shadow:0 2px 8px #0001}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:block;font-weight:bold;margin-top:14px}
+input,select{width:100%;padding:11px;margin-top:6px;border:1px solid #ccc;border-radius:7px;font-size:16px}
+button.submit{width:100%;padding:14px;margin-top:20px;background:#075e54;color:white;border:0;border-radius:7px;font-size:17px}
+.person{border:1px solid #ddd;padding:15px;margin-top:15px;border-radius:10px}
+.person h3{margin-top:0;color:#075e54}
+.notice{background:#fff3cd;padding:12px;border-radius:8px;margin-top:15px}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>🇦🇫 د افغانستان د نفوس آنلاین شمېرنه</h1>
-<p>د کورنیو د معلوماتو د ثبت آنلاین سیستم</p>
+<h1 id="title">🇦🇫 د افغانستان د نفوس آنلاین شمېرنه</h1>
+<p id="subtitle">د کورنیو د معلوماتو د ثبت آنلاین سیستم</p>
+
+<div class="lang">
+<button onclick="changeLang('ps')">پښتو</button>
+<button onclick="changeLang('fa')">دری</button>
+<button onclick="changeLang('en')">English</button>
+</div>
 </header>
 
 <div class="container">
 
-<div class="notice">
+<div class="notice" id="notice">
 <strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.
-</div>
-
-<div class="stats">
-
-<div class="card">
-<h3>ټولې کورنۍ</h3>
-<div class="number" id="totalHouseholds">0</div>
-</div>
-
-<div class="card">
-<h3>ټول نفوس</h3>
-<div class="number" id="totalPopulation">0</div>
-</div>
-
-<div class="card">
-<h3>نارینه</h3>
-<div class="number" id="totalMale">0</div>
-</div>
-
-<div class="card">
-<h3>ښځینه</h3>
-<div class="number" id="totalFemale">0</div>
-</div>
-
 </div>
 
 <div class="form">
 
-<h2>📝 د کورنۍ ثبت</h2>
+<h2 id="formTitle">📝 د کورنۍ ثبت</h2>
 
-<form id="censusForm">
+<div class="grid">
 
-<label>ولایت</label>
+<div>
+<label id="provinceLabel">ولایت</label>
+<select id="province" required></select>
+</div>
 
-<select id="province" required>
-<option value="">ولایت انتخاب کړئ</option>
-<option>کابل</option>
-<option>ننګرهار</option>
-<option>پکتیا</option>
-<option>کندهار</option>
-<option>هرات</option>
-<option>بلخ</option>
-<option>کندز</option>
-<option>تخار</option>
-<option>بدخشان</option>
-<option>لغمان</option>
-<option>کنړ</option>
-<option>خوست</option>
-<option>پکتیکا</option>
-<option>لوګر</option>
-<option>غزني</option>
-<option>زابل</option>
-<option>هلمند</option>
-<option>فراه</option>
-<option>نیمروز</option>
-<option>غور</option>
-<option>بادغیس</option>
-<option>فاریاب</option>
-<option>جوزجان</option>
-<option>سرپل</option>
-<option>سمنګان</option>
-<option>بامیان</option>
-<option>دایکندي</option>
-<option>ارزګان</option>
-<option>وردګ</option>
-<option>پروان</option>
-<option>کاپیسا</option>
-<option>پنجشېر</option>
-<option>نورستان</option>
-</select>
+<div>
+<label id="districtLabel">ولسوالۍ</label>
+<input id="district" required>
+</div>
 
-<label>د کورنۍ د غړو شمېر</label>
-<input type="number" id="members" min="1" required>
+<div>
+<label id="villageLabel">ناحیه / کلی</label>
+<input id="village" required>
+</div>
 
-<label>د نارینه وو شمېر</label>
-<input type="number" id="male" min="0" required>
+<div>
+<label id="membersLabel">د کورنۍ د غړو شمېر</label>
+<input type="number" id="members" min="1" max="50" required>
+</div>
 
-<label>د ښځینه وو شمېر</label>
-<input type="number" id="female" min="0" required>
+</div>
 
-<button type="submit" id="submitBtn">
+<div id="people"></div>
+
+<button class="submit" id="submitBtn" onclick="saveFamily()">
 معلومات ثبت کړئ
 </button>
 
-</form>
 </div>
-
 </div>
 
 <script>
 
-const SUPABASE_URL =
-"https://bloawlfqbcicuixuzwwu.supabase.co";
+const SUPABASE_URL="https://bloawlfqbcicuixuzwwu.supabase.co";
+const SUPABASE_KEY="sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
 
-const SUPABASE_KEY =
-"sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const db = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let lang="ps";
 
+const provinces={
+ps:["کابل","ننګرهار","پکتیا","کندهار","هرات","بلخ","کندز","تخار","بدخشان","لغمان","کنړ","خوست","پکتیکا","لوګر","غزني","زابل","هلمند","فراه","نیمروز","غور","بادغیس","فاریاب","جوزجان","سرپل","سمنګان","بامیان","دایکندي","ارزګان","میدان وردګ","پروان","کاپیسا","پنجشېر","نورستان"],
+fa:["کابل","ننگرهار","پکتیا","قندهار","هرات","بلخ","کندز","تخار","بدخشان","لغمان","کنر","خوست","پکتیکا","لوگر","غزنی","زابل","هلمند","فراه","نیمروز","غور","بادغیس","فاریاب","جوزجان","سرپل","سمنگان","بامیان","دایکندی","ارزگان","میدان وردک","پروان","کاپیسا","پنجشیر","نورستان"],
+en:["Kabul","Nangarhar","Paktia","Kandahar","Herat","Balkh","Kunduz","Takhar","Badakhshan","Laghman","Kunar","Khost","Paktika","Logar","Ghazni","Zabul","Helmand","Farah","Nimroz","Ghor","Badghis","Faryab","Jowzjan","Sar-e Pol","Samangan","Bamyan","Daykundi","Uruzgan","Maidan Wardak","Parwan","Kapisa","Panjshir","Nuristan"]
+};
 
-// د معلوماتو شمېرل
-async function loadStatistics(){
+const T={
+ps:{
+title:"🇦🇫 د افغانستان د نفوس آنلاین شمېرنه",
+subtitle:"د کورنیو د معلوماتو د ثبت آنلاین سیستم",
+notice:"<strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.",
+form:"📝 د کورنۍ ثبت",province:"ولایت",district:"ولسوالۍ",village:"ناحیه / کلی",members:"د کورنۍ د غړو شمېر",
+person:"د کورنۍ غړی",name:"نوم",father:"د پلار نوم",gender:"جنسیت",age:"عمر",marital:"مدني حالت",relation:"د کورنۍ له مشر سره اړیکه",education:"زده کړې",work:"د کار حالت",job:"مسلک",save:"معلومات ثبت کړئ",saving:"⏳ معلومات ثبتېږي...",success:"✅ معلومات په بریالیتوب سره ثبت شول.",error:"❌ معلومات ثبت نه شول."
+},
+fa:{
+title:"🇦🇫 سرشماری آنلاین نفوس افغانستان",
+subtitle:"سیستم آنلاین ثبت معلومات خانواده‌ها",
+notice:"<strong>یادداشت:</strong> این سیستم برای سروی آنلاین است و بدیل سرشماری رسمی دولتی نیست.",
+form:"📝 ثبت خانواده",province:"ولایت",district:"ولسوالی",village:"ناحیه / قریه",members:"تعداد اعضای خانواده",
+person:"عضو خانواده",name:"نام",father:"نام پدر",gender:"جنسیت",age:"سن",marital:"حالت مدنی",relation:"ارتباط با سرپرست خانواده",education:"تحصیلات",work:"وضعیت کاری",job:"مسلک",save:"ثبت معلومات",saving:"⏳ معلومات ثبت می‌شود...",success:"✅ معلومات با موفقیت ثبت شد.",error:"❌ معلومات ثبت نشد."
+},
+en:{
+title:"🇦🇫 Afghanistan Population Census",
+subtitle:"Online family information registration system",
+notice:"<strong>Note:</strong> This system is an online survey and is not a replacement for an official government census.",
+form:"📝 Family Registration",province:"Province",district:"District",village:"Area / Village",members:"Number of Family Members",
+person:"Family Member",name:"Name",father:"Father's Name",gender:"Gender",age:"Age",marital:"Marital Status",relation:"Relationship to Head",education:"Education",work:"Employment Status",job:"Occupation",save:"Register Information",saving:"⏳ Saving...",success:"✅ Information registered successfully.",error:"❌ Information could not be registered."
+}
+};
 
-const {data,error} = await db
-.from("households")
-.select("members,male,female");
+function changeLang(x){
+lang=x;
+document.documentElement.lang=x;
+document.documentElement.dir=x==="en"?"ltr":"rtl";
 
-if(error){
-console.error(error);
+let t=T[x];
+
+title.textContent=t.title;
+subtitle.textContent=t.subtitle;
+notice.innerHTML=t.notice;
+formTitle.textContent=t.form;
+provinceLabel.textContent=t.province;
+districtLabel.textContent=t.district;
+villageLabel.textContent=t.village;
+membersLabel.textContent=t.members;
+submitBtn.textContent=t.save;
+
+loadProvinces();
+makePeople();
+}
+
+function loadProvinces(){
+province.innerHTML="";
+provinces[lang].forEach(p=>{
+let o=document.createElement("option");
+o.value=p;
+o.textContent=p;
+province.appendChild(o);
+});
+}
+
+members.addEventListener("input",makePeople);
+
+function makePeople(){
+
+let n=Number(members.value||0);
+people.innerHTML="";
+
+let t=T[lang];
+
+for(let i=1;i<=n;i++){
+
+people.innerHTML+=`
+<div class="person">
+
+<h3>${t.person} ${i}</h3>
+
+<div class="grid">
+
+<div>
+<label>${t.name}</label>
+<input class="pname" required>
+</div>
+
+<div>
+<label>${t.father}</label>
+<input class="father" required>
+</div>
+
+<div>
+<label>${t.gender}</label>
+<select class="gender">
+<option>${lang==="ps"?"نارینه":lang==="fa"?"مرد":"Male"}</option>
+<option>${lang==="ps"?"ښځینه":lang==="fa"?"زن":"Female"}</option>
+</select>
+</div>
+
+<div>
+<label>${t.age}</label>
+<input type="number" class="age" min="0" max="120" required>
+</div>
+
+<div>
+<label>${t.marital}</label>
+<select class="marital">
+<option>${lang==="ps"?"مجرد":lang==="fa"?"مجرد":"Single"}</option>
+<option>${lang==="ps"?"واده شوی":lang==="fa"?"متاهل":"Married"}</option>
+<option>${lang==="ps"?"کونډ/کونډه":lang==="fa"?"بیوه":"Widowed"}</option>
+<option>${lang==="ps"?"طلاق شوی":lang==="fa"?"مطلقه":"Divorced"}</option>
+</select>
+</div>
+
+<div>
+<label>${t.relation}</label>
+<input class="relation" required>
+</div>
+
+<div>
+<label>${t.education}</label>
+<input class="education">
+</div>
+
+<div>
+<label>${t.work}</label>
+<input class="work">
+</div>
+
+<div>
+<label>${t.job}</label>
+<input class="job">
+</div>
+
+</div>
+</div>`;
+}
+}
+
+async function saveFamily(){
+
+let t=T[lang];
+let n=Number(members.value);
+
+if(!n){
+alert("Please enter family members.");
 return;
 }
 
-let households = data.length;
-let population = 0;
-let male = 0;
-let female = 0;
+let list=[];
+let cards=document.querySelectorAll(".person");
 
-data.forEach(row=>{
-population += Number(row.members || 0);
-male += Number(row.male || 0);
-female += Number(row.female || 0);
+cards.forEach(c=>{
+
+list.push({
+name:c.querySelector(".pname").value,
+father_name:c.querySelector(".father").value,
+gender:c.querySelector(".gender").value,
+age:Number(c.querySelector(".age").value),
+marital_status:c.querySelector(".marital").value,
+relation:c.querySelector(".relation").value,
+education:c.querySelector(".education").value,
+work_status:c.querySelector(".work").value,
+occupation:c.querySelector(".job").value
 });
 
-document.getElementById("totalHouseholds").textContent=households;
-document.getElementById("totalPopulation").textContent=population;
-document.getElementById("totalMale").textContent=male;
-document.getElementById("totalFemale").textContent=female;
+});
 
-}
+submitBtn.disabled=true;
+submitBtn.textContent=t.saving;
 
-
-// د کورنۍ ثبتول
-document.getElementById("censusForm")
-.addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-const province =
-document.getElementById("province").value;
-
-const members =
-Number(document.getElementById("members").value);
-
-const male =
-Number(document.getElementById("male").value);
-
-const female =
-Number(document.getElementById("female").value);
-
-
-// شمېر باید برابر وي
-if(male + female !== members){
-
-alert("❌ د نارینه او ښځینه شمېر باید د ټولې کورنۍ له شمېر سره برابر وي.");
-
-return;
-}
-
-const button =
-document.getElementById("submitBtn");
-
-button.disabled=true;
-button.textContent="⏳ معلومات ثبتېږي...";
-
-
-const {error} = await db
+const {error}=await db
 .from("households")
 .insert([{
-province:province,
-members:members,
-male:male,
-female:female
+province:province.value,
+district:district.value,
+village:village.value,
+members:n,
+people:list
 }]);
-
 
 if(error){
 
 console.error(error);
 
-alert("❌ معلومات ثبت نه شول.\n\nError: " + error.message);
+alert(t.error+"\n\n"+error.message);
 
-button.disabled=false;
-button.textContent="معلومات ثبت کړئ";
-
+submitBtn.disabled=false;
+submitBtn.textContent=t.save;
 return;
 }
 
+alert(t.success);
 
-alert("✅ د کورنۍ معلومات په بریالیتوب سره ثبت شول.");
+document.querySelector("form")?.reset();
 
-document.getElementById("censusForm").reset();
+district.value="";
+village.value="";
+members.value="";
+people.innerHTML="";
 
-button.disabled=false;
-button.textContent="معلومات ثبت کړئ";
+submitBtn.disabled=false;
+submitBtn.textContent=t.save;
+}
 
-loadStatistics();
-
-});
-
-
-loadStatistics();
+changeLang("ps");
 
 </script>
 
