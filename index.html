@@ -96,7 +96,7 @@ button:disabled{opacity:.6}
 
 <div>
 <label id="districtLabel"></label>
-<input id="district" required>
+<select id="district" required></select>
 </div>
 
 <div>
@@ -257,7 +257,55 @@ provinceBox.appendChild(option);
 
 });
 
+loadDistricts();
+
 }
+
+const districts = {
+
+"کابل":[
+"بګرامي","چهار آسیاب","ده سبز","استالف","فرزه",
+"گلدره","کلکان","خاک جبار","موسهي","پغمان",
+"قره باغ","شکردره","سروبي","میربچه کوټ","ښاري ناحیې"
+],
+
+"پکتیا":[
+"مرکز ګردېز","احمدآباد","زرمت","سیدکرم","جاجي",
+"ډنډ پټان","جاني خېل","ځاځي اریوب","لجه منګل",
+"روحاني بابا","وزې ځدراڼ"
+],
+
+"غور":[
+"فیروزکوه","دولینه","دولت یار","چهارسده","لعل و سرجنگل",
+"پسابند","ساغر","شهرک","تیوره","تولک"
+]
+
+};
+
+function loadDistricts(){
+
+const province=document.getElementById("province").value;
+
+const districtBox=document.getElementById("district");
+
+districtBox.innerHTML="";
+
+const list=districts[province] || [];
+
+list.forEach(d=>{
+
+let option=document.createElement("option");
+
+option.value=d;
+option.textContent=d;
+
+districtBox.appendChild(option);
+
+});
+
+}
+
+document.getElementById("province").addEventListener("change",loadDistricts);
 
 document.getElementById("members").addEventListener("input",makePeople);
 
