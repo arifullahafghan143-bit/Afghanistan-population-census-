@@ -40,6 +40,43 @@ button:disabled{opacity:.6}
 </header>
 
 <div class="container">
+  <div class="container">
+
+<div class="card" id="dashboard">
+
+<h2>📊 د نفوس Dashboard</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>👨‍👩‍👧 ټولې کورنۍ</h3>
+<h2 id="totalHouseholds">0</h2>
+</div>
+
+<div class="card">
+<h3>👥 ټول نفوس</h3>
+<h2 id="totalPopulation">0</h2>
+</div>
+
+<div class="card">
+<h3>👨 نارینه</h3>
+<h2 id="totalMale">0</h2>
+</div>
+
+<div class="card">
+<h3>👩 ښځینه</h3>
+<h2 id="totalFemale">0</h2>
+</div>
+
+</div>
+
+<button class="submit" onclick="loadDashboard()">
+🔄 احصایې تازه کړئ
+</button>
+
+</div>
+
+<div class="notice" id="notice"></div>
 
 <div class="notice" id="notice"></div>
 
@@ -444,7 +481,35 @@ submit.textContent=t.save;
 }
 
 changeLang("ps");
+async function loadDashboard(){
 
+const {data,error}=await db.rpc("get_census_dashboard");
+
+if(error){
+
+console.error(error);
+
+alert("د احصایو په راوستلو کې ستونزه:\n\n"+error.message);
+
+return;
+
+}
+
+document.getElementById("totalHouseholds").textContent =
+data.total_households || 0;
+
+document.getElementById("totalPopulation").textContent =
+data.total_population || 0;
+
+document.getElementById("totalMale").textContent =
+data.male || 0;
+
+document.getElementById("totalFemale").textContent =
+data.female || 0;
+
+}
+
+loadDashboard();
 </script>
 
 </body>
