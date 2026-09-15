@@ -109,11 +109,13 @@ background:#075e54;
 color:white;
 border:0;
 border-radius:7px;
-font-size:17px
+font-size:17px;
+cursor:pointer
 }
 
 button:disabled{
-opacity:.6
+opacity:.6;
+cursor:not-allowed
 }
 
 .person{
@@ -187,15 +189,11 @@ class="dashboard-link"
 <div class="container">
 
 
-<!-- NOTICE -->
-
 <div
 class="notice"
 id="notice">
 </div>
 
-
-<!-- FORM -->
 
 <div class="form">
 
@@ -204,8 +202,6 @@ id="notice">
 
 <div class="grid">
 
-
-<!-- PROVINCE -->
 
 <div>
 
@@ -219,8 +215,6 @@ required
 </div>
 
 
-<!-- DISTRICT -->
-
 <div>
 
 <label id="districtLabel"></label>
@@ -233,8 +227,6 @@ required
 </div>
 
 
-<!-- VILLAGE -->
-
 <div>
 
 <label id="villageLabel"></label>
@@ -246,8 +238,6 @@ required
 
 </div>
 
-
-<!-- MEMBERS -->
 
 <div>
 
@@ -267,18 +257,15 @@ required
 </div>
 
 
-<!-- PEOPLE -->
-
 <div id="people"></div>
 
-
-<!-- SAVE -->
 
 <button
 class="submit"
 id="submitBtn"
 onclick="saveFamily()"
-></button>
+>
+</button>
 
 
 </div>
@@ -819,11 +806,6 @@ document.getElementById("district");
 districtBox.innerHTML = "";
 
 
-/*
-  districts.js همدا English
-  province key جوړوي.
-*/
-
 const list =
 districts[province] || [];
 
@@ -875,8 +857,7 @@ function makePeople(){
 
 const n =
 Number(
-document.getElementById("members")
-.value || 0
+document.getElementById("members").value || 0
 );
 
 
@@ -941,7 +922,6 @@ ${t.gender}
 <select class="gender">
 
 <option value="male">
-
 ${
 lang==="ps"
 ?"نارینه"
@@ -949,12 +929,9 @@ lang==="ps"
 ?"مرد"
 :"Male"
 }
-
 </option>
 
-
 <option value="female">
-
 ${
 lang==="ps"
 ?"ښځینه"
@@ -962,7 +939,6 @@ lang==="ps"
 ?"زن"
 :"Female"
 }
-
 </option>
 
 </select>
@@ -995,9 +971,7 @@ ${t.marital}
 
 <select class="marital">
 
-
 <option value="single">
-
 ${
 lang==="ps"
 ?"مجرد"
@@ -1005,12 +979,9 @@ lang==="ps"
 ?"مجرد"
 :"Single"
 }
-
 </option>
 
-
 <option value="married">
-
 ${
 lang==="ps"
 ?"واده شوی"
@@ -1018,12 +989,9 @@ lang==="ps"
 ?"متاهل"
 :"Married"
 }
-
 </option>
 
-
 <option value="widowed">
-
 ${
 lang==="ps"
 ?"کونډ/کونډه"
@@ -1031,12 +999,9 @@ lang==="ps"
 ?"بیوه"
 :"Widowed"
 }
-
 </option>
 
-
 <option value="divorced">
-
 ${
 lang==="ps"
 ?"طلاق شوی"
@@ -1044,9 +1009,7 @@ lang==="ps"
 ?"مطلقه"
 :"Divorced"
 }
-
 </option>
-
 
 </select>
 
@@ -1125,30 +1088,22 @@ async function saveFamily(){
 
 const t = T[lang];
 
-
 const province =
-document.getElementById("province")
-.value;
-
+document.getElementById("province").value;
 
 const district =
-document.getElementById("district")
-.value
-.trim();
-
+document.getElementById("district").value.trim();
 
 const village =
-document.getElementById("village")
-.value
-.trim();
-
+document.getElementById("village").value.trim();
 
 const n =
 Number(
-document.getElementById("members")
-.value
+document.getElementById("members").value
 );
 
+
+/* CHECK FAMILY INFORMATION */
 
 if(
 !province ||
@@ -1158,7 +1113,8 @@ if(
 ){
 
 alert(
-"Please complete all required fields."
+t.error +
+"\n\nPlease complete all required fields."
 );
 
 return;
@@ -1173,7 +1129,8 @@ document.querySelectorAll(".person");
 if(cards.length !== n){
 
 alert(
-"Please enter all family members."
+t.error +
+"\n\nPlease enter all family members."
 );
 
 return;
@@ -1181,69 +1138,106 @@ return;
 }
 
 
+/* CREATE PEOPLE LIST */
+
 let list = [];
 
 
-cards.forEach(card => {
+for(const card of cards){
+
+const name =
+card.querySelector(".pname")
+.value
+.trim();
+
+const father =
+card.querySelector(".father")
+.value
+.trim();
 
 const gender =
 card.querySelector(".gender")
 .value;
 
-
-list.push({
-
-name:
-card.querySelector(".pname")
-.value
-.trim(),
-
-father_name:
-card.querySelector(".father")
-.value
-.trim(),
-
-gender:
-gender,
-
-age:
+const age =
 Number(
 card.querySelector(".age")
 .value
-),
+);
 
-marital_status:
+const marital =
 card.querySelector(".marital")
-.value,
+.value;
 
-relation:
+const relation =
 card.querySelector(".relation")
 .value
-.trim(),
+.trim();
 
-education:
+const education =
 card.querySelector(".education")
 .value
-.trim(),
+.trim();
 
-work_status:
+const work =
 card.querySelector(".work")
 .value
-.trim(),
+.trim();
 
-occupation:
+const job =
 card.querySelector(".job")
 .value
-.trim()
+.trim();
+
+
+/* CHECK REQUIRED PERSON FIELDS */
+
+if(
+!name ||
+!father ||
+!age ||
+!relation
+){
+
+alert(
+t.error +
+"\n\nPlease complete all required family member information."
+);
+
+return;
+
+}
+
+
+list.push({
+
+name: name,
+
+father_name: father,
+
+gender: gender,
+
+age: age,
+
+marital_status: marital,
+
+relation: relation,
+
+education: education,
+
+work_status: work,
+
+occupation: job
 
 });
 
-});
+}
 
+
+/* BUTTON */
 
 const submit =
 document.getElementById("submitBtn");
-
 
 submit.disabled = true;
 
@@ -1251,11 +1245,12 @@ submit.textContent =
 t.saving;
 
 
+/* COUNT GENDER */
+
 const male =
 list.filter(
 p => p.gender === "male"
 ).length;
-
 
 const female =
 list.filter(
@@ -1263,46 +1258,57 @@ p => p.gender === "female"
 ).length;
 
 
-const {error} =
+/* DATA */
+
+const householdData = {
+
+province: province,
+
+district: district,
+
+village: village,
+
+members: n,
+
+male: male,
+
+female: female,
+
+people: list
+
+};
+
+
+console.log(
+"Sending household data:",
+householdData
+);
+
+
+/* INSERT INTO SUPABASE */
+
+try{
+
+const result =
 await db
 .from("households")
-.insert([{
-
-province:
-province,
-
-district:
-district,
-
-village:
-village,
-
-members:
-n,
-
-male:
-male,
-
-female:
-female,
-
-people:
-list
-
-}]);
+.insert([householdData]);
 
 
-if(error){
+/* SUPABASE ERROR */
 
-console.error(error);
+if(result.error){
 
+console.error(
+"SUPABASE INSERT ERROR:",
+result.error
+);
 
 alert(
 t.error +
 "\n\n" +
-error.message
+result.error.message
 );
-
 
 submit.disabled = false;
 
@@ -1314,28 +1320,57 @@ return;
 }
 
 
+/* SUCCESS */
+
+console.log(
+"SUCCESS: Household saved to Supabase."
+);
+
 alert(t.success);
 
+
+/* CLEAR FORM */
 
 document.getElementById(
 "village"
 ).value = "";
 
-
 document.getElementById(
 "members"
 ).value = "";
-
 
 document.getElementById(
 "people"
 ).innerHTML = "";
 
 
+/* RESET BUTTON */
+
 submit.disabled = false;
 
 submit.textContent =
 t.save;
+
+
+}catch(error){
+
+console.error(
+"UNEXPECTED ERROR:",
+error
+);
+
+alert(
+t.error +
+"\n\n" +
+error.message
+);
+
+submit.disabled = false;
+
+submit.textContent =
+t.save;
+
+}
 
 }
 
