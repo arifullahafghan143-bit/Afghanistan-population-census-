@@ -46,6 +46,21 @@ border-radius:6px;
 cursor:pointer
 }
 
+.dashboard-link{
+display:inline-block;
+margin:15px auto 5px;
+padding:12px 20px;
+background:#2563eb;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-size:16px
+}
+
+.dashboard-box{
+text-align:center
+}
+
 .container{
 max-width:900px;
 margin:auto;
@@ -155,102 +170,21 @@ English
 </div>
 
 </header>
-<a href="dashboard.html"
-   style="
-   display:inline-block;
-   margin:10px;
-   padding:12px 20px;
-   background:#2563eb;
-   color:white;
-   text-decoration:none;
-   border-radius:8px;">
-   📊 ډیشبورډ
+
+
+<div class="dashboard-box">
+
+<a
+href="dashboard.html"
+class="dashboard-link"
+>
+📊 ډیشبورډ
 </a>
 
+</div>
+
+
 <div class="container">
-
-
-<!-- DASHBOARD -->
-
-<div class="card" id="dashboard">
-
-<h2>📊 د نفوس Dashboard</h2>
-
-<div class="grid">
-
-
-<div class="card">
-
-<h3>👨‍👩‍👧 ټولې کورنۍ</h3>
-
-<h2 id="totalHouseholds">
-0
-</h2>
-
-</div>
-
-
-<div class="card">
-
-<h3>👥 ټول نفوس</h3>
-
-<h2 id="totalPopulation">
-0
-</h2>
-
-</div>
-
-
-<div class="card">
-
-<h3>👨 نارینه</h3>
-
-<h2 id="totalMale">
-0
-</h2>
-
-</div>
-
-
-<div class="card">
-
-<h3>👩 ښځینه</h3>
-
-<h2 id="totalFemale">
-0
-</h2>
-
-</div>
-
-
-</div>
-
-
-<button
-class="submit"
-onclick="loadDashboard()"
->
-
-🔄 احصایې تازه کړئ
-
-</button>
-
-</div>
-
-
-<!-- PROVINCE STATS -->
-
-<div class="card">
-
-<h2>
-📍 د ولایتونو احصایه
-</h2>
-
-<div id="provinceStats">
-Loading...
-</div>
-
-</div>
 
 
 <!-- NOTICE -->
@@ -1407,122 +1341,6 @@ t.save;
 
 
 /* =========================
-   DASHBOARD
-========================= */
-
-async function loadDashboard(){
-
-const {data,error} =
-await db.rpc(
-"get_census_dashboard"
-);
-
-
-if(error){
-
-console.error(error);
-
-
-alert(
-"د احصایو په راوستلو کې ستونزه:\n\n" +
-error.message
-);
-
-return;
-
-}
-
-
-document.getElementById(
-"totalHouseholds"
-).textContent =
-data.total_households || 0;
-
-
-document.getElementById(
-"totalPopulation"
-).textContent =
-data.total_population || 0;
-
-
-document.getElementById(
-"totalMale"
-).textContent =
-data.male || 0;
-
-
-document.getElementById(
-"totalFemale"
-).textContent =
-data.female || 0;
-
-}
-
-
-/* =========================
-   PROVINCE STATS
-========================= */
-
-async function loadProvinceStats(){
-
-const {data,error} =
-await db.rpc(
-"get_province_stats"
-);
-
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-
-const box =
-document.getElementById(
-"provinceStats"
-);
-
-
-if(!data ||
-data.length === 0){
-
-box.innerHTML =
-"تر اوسه معلومات نشته";
-
-return;
-
-}
-
-
-box.innerHTML =
-data.map(item => `
-
-<div
-style="
-padding:10px;
-border-bottom:1px solid #ddd;
-"
->
-
-<strong>
-📍 ${item.province}
-</strong>
-
-<span style="float:left;">
-${item.population} کسان
-</span>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =========================
    EVENTS
 ========================= */
 
@@ -1548,9 +1366,6 @@ makePeople
 
 changeLang("ps");
 
-loadDashboard();
-
-loadProvinceStats();
 
 </script>
 
