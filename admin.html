@@ -29,7 +29,7 @@ color:#0f172a;
 
 .container{
 width:100%;
-max-width:1200px;
+max-width:1250px;
 margin:auto;
 padding:20px;
 }
@@ -186,7 +186,7 @@ overflow-x:auto;
 table{
 width:100%;
 border-collapse:collapse;
-min-width:900px;
+min-width:1000px;
 }
 
 th,
@@ -230,6 +230,12 @@ color:#64748b;
 margin-top:5px;
 }
 
+.loading{
+text-align:center;
+padding:30px;
+color:#64748b;
+}
+
 </style>
 
 </head>
@@ -237,14 +243,16 @@ margin-top:5px;
 <body>
 
 
-<!-- LOGIN -->
+<!-- ==================== LOGIN ==================== -->
 
 <div
 id="loginPanel"
 class="login-box"
 >
 
-<h1>🔐 د Admin سیستم</h1>
+<h1>
+🔐 د Admin سیستم
+</h1>
 
 <div class="subtitle">
 د افغانستان د نفوس آنلاین شمېرنه
@@ -299,7 +307,7 @@ text-decoration:none;
 </div>
 
 
-<!-- ADMIN PANEL -->
+<!-- ==================== ADMIN PANEL ==================== -->
 
 <div
 id="adminPanel"
@@ -341,7 +349,7 @@ onclick="logout()"
 </div>
 
 
-<!-- STATS -->
+<!-- ==================== STATS ==================== -->
 
 <div class="stats">
 
@@ -411,7 +419,7 @@ class="card-number"
 </div>
 
 
-<!-- DATA -->
+<!-- ==================== DATA ==================== -->
 
 <div class="table-box">
 
@@ -419,7 +427,10 @@ class="card-number"
 📋 ثبت شوې کورنۍ
 </h2>
 
-<div id="loading">
+<div
+id="loading"
+class="loading"
+>
 معلومات لوډ کېږي...
 </div>
 
@@ -491,7 +502,7 @@ id="dataBody"
 <script>
 
 
-/* SUPABASE */
+/* ==================== SUPABASE ==================== */
 
 const SUPABASE_URL =
 "https://bloawlfqbcicuixuzwwu.supabase.co";
@@ -506,7 +517,7 @@ SUPABASE_KEY
 );
 
 
-/* MESSAGE */
+/* ==================== MESSAGE ==================== */
 
 function showMessage(
 text,
@@ -528,7 +539,7 @@ message.style.display =
 }
 
 
-/* LOGIN */
+/* ==================== LOGIN ==================== */
 
 async function login(){
 
@@ -555,13 +566,19 @@ return;
 }
 
 
+showMessage(
+"Login کېږي...",
+"success"
+);
+
+
 const { data, error } =
 await supabaseClient.auth
 .signInWithPassword({
 
-email:email,
+email: email,
 
-password:password
+password: password
 
 });
 
@@ -579,62 +596,28 @@ return;
 }
 
 
-/* CHECK ADMIN */
-
-const { data:adminData,
-error:adminError } =
-await supabaseClient.rpc(
-"is_admin"
-);
-
-
-if(adminError){
-
-showMessage(
-"د Admin تصدیق کې ستونزه ده.",
-"error"
-);
-
-await supabaseClient.auth.signOut();
-
-return;
-
-}
-
-
-if(!adminData){
-
-showMessage(
-"تاسو Admin اجازه نه لرئ.",
-"error"
-);
-
-await supabaseClient.auth.signOut();
-
-return;
-
-}
-
-
-/* SHOW ADMIN */
+/*
+Login بریالی شو.
+اوس Admin Panel ښکاره کوو.
+د معلوماتو امنیت د get_admin_households()
+Supabase function کې کنټرولېږي.
+*/
 
 document
 .getElementById("loginPanel")
-.style.display="none";
+.style.display = "none";
 
 document
 .getElementById("adminPanel")
-.style.display="block";
+.style.display = "block";
 
-
-/* LOAD DATA */
 
 await loadData();
 
 }
 
 
-/* LOAD DATA */
+/* ==================== LOAD DATA ==================== */
 
 async function loadData(){
 
@@ -650,6 +633,7 @@ document.getElementById("empty");
 const body =
 document.getElementById("dataBody");
 
+
 loading.style.display =
 "block";
 
@@ -659,8 +643,10 @@ table.style.display =
 empty.style.display =
 "none";
 
-body.innerHTML="";
+body.innerHTML = "";
 
+
+/* CALL ADMIN FUNCTION */
 
 const { data, error } =
 await supabaseClient.rpc(
@@ -670,10 +656,14 @@ await supabaseClient.rpc(
 
 if(error){
 
-loading.textContent =
-"معلومات نه شول راوړل کېدای.";
+console.error(
+"Admin data error:",
+error
+);
 
-console.error(error);
+loading.innerHTML =
+"❌ معلومات نه شول راوړل کېدای.<br><br>" +
+escapeHTML(error.message);
 
 return;
 
@@ -683,6 +673,8 @@ return;
 loading.style.display =
 "none";
 
+
+/* JSON */
 
 let households =
 data || [];
@@ -695,29 +687,38 @@ try{
 households =
 JSON.parse(data);
 
-}catch(e){
+}catch(error){
 
-households=[];
+console.error(error);
+
+households = [];
 
 }
 
 }
 
 
-/* STATS */
+if(!Array.isArray(households)){
+
+households = [];
+
+}
+
+
+/* ==================== STATS ==================== */
 
 let totalHouseholds =
 households.length;
 
-let totalPopulation=0;
+let totalPopulation = 0;
 
-let totalMale=0;
+let totalMale = 0;
 
-let totalFemale=0;
+let totalFemale = 0;
 
 
 households.forEach(
-household=>{
+household => {
 
 totalPopulation +=
 Number(
@@ -759,9 +760,9 @@ document
 totalFemale;
 
 
-/* EMPTY */
+/* ==================== EMPTY ==================== */
 
-if(!households.length){
+if(households.length === 0){
 
 empty.style.display =
 "block";
@@ -771,15 +772,272 @@ return;
 }
 
 
-/* TABLE */
+/* ==================== TABLE ==================== */
 
 households.forEach(
-(household,index)=>{
+(household,index) => {
 
 const row =
 document.createElement("tr");
 
 
-let peopleHTML="";
+let people =
+household.people || [];
 
-let
+
+if(typeof people === "string"){
+
+try{
+
+people =
+JSON.parse(people);
+
+}catch(error){
+
+people = [];
+
+}
+
+}
+
+
+if(!Array.isArray(people)){
+
+people = [];
+
+}
+
+
+let peopleHTML = "";
+
+
+people.forEach(
+(person,personIndex) => {
+
+
+/*
+د مختلفو احتمالي field نومونو ملاتړ
+*/
+
+const name =
+person.name ||
+person.full_name ||
+"";
+
+const father =
+person.father ||
+person.father_name ||
+person.fatherName ||
+"";
+
+const gender =
+person.gender ||
+"";
+
+const age =
+person.age ||
+"";
+
+const marital =
+person.marital ||
+person.marital_status ||
+person.maritalStatus ||
+"";
+
+const relation =
+person.relation ||
+person.relationship ||
+person.relationship_to_head ||
+"";
+
+const education =
+person.education ||
+"";
+
+const employment =
+person.employment ||
+person.employment_status ||
+person.employmentStatus ||
+"";
+
+const occupation =
+person.occupation ||
+"";
+
+
+peopleHTML += `
+
+<div class="member">
+
+<strong>
+${personIndex + 1}.
+${escapeHTML(name)}
+</strong>
+
+<br>
+
+د پلار نوم:
+${escapeHTML(father)}
+
+<br>
+
+جنس:
+${escapeHTML(gender)}
+
+<br>
+
+عمر:
+${escapeHTML(age)}
+
+<br>
+
+مدني حالت:
+${escapeHTML(marital)}
+
+<br>
+
+اړیکه:
+${escapeHTML(relation)}
+
+<br>
+
+زده کړه:
+${escapeHTML(education)}
+
+<br>
+
+د کار حالت:
+${escapeHTML(employment)}
+
+<br>
+
+مسلک:
+${escapeHTML(occupation)}
+
+</div>
+
+`;
+
+});
+
+
+if(!peopleHTML){
+
+peopleHTML = "—";
+
+}
+
+
+row.innerHTML = `
+
+<td>
+${index + 1}
+</td>
+
+<td>
+${escapeHTML(
+household.province || ""
+)}
+</td>
+
+<td>
+${escapeHTML(
+household.district || ""
+)}
+</td>
+
+<td>
+${escapeHTML(
+household.village || ""
+)}
+</td>
+
+<td>
+${escapeHTML(
+household.members || 0
+)}
+</td>
+
+<td>
+${escapeHTML(
+household.male || 0
+)}
+</td>
+
+<td>
+${escapeHTML(
+household.female || 0
+)}
+</td>
+
+<td>
+${peopleHTML}
+</td>
+
+`;
+
+
+body.appendChild(row);
+
+});
+
+
+table.style.display =
+"table";
+
+}
+
+
+/* ==================== SECURITY ==================== */
+
+function escapeHTML(value){
+
+return String(value)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* ==================== LOGOUT ==================== */
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+
+document
+.getElementById("adminPanel")
+.style.display = "none";
+
+
+document
+.getElementById("loginPanel")
+.style.display = "block";
+
+
+document
+.getElementById("password")
+.value = "";
+
+
+showMessage(
+"له سیستم څخه ووتل شو.",
+"success"
+);
+
+}
+
+</script>
+
+</body>
+
+</html>
