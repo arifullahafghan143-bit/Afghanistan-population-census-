@@ -262,30 +262,35 @@ loadDistricts();
 
 }
 
+function loadProvinces(){
 
+// ... د loadProvinces کوډ ...
+
+}
 
 function loadDistricts(){
 
-const province=document.getElementById("province").value;
+  const province = document.getElementById("province").value;
+  const districtBox = document.getElementById("district");
 
-const districtBox=document.getElementById("district");
+  districtBox.innerHTML = "";
 
-districtBox.innerHTML="";
+  const list = districts[province] || [];
 
-const list=districts[province] || [];
+  list.forEach(d => {
 
-list.forEach(d=>{
+    const option = document.createElement("option");
 
-let option=document.createElement("option");
+    option.value = d;
+    option.textContent = d;
 
-option.value=d;
-option.textContent=d;
+    districtBox.appendChild(option);
 
-districtBox.appendChild(option);
-
-});
+  });
 
 }
+
+
 
 document.getElementById("province").addEventListener("change",loadDistricts);
 
