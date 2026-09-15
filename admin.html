@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 >
 
-<title>Admin Login - د نفوس سیستم</title>
+<title>Admin - د نفوس سیستم</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -24,16 +24,20 @@ body{
 margin:0;
 font-family:Arial,Tahoma,sans-serif;
 background:#f1f5f9;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
+color:#0f172a;
+}
+
+.container{
+width:100%;
+max-width:1200px;
+margin:auto;
 padding:20px;
 }
 
 .login-box{
 width:100%;
 max-width:420px;
+margin:60px auto;
 background:white;
 padding:30px;
 border-radius:18px;
@@ -43,7 +47,6 @@ box-shadow:0 8px 30px rgba(0,0,0,.12);
 h1{
 text-align:center;
 margin-top:0;
-color:#0f172a;
 font-size:25px;
 }
 
@@ -57,7 +60,6 @@ label{
 display:block;
 margin-bottom:7px;
 font-weight:bold;
-color:#334155;
 }
 
 input{
@@ -71,19 +73,34 @@ direction:ltr;
 }
 
 button{
-width:100%;
-padding:14px;
+padding:12px 18px;
 border:none;
 border-radius:10px;
 background:#2563eb;
 color:white;
-font-size:17px;
+font-size:16px;
 font-weight:bold;
 cursor:pointer;
 }
 
 button:hover{
 background:#1d4ed8;
+}
+
+.logout{
+background:#dc2626;
+}
+
+.logout:hover{
+background:#b91c1c;
+}
+
+.refresh{
+background:#16a34a;
+}
+
+.refresh:hover{
+background:#15803d;
 }
 
 .message{
@@ -104,12 +121,113 @@ background:#dcfce7;
 color:#166534;
 }
 
-.back{
-display:block;
+.admin-header{
+background:white;
+padding:20px;
+border-radius:16px;
+margin-bottom:20px;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.header-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.header-row h1{
+margin:0;
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.stats{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:16px;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
 text-align:center;
-margin-top:20px;
+}
+
+.card-title{
+color:#64748b;
+font-size:15px;
+margin-bottom:8px;
+}
+
+.card-number{
+font-size:30px;
+font-weight:bold;
 color:#2563eb;
-text-decoration:none;
+}
+
+.table-box{
+background:white;
+border-radius:16px;
+padding:20px;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:900px;
+}
+
+th,
+td{
+padding:12px;
+border-bottom:1px solid #e2e8f0;
+text-align:right;
+vertical-align:top;
+}
+
+th{
+background:#f8fafc;
+font-weight:bold;
+}
+
+.member{
+background:#f8fafc;
+border-radius:10px;
+padding:10px;
+margin-bottom:8px;
+line-height:1.8;
+}
+
+.member:last-child{
+margin-bottom:0;
+}
+
+.empty{
+text-align:center;
+padding:40px;
+color:#64748b;
+}
+
+#adminPanel{
+display:none;
+}
+
+.small{
+font-size:13px;
+color:#64748b;
+margin-top:5px;
 }
 
 </style>
@@ -118,7 +236,13 @@ text-decoration:none;
 
 <body>
 
-<div class="login-box">
+
+<!-- LOGIN -->
+
+<div
+id="loginPanel"
+class="login-box"
+>
 
 <h1>🔐 د Admin سیستم</h1>
 
@@ -148,7 +272,9 @@ placeholder="Password"
 autocomplete="current-password"
 >
 
-<button onclick="login()">
+<button
+onclick="login()"
+>
 ننوتل
 </button>
 
@@ -159,14 +285,213 @@ class="message"
 
 <a
 href="index.html"
-class="back"
+style="
+display:block;
+text-align:center;
+margin-top:20px;
+color:#2563eb;
+text-decoration:none;
+"
 >
 ← اصلي فورم ته ستنېدل
 </a>
 
 </div>
 
+
+<!-- ADMIN PANEL -->
+
+<div
+id="adminPanel"
+class="container"
+>
+
+<div class="admin-header">
+
+<div class="header-row">
+
+<h1>
+📊 د نفوس Admin سیستم
+</h1>
+
+<div class="actions">
+
+<button
+class="refresh"
+onclick="loadData()"
+>
+🔄 معلومات تازه کول
+</button>
+
+<button
+class="logout"
+onclick="logout()"
+>
+🚪 وتل
+</button>
+
+</div>
+
+</div>
+
+<div class="small">
+یوازې د مجاز Admin لپاره
+</div>
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="card">
+
+<div class="card-title">
+ټولې کورنۍ
+</div>
+
+<div
+id="totalHouseholds"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+ټول نفوس
+</div>
+
+<div
+id="totalPopulation"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+نارینه
+</div>
+
+<div
+id="totalMale"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+ښځینه
+</div>
+
+<div
+id="totalFemale"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
+</div>
+
+
+<!-- DATA -->
+
+<div class="table-box">
+
+<h2>
+📋 ثبت شوې کورنۍ
+</h2>
+
+<div id="loading">
+معلومات لوډ کېږي...
+</div>
+
+<div
+id="empty"
+class="empty"
+style="display:none;"
+>
+تر اوسه هېڅ کورنۍ ثبت شوې نه ده.
+</div>
+
+<table
+id="dataTable"
+style="display:none;"
+>
+
+<thead>
+
+<tr>
+
+<th>
+#
+</th>
+
+<th>
+ولایت
+</th>
+
+<th>
+ولسوالي
+</th>
+
+<th>
+سیمه / کلی
+</th>
+
+<th>
+د غړو شمېر
+</th>
+
+<th>
+نارینه
+</th>
+
+<th>
+ښځینه
+</th>
+
+<th>
+د کورنۍ غړي
+</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="dataBody"
+>
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
 <script>
+
+
+/* SUPABASE */
 
 const SUPABASE_URL =
 "https://bloawlfqbcicuixuzwwu.supabase.co";
@@ -180,63 +505,281 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-async function login(){
 
-const email =
-document.getElementById("email").value.trim();
+/* MESSAGE */
 
-const password =
-document.getElementById("password").value;
+function showMessage(
+text,
+type
+){
 
 const message =
 document.getElementById("message");
 
-message.style.display = "none";
+message.textContent =
+text;
+
+message.className =
+"message " + type;
+
+message.style.display =
+"block";
+
+}
+
+
+/* LOGIN */
+
+async function login(){
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const password =
+document
+.getElementById("password")
+.value;
 
 if(!email || !password){
 
-message.textContent =
-"مهرباني وکړئ Email او Password ولیکئ.";
-
-message.className =
-"message error";
-
-message.style.display = "block";
+showMessage(
+"مهرباني وکړئ Email او Password ولیکئ.",
+"error"
+);
 
 return;
+
 }
 
+
 const { data, error } =
-await supabaseClient.auth.signInWithPassword({
-email: email,
-password: password
+await supabaseClient.auth
+.signInWithPassword({
+
+email:email,
+
+password:password
+
 });
+
 
 if(error){
 
-message.textContent =
-"Login ناکام شو: " + error.message;
-
-message.className =
-"message error";
-
-message.style.display = "block";
+showMessage(
+"Login ناکام شو: " +
+error.message,
+"error"
+);
 
 return;
-}
-
-message.textContent =
-"Login بریالی شو.";
-
-message.className =
-"message success";
-
-message.style.display = "block";
 
 }
 
-</script>
 
-</body>
+/* CHECK ADMIN */
 
-</html>
+const { data:adminData,
+error:adminError } =
+await supabaseClient.rpc(
+"is_admin"
+);
+
+
+if(adminError){
+
+showMessage(
+"د Admin تصدیق کې ستونزه ده.",
+"error"
+);
+
+await supabaseClient.auth.signOut();
+
+return;
+
+}
+
+
+if(!adminData){
+
+showMessage(
+"تاسو Admin اجازه نه لرئ.",
+"error"
+);
+
+await supabaseClient.auth.signOut();
+
+return;
+
+}
+
+
+/* SHOW ADMIN */
+
+document
+.getElementById("loginPanel")
+.style.display="none";
+
+document
+.getElementById("adminPanel")
+.style.display="block";
+
+
+/* LOAD DATA */
+
+await loadData();
+
+}
+
+
+/* LOAD DATA */
+
+async function loadData(){
+
+const loading =
+document.getElementById("loading");
+
+const table =
+document.getElementById("dataTable");
+
+const empty =
+document.getElementById("empty");
+
+const body =
+document.getElementById("dataBody");
+
+loading.style.display =
+"block";
+
+table.style.display =
+"none";
+
+empty.style.display =
+"none";
+
+body.innerHTML="";
+
+
+const { data, error } =
+await supabaseClient.rpc(
+"get_admin_households"
+);
+
+
+if(error){
+
+loading.textContent =
+"معلومات نه شول راوړل کېدای.";
+
+console.error(error);
+
+return;
+
+}
+
+
+loading.style.display =
+"none";
+
+
+let households =
+data || [];
+
+
+if(typeof data === "string"){
+
+try{
+
+households =
+JSON.parse(data);
+
+}catch(e){
+
+households=[];
+
+}
+
+}
+
+
+/* STATS */
+
+let totalHouseholds =
+households.length;
+
+let totalPopulation=0;
+
+let totalMale=0;
+
+let totalFemale=0;
+
+
+households.forEach(
+household=>{
+
+totalPopulation +=
+Number(
+household.members || 0
+);
+
+totalMale +=
+Number(
+household.male || 0
+);
+
+totalFemale +=
+Number(
+household.female || 0
+);
+
+}
+);
+
+
+document
+.getElementById("totalHouseholds")
+.textContent =
+totalHouseholds;
+
+document
+.getElementById("totalPopulation")
+.textContent =
+totalPopulation;
+
+document
+.getElementById("totalMale")
+.textContent =
+totalMale;
+
+document
+.getElementById("totalFemale")
+.textContent =
+totalFemale;
+
+
+/* EMPTY */
+
+if(!households.length){
+
+empty.style.display =
+"block";
+
+return;
+
+}
+
+
+/* TABLE */
+
+households.forEach(
+(household,index)=>{
+
+const row =
+document.createElement("tr");
+
+
+let peopleHTML="";
+
+let
