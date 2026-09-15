@@ -16,7 +16,10 @@ fetch(DISTRICT_DATA_URL)
 
   data.forEach(item => {
 
-    const province = item.parent.name.en;
+    const province = item.parent.name.en
+  .replace("Paktya","Paktia")
+  .replace("Panjsher","Panjshir")
+  .replace("Jawzjan","Jawzjan");
     const district = item.name.local;
 
     if (!districts[province]) {
