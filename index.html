@@ -749,8 +749,80 @@ document.getElementById("district");
 
 districtBox.innerHTML = "";
 
+const provinceMap = {
+"Kabul":"کابل",
+"Nangarhar":"ننګرهار",
+"Paktia":"پکتیا",
+"Kandahar":"کندهار",
+"Herat":"هرات",
+"Balkh":"بلخ",
+"Kunduz":"کندز",
+"Takhar":"تخار",
+"Badakhshan":"بدخشان",
+"Laghman":"لغمان",
+"Kunar":"کنړ",
+"Khost":"خوست",
+"Paktika":"پکتیکا",
+"Logar":"لوګر",
+"Ghazni":"غزني",
+"Zabul":"زابل",
+"Helmand":"هلمند",
+"Farah":"فراه",
+"Nimroz":"نیمروز",
+"Ghor":"غور",
+"Badghis":"بادغیس",
+"Faryab":"فاریاب",
+"Jawzjan":"جوزجان",
+"Sar-e-Pul":"سرپل",
+"Samangan":"سمنګان",
+"Bamyan":"بامیان",
+"Daykundi":"دایکندي",
+"Uruzgan":"ارزګان",
+"Maidan Wardak":"میدان وردګ",
+"Parwan":"پروان",
+"Kapisa":"کاپیسا",
+"Panjshir":"پنجشېر",
+"Nuristan":"نورستان",
+"Baghlan":"بغلان"
+};
+
+const localProvince = provinceMap[province] || province;
 const list =
-districts[province] || [];
+districts[localProvince] || [];
+
+if(list.length === 0){
+
+const option =
+document.createElement("option");
+
+option.value = "";
+
+option.textContent =
+lang === "ps"
+? "ولسوالۍ نه شته"
+: lang === "fa"
+? "ولسوالی موجود نیست"
+: "No districts available";
+
+districtBox.appendChild(option);
+
+return;
+
+}
+
+list.forEach(d => {
+
+const option =
+document.createElement("option");
+
+option.value = d;
+
+option.textContent = d;
+
+districtBox.appendChild(option);
+
+});
+const list = districts[localProvince] || [];
 
 if(list.length === 0){
 
