@@ -17,6 +17,15 @@ fetch(DISTRICT_DATA_URL)
 
   districts = {};
 
+  const aliases = {
+
+    "Paktya": "Paktia",
+    "Panjsher": "Panjshir",
+    "Hirat": "Herat",
+    "Hilmand": "Helmand"
+
+  };
+
   data.forEach(item => {
 
     let province =
@@ -25,38 +34,21 @@ fetch(DISTRICT_DATA_URL)
     const district =
       item.name.local;
 
-    /*
-      د Dataset او زموږ د ویب‌سایټ
-      د ولایتونو د نومونو توپیرونه
-    */
-
-    const provinceMap = {
-
-      "Paktya": "Paktia",
-
-      "Panjsher": "Panjshir",
-
-      "Hirat": "Herat",
-
-      "Hilmand": "Helmand"
-
-    };
-
     province =
-      provinceMap[province] || province;
+      aliases[province] || province;
 
     if (!districts[province]) {
-
       districts[province] = [];
-
     }
 
     districts[province].push(district);
 
   });
 
-
   Object.keys(districts).forEach(province => {
+
+    districts[province] =
+      [...new Set(districts[province])];
 
     districts[province].sort((a, b) =>
       a.localeCompare(b, "ps")
@@ -64,16 +56,8 @@ fetch(DISTRICT_DATA_URL)
 
   });
 
-
-  /*
-    معلومات چې Load شي،
-    ولسوالۍ تازه کړه
-  */
-
   if (typeof loadDistricts === "function") {
-
     loadDistricts();
-
   }
 
 })
