@@ -1,20 +1,34 @@
-const districts = {
+let districts = {};
 
-"Kabul":[
-"Bagrami","Chahar Asyab","Deh Sabz","Estalif","Farza",
-"Guldara","Kalakan","Khak Jabar","Musahi","Paghman",
-"Qara Bagh","Shakardara","Surobi","Mir Bacha Kot"
-],
+const DISTRICT_DATA_URL =
+"https://raw.githubusercontent.com/open-admin-data/afghanistan-administrative-divisions/main/data/all-district.json";
 
-"Paktia":[
-"Gardez","Ahmad Aba","Zurmat","Said Karam","Jaji",
-"Dand Patan","Jani Khel","Zazi Aryob","Laja Mangel",
-"Rohani Baba","Wazi Zadran"
-],
+fetch(DISTRICT_DATA_URL)
+.then(response => response.json())
+.then(data => {
 
-"Ghor":[
-"Firoz Koh","Dolina","Dawlat Yar","Charsada","Lal wa Sarjangal",
-"Pasaband","Saghar","Shahrak","Taywara","Tulak"
-]
+  districts = {};
 
-};
+  data.forEach(item => {
+
+    const province = item.parent.name.local;
+    const district = item.name.local;
+
+    if (!districts[province]) {
+      districts[province] = [];
+    }
+
+    districts[province].push(district);
+
+  });
+
+  if (typeof loadDistricts === "function") {
+    loadDistricts();
+  }
+
+})
+.catch(error => {
+
+  console.error("District data error:", error);
+
+});
