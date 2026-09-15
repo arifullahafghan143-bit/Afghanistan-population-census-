@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Admin Login - د نفوس سیستم</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,Tahoma,sans-serif;
+background:#f1f5f9;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.login-box{
+width:100%;
+max-width:420px;
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+
+h1{
+text-align:center;
+margin-top:0;
+color:#0f172a;
+font-size:25px;
+}
+
+.subtitle{
+text-align:center;
+color:#64748b;
+margin-bottom:25px;
+}
+
+label{
+display:block;
+margin-bottom:7px;
+font-weight:bold;
+color:#334155;
+}
+
+input{
+width:100%;
+padding:13px;
+border:1px solid #cbd5e1;
+border-radius:10px;
+font-size:16px;
+margin-bottom:16px;
+direction:ltr;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.message{
+margin-top:15px;
+padding:12px;
+border-radius:10px;
+text-align:center;
+display:none;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+}
+
+.success{
+background:#dcfce7;
+color:#166534;
+}
+
+.back{
+display:block;
+text-align:center;
+margin-top:20px;
+color:#2563eb;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>🔐 د Admin سیستم</h1>
+
+<div class="subtitle">
+د افغانستان د نفوس آنلاین شمېرنه
+</div>
+
+<label for="email">
+Email
+</label>
+
+<input
+type="email"
+id="email"
+placeholder="admin@example.com"
+autocomplete="email"
+>
+
+<label for="password">
+Password
+</label>
+
+<input
+type="password"
+id="password"
+placeholder="Password"
+autocomplete="current-password"
+>
+
+<button onclick="login()">
+ننوتل
+</button>
+
+<div
+id="message"
+class="message"
+></div>
+
+<a
+href="index.html"
+class="back"
+>
+← اصلي فورم ته ستنېدل
+</a>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+"https://bloawlfqbcicuixuzwwu.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+const message =
+document.getElementById("message");
+
+message.style.display = "none";
+
+if(!email || !password){
+
+message.textContent =
+"مهرباني وکړئ Email او Password ولیکئ.";
+
+message.className =
+"message error";
+
+message.style.display = "block";
+
+return;
+}
+
+const { data, error } =
+await supabaseClient.auth.signInWithPassword({
+email: email,
+password: password
+});
+
+if(error){
+
+message.textContent =
+"Login ناکام شو: " + error.message;
+
+message.className =
+"message error";
+
+message.style.display = "block";
+
+return;
+}
+
+message.textContent =
+"Login بریالی شو.";
+
+message.className =
+"message success";
+
+message.style.display = "block";
+
+}
+
+</script>
+
+</body>
+
+</html>
