@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
+
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
 
 <title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
@@ -61,7 +63,10 @@ box-shadow:0 2px 8px #0001
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(
+auto-fit,
+minmax(220px,1fr)
+);
 gap:12px
 }
 
@@ -119,7 +124,9 @@ margin-top:15px
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -152,6 +159,8 @@ English
 
 <div class="container">
 
+
+<!-- DASHBOARD -->
 
 <div class="card" id="dashboard">
 
@@ -211,11 +220,15 @@ English
 class="submit"
 onclick="loadDashboard()"
 >
+
 🔄 احصایې تازه کړئ
+
 </button>
 
 </div>
 
+
+<!-- PROVINCE STATS -->
 
 <div class="card">
 
@@ -230,8 +243,15 @@ Loading...
 </div>
 
 
-<div class="notice" id="notice"></div>
+<!-- NOTICE -->
 
+<div
+class="notice"
+id="notice">
+</div>
+
+
+<!-- FORM -->
 
 <div class="form">
 
@@ -240,6 +260,8 @@ Loading...
 
 <div class="grid">
 
+
+<!-- PROVINCE -->
 
 <div>
 
@@ -253,6 +275,8 @@ required
 </div>
 
 
+<!-- DISTRICT -->
+
 <div>
 
 <label id="districtLabel"></label>
@@ -265,6 +289,8 @@ required
 </div>
 
 
+<!-- VILLAGE -->
+
 <div>
 
 <label id="villageLabel"></label>
@@ -276,6 +302,8 @@ required
 
 </div>
 
+
+<!-- MEMBERS -->
 
 <div>
 
@@ -295,14 +323,19 @@ required
 </div>
 
 
+<!-- PEOPLE -->
+
 <div id="people"></div>
 
+
+<!-- SAVE -->
 
 <button
 class="submit"
 id="submitBtn"
 onclick="saveFamily()"
 ></button>
+
 
 </div>
 
@@ -312,13 +345,15 @@ onclick="saveFamily()"
 <script>
 
 
+/* =========================
+   SUPABASE
+========================= */
+
 const SUPABASE_URL =
 "https://bloawlfqbcicuixuzwwu.supabase.co";
 
-
 const SUPABASE_KEY =
 "sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
-
 
 const db =
 supabase.createClient(
@@ -508,147 +543,213 @@ const T = {
 
 ps:{
 
-title:"🇦🇫 د افغانستان د نفوس آنلاین شمېرنه",
+title:
+"🇦🇫 د افغانستان د نفوس آنلاین شمېرنه",
 
-subtitle:"د کورنیو د معلوماتو د ثبت آنلاین سیستم",
+subtitle:
+"د کورنیو د معلوماتو د ثبت آنلاین سیستم",
 
-notice:"<strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.",
+notice:
+"<strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.",
 
-form:"📝 د کورنۍ ثبت",
+form:
+"📝 د کورنۍ ثبت",
 
-province:"ولایت",
+province:
+"ولایت",
 
-district:"ولسوالۍ",
+district:
+"ولسوالۍ",
 
-village:"ناحیه / کلی",
+village:
+"ناحیه / کلی",
 
-members:"د کورنۍ د غړو شمېر",
+members:
+"د کورنۍ د غړو شمېر",
 
-person:"د کورنۍ غړی",
+person:
+"د کورنۍ غړی",
 
-name:"نوم",
+name:
+"نوم",
 
-father:"د پلار نوم",
+father:
+"د پلار نوم",
 
-gender:"جنسیت",
+gender:
+"جنسیت",
 
-age:"عمر",
+age:
+"عمر",
 
-marital:"مدني حالت",
+marital:
+"مدني حالت",
 
-relation:"د کورنۍ له مشر سره اړیکه",
+relation:
+"د کورنۍ له مشر سره اړیکه",
 
-education:"زده کړې",
+education:
+"زده کړې",
 
-work:"د کار حالت",
+work:
+"د کار حالت",
 
-job:"مسلک",
+job:
+"مسلک",
 
-save:"معلومات ثبت کړئ",
+save:
+"معلومات ثبت کړئ",
 
-saving:"⏳ معلومات ثبتېږي...",
+saving:
+"⏳ معلومات ثبتېږي...",
 
-success:"✅ معلومات په بریالیتوب سره ثبت شول.",
+success:
+"✅ معلومات په بریالیتوب سره ثبت شول.",
 
-error:"❌ معلومات ثبت نه شول."
+error:
+"❌ معلومات ثبت نه شول."
 
 },
 
 
 fa:{
 
-title:"🇦🇫 سرشماری آنلاین نفوس افغانستان",
+title:
+"🇦🇫 سرشماری آنلاین نفوس افغانستان",
 
-subtitle:"سیستم آنلاین ثبت معلومات خانواده‌ها",
+subtitle:
+"سیستم آنلاین ثبت معلومات خانواده‌ها",
 
-notice:"<strong>یادداشت:</strong> این سیستم برای سروی آنلاین است و بدیل سرشماری رسمی دولتی نیست.",
+notice:
+"<strong>یادداشت:</strong> این سیستم برای سروی آنلاین است و بدیل سرشماری رسمی دولتی نیست.",
 
-form:"📝 ثبت خانواده",
+form:
+"📝 ثبت خانواده",
 
-province:"ولایت",
+province:
+"ولایت",
 
-district:"ولسوالی",
+district:
+"ولسوالی",
 
-village:"ناحیه / قریه",
+village:
+"ناحیه / قریه",
 
-members:"تعداد اعضای خانواده",
+members:
+"تعداد اعضای خانواده",
 
-person:"عضو خانواده",
+person:
+"عضو خانواده",
 
-name:"نام",
+name:
+"نام",
 
-father:"نام پدر",
+father:
+"نام پدر",
 
-gender:"جنسیت",
+gender:
+"جنسیت",
 
-age:"سن",
+age:
+"سن",
 
-marital:"حالت مدنی",
+marital:
+"حالت مدنی",
 
-relation:"ارتباط با سرپرست خانواده",
+relation:
+"ارتباط با سرپرست خانواده",
 
-education:"تحصیلات",
+education:
+"تحصیلات",
 
-work:"وضعیت کاری",
+work:
+"وضعیت کاری",
 
-job:"مسلک",
+job:
+"مسلک",
 
-save:"ثبت معلومات",
+save:
+"ثبت معلومات",
 
-saving:"⏳ معلومات ثبت می‌شود...",
+saving:
+"⏳ معلومات ثبت می‌شود...",
 
-success:"✅ معلومات با موفقیت ثبت شد.",
+success:
+"✅ معلومات با موفقیت ثبت شد.",
 
-error:"❌ معلومات ثبت نشد."
+error:
+"❌ معلومات ثبت نشد."
 
 },
 
 
 en:{
 
-title:"🇦🇫 Afghanistan Population Census",
+title:
+"🇦🇫 Afghanistan Population Census",
 
-subtitle:"Online family information registration system",
+subtitle:
+"Online family information registration system",
 
-notice:"<strong>Note:</strong> This system is an online survey and is not a replacement for an official government census.",
+notice:
+"<strong>Note:</strong> This system is an online survey and is not a replacement for an official government census.",
 
-form:"📝 Family Registration",
+form:
+"📝 Family Registration",
 
-province:"Province",
+province:
+"Province",
 
-district:"District",
+district:
+"District",
 
-village:"Area / Village",
+village:
+"Area / Village",
 
-members:"Number of Family Members",
+members:
+"Number of Family Members",
 
-person:"Family Member",
+person:
+"Family Member",
 
-name:"Name",
+name:
+"Name",
 
-father:"Father's Name",
+father:
+"Father's Name",
 
-gender:"Gender",
+gender:
+"Gender",
 
-age:"Age",
+age:
+"Age",
 
-marital:"Marital Status",
+marital:
+"Marital Status",
 
-relation:"Relationship to Head",
+relation:
+"Relationship to Head",
 
-education:"Education",
+education:
+"Education",
 
-work:"Employment Status",
+work:
+"Employment Status",
 
-job:"Occupation",
+job:
+"Occupation",
 
-save:"Register Information",
+save:
+"Register Information",
 
-saving:"⏳ Saving...",
+saving:
+"⏳ Saving...",
 
-success:"✅ Information registered successfully.",
+success:
+"✅ Information registered successfully.",
 
-error:"❌ Information could not be registered."
+error:
+"❌ Information could not be registered."
 
 }
 
@@ -670,32 +771,51 @@ x === "en" ? "ltr" : "rtl";
 
 const t = T[x];
 
-document.getElementById("title").textContent =
+
+document.getElementById("title")
+.textContent =
 t.title;
 
-document.getElementById("subtitle").textContent =
+
+document.getElementById("subtitle")
+.textContent =
 t.subtitle;
 
-document.getElementById("notice").innerHTML =
+
+document.getElementById("notice")
+.innerHTML =
 t.notice;
 
-document.getElementById("formTitle").textContent =
+
+document.getElementById("formTitle")
+.textContent =
 t.form;
 
-document.getElementById("provinceLabel").textContent =
+
+document.getElementById("provinceLabel")
+.textContent =
 t.province;
 
-document.getElementById("districtLabel").textContent =
+
+document.getElementById("districtLabel")
+.textContent =
 t.district;
 
-document.getElementById("villageLabel").textContent =
+
+document.getElementById("villageLabel")
+.textContent =
 t.village;
 
-document.getElementById("membersLabel").textContent =
+
+document.getElementById("membersLabel")
+.textContent =
 t.members;
 
-document.getElementById("submitBtn").textContent =
+
+document.getElementById("submitBtn")
+.textContent =
 t.save;
+
 
 loadProvinces();
 
@@ -715,7 +835,9 @@ document.getElementById("province");
 
 provinceBox.innerHTML = "";
 
-provinces[lang].forEach((name,index)=>{
+
+provinces[lang].forEach(
+(name,index) => {
 
 const option =
 document.createElement("option");
@@ -729,6 +851,7 @@ name;
 provinceBox.appendChild(option);
 
 });
+
 
 loadDistricts();
 
@@ -744,51 +867,22 @@ function loadDistricts(){
 const province =
 document.getElementById("province").value;
 
+
 const districtBox =
 document.getElementById("district");
 
+
 districtBox.innerHTML = "";
 
-const provinceMap = {
-"Kabul":"کابل",
-"Nangarhar":"ننګرهار",
-"Paktia":"پکتیا",
-"Kandahar":"کندهار",
-"Herat":"هرات",
-"Balkh":"بلخ",
-"Kunduz":"کندز",
-"Takhar":"تخار",
-"Badakhshan":"بدخشان",
-"Laghman":"لغمان",
-"Kunar":"کنړ",
-"Khost":"خوست",
-"Paktika":"پکتیکا",
-"Logar":"لوګر",
-"Ghazni":"غزني",
-"Zabul":"زابل",
-"Helmand":"هلمند",
-"Farah":"فراه",
-"Nimroz":"نیمروز",
-"Ghor":"غور",
-"Badghis":"بادغیس",
-"Faryab":"فاریاب",
-"Jawzjan":"جوزجان",
-"Sar-e-Pul":"سرپل",
-"Samangan":"سمنګان",
-"Bamyan":"بامیان",
-"Daykundi":"دایکندي",
-"Uruzgan":"ارزګان",
-"Maidan Wardak":"میدان وردګ",
-"Parwan":"پروان",
-"Kapisa":"کاپیسا",
-"Panjshir":"پنجشېر",
-"Nuristan":"نورستان",
-"Baghlan":"بغلان"
-};
 
-const localProvince = provinceMap[province] || province;
+/*
+  districts.js همدا English
+  province key جوړوي.
+*/
+
 const list =
-districts[localProvince] || [];
+districts[province] || [];
+
 
 if(list.length === 0){
 
@@ -797,6 +891,7 @@ document.createElement("option");
 
 option.value = "";
 
+
 option.textContent =
 lang === "ps"
 ? "ولسوالۍ نه شته"
@@ -804,47 +899,15 @@ lang === "ps"
 ? "ولسوالی موجود نیست"
 : "No districts available";
 
+
 districtBox.appendChild(option);
 
 return;
 
 }
+
 
 list.forEach(d => {
-
-const option =
-document.createElement("option");
-
-option.value = d;
-
-option.textContent = d;
-
-districtBox.appendChild(option);
-
-});
-const list = districts[localProvince] || [];
-
-if(list.length === 0){
-
-const option =
-document.createElement("option");
-
-option.value = "";
-
-option.textContent =
-lang === "ps"
-? "ولسوالۍ نه شته"
-: lang === "fa"
-? "ولسوالی موجود نیست"
-: "No districts available";
-
-districtBox.appendChild(option);
-
-return;
-
-}
-
-list.forEach(d=>{
 
 const option =
 document.createElement("option");
@@ -868,15 +931,20 @@ function makePeople(){
 
 const n =
 Number(
-document.getElementById("members").value || 0
+document.getElementById("members")
+.value || 0
 );
+
 
 const peopleBox =
 document.getElementById("people");
 
+
 peopleBox.innerHTML = "";
 
+
 const t = T[lang];
+
 
 for(let i=1;i<=n;i++){
 
@@ -884,13 +952,19 @@ peopleBox.innerHTML += `
 
 <div class="person">
 
-<h3>${t.person} ${i}</h3>
+<h3>
+${t.person} ${i}
+</h3>
+
 
 <div class="grid">
 
+
 <div>
 
-<label>${t.name}</label>
+<label>
+${t.name}
+</label>
 
 <input
 class="pname"
@@ -902,7 +976,9 @@ required
 
 <div>
 
-<label>${t.father}</label>
+<label>
+${t.father}
+</label>
 
 <input
 class="father"
@@ -914,11 +990,14 @@ required
 
 <div>
 
-<label>${t.gender}</label>
+<label>
+${t.gender}
+</label>
 
 <select class="gender">
 
 <option value="male">
+
 ${
 lang==="ps"
 ?"نارینه"
@@ -926,9 +1005,12 @@ lang==="ps"
 ?"مرد"
 :"Male"
 }
+
 </option>
 
+
 <option value="female">
+
 ${
 lang==="ps"
 ?"ښځینه"
@@ -936,6 +1018,7 @@ lang==="ps"
 ?"زن"
 :"Female"
 }
+
 </option>
 
 </select>
@@ -945,7 +1028,9 @@ lang==="ps"
 
 <div>
 
-<label>${t.age}</label>
+<label>
+${t.age}
+</label>
 
 <input
 type="number"
@@ -960,11 +1045,15 @@ required
 
 <div>
 
-<label>${t.marital}</label>
+<label>
+${t.marital}
+</label>
 
 <select class="marital">
 
+
 <option value="single">
+
 ${
 lang==="ps"
 ?"مجرد"
@@ -972,9 +1061,12 @@ lang==="ps"
 ?"مجرد"
 :"Single"
 }
+
 </option>
 
+
 <option value="married">
+
 ${
 lang==="ps"
 ?"واده شوی"
@@ -982,9 +1074,12 @@ lang==="ps"
 ?"متاهل"
 :"Married"
 }
+
 </option>
 
+
 <option value="widowed">
+
 ${
 lang==="ps"
 ?"کونډ/کونډه"
@@ -992,9 +1087,12 @@ lang==="ps"
 ?"بیوه"
 :"Widowed"
 }
+
 </option>
 
+
 <option value="divorced">
+
 ${
 lang==="ps"
 ?"طلاق شوی"
@@ -1002,7 +1100,9 @@ lang==="ps"
 ?"مطلقه"
 :"Divorced"
 }
+
 </option>
+
 
 </select>
 
@@ -1011,7 +1111,9 @@ lang==="ps"
 
 <div>
 
-<label>${t.relation}</label>
+<label>
+${t.relation}
+</label>
 
 <input
 class="relation"
@@ -1023,7 +1125,9 @@ required
 
 <div>
 
-<label>${t.education}</label>
+<label>
+${t.education}
+</label>
 
 <input
 class="education"
@@ -1034,7 +1138,9 @@ class="education"
 
 <div>
 
-<label>${t.work}</label>
+<label>
+${t.work}
+</label>
 
 <input
 class="work"
@@ -1045,13 +1151,16 @@ class="work"
 
 <div>
 
-<label>${t.job}</label>
+<label>
+${t.job}
+</label>
 
 <input
 class="job"
 >
 
 </div>
+
 
 </div>
 
@@ -1072,24 +1181,41 @@ async function saveFamily(){
 
 const t = T[lang];
 
+
 const province =
-document.getElementById("province").value;
+document.getElementById("province")
+.value;
+
 
 const district =
-document.getElementById("district").value.trim();
+document.getElementById("district")
+.value
+.trim();
+
 
 const village =
-document.getElementById("village").value.trim();
+document.getElementById("village")
+.value
+.trim();
+
 
 const n =
 Number(
-document.getElementById("members").value
+document.getElementById("members")
+.value
 );
 
 
-if(!province || !district || !village || !n){
+if(
+!province ||
+!district ||
+!village ||
+!n
+){
 
-alert("Please complete all required fields.");
+alert(
+"Please complete all required fields."
+);
 
 return;
 
@@ -1102,7 +1228,9 @@ document.querySelectorAll(".person");
 
 if(cards.length !== n){
 
-alert("Please enter all family members.");
+alert(
+"Please enter all family members."
+);
 
 return;
 
@@ -1112,41 +1240,57 @@ return;
 let list = [];
 
 
-cards.forEach(card=>{
+cards.forEach(card => {
 
 const gender =
-card.querySelector(".gender").value;
+card.querySelector(".gender")
+.value;
+
 
 list.push({
 
 name:
-card.querySelector(".pname").value.trim(),
+card.querySelector(".pname")
+.value
+.trim(),
 
 father_name:
-card.querySelector(".father").value.trim(),
+card.querySelector(".father")
+.value
+.trim(),
 
 gender:
 gender,
 
 age:
 Number(
-card.querySelector(".age").value
+card.querySelector(".age")
+.value
 ),
 
 marital_status:
-card.querySelector(".marital").value,
+card.querySelector(".marital")
+.value,
 
 relation:
-card.querySelector(".relation").value.trim(),
+card.querySelector(".relation")
+.value
+.trim(),
 
 education:
-card.querySelector(".education").value.trim(),
+card.querySelector(".education")
+.value
+.trim(),
 
 work_status:
-card.querySelector(".work").value.trim(),
+card.querySelector(".work")
+.value
+.trim(),
 
 occupation:
-card.querySelector(".job").value.trim()
+card.querySelector(".job")
+.value
+.trim()
 
 });
 
@@ -1156,20 +1300,22 @@ card.querySelector(".job").value.trim()
 const submit =
 document.getElementById("submitBtn");
 
+
 submit.disabled = true;
 
-submit.textContent = t.saving;
+submit.textContent =
+t.saving;
 
 
 const male =
 list.filter(
-p=>p.gender === "male"
+p => p.gender === "male"
 ).length;
 
 
 const female =
 list.filter(
-p=>p.gender === "female"
+p => p.gender === "female"
 ).length;
 
 
@@ -1206,15 +1352,18 @@ if(error){
 
 console.error(error);
 
+
 alert(
 t.error +
 "\n\n" +
 error.message
 );
 
+
 submit.disabled = false;
 
-submit.textContent = t.save;
+submit.textContent =
+t.save;
 
 return;
 
@@ -1224,16 +1373,25 @@ return;
 alert(t.success);
 
 
-document.getElementById("village").value = "";
+document.getElementById(
+"village"
+).value = "";
 
-document.getElementById("members").value = "";
 
-document.getElementById("people").innerHTML = "";
+document.getElementById(
+"members"
+).value = "";
+
+
+document.getElementById(
+"people"
+).innerHTML = "";
 
 
 submit.disabled = false;
 
-submit.textContent = t.save;
+submit.textContent =
+t.save;
 
 }
 
@@ -1253,6 +1411,7 @@ await db.rpc(
 if(error){
 
 console.error(error);
+
 
 alert(
 "د احصایو په راوستلو کې ستونزه:\n\n" +
@@ -1317,7 +1476,8 @@ document.getElementById(
 );
 
 
-if(!data || data.length === 0){
+if(!data ||
+data.length === 0){
 
 box.innerHTML =
 "تر اوسه معلومات نشته";
@@ -1328,7 +1488,7 @@ return;
 
 
 box.innerHTML =
-data.map(item=>`
+data.map(item => `
 
 <div
 style="
@@ -1384,5 +1544,7 @@ loadProvinceStats();
 
 </script>
 
+
 </body>
+
 </html>
