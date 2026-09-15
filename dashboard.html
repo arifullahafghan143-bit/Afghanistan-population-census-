@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>د نفوس ډیشبورډ</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+    color: #222;
+}
+
+header {
+    background: #166534;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.back {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 18px;
+    background: #166534;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #555;
+}
+
+.number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #166534;
+}
+
+.section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.province {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.refresh {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: red;
+}
+
+@media (max-width: 700px) {
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>📊 د افغانستان د نفوس ډیشبورډ</h1>
+
+<p>د ثبت شوو کورنیو او نفوس معلومات</p>
+
+</header>
+
+
+<div class="container">
+
+<a href="index.html" class="back">
+🏠 د کورنۍ ثبت ته بېرته تلل
+</a>
+
+
+<button class="refresh" onclick="loadDashboard()">
+🔄 معلومات تازه کول
+</button>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h3>ټولې کورنۍ</h3>
+
+<div
+class="number"
+id="totalHouseholds">
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>ټول نفوس</h3>
+
+<div
+class="number"
+id="totalPopulation">
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>نارینه</h3>
+
+<div
+class="number"
+id="totalMale">
+0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>ښځینه</h3>
+
+<div
+class="number"
+id="totalFemale">
+0
+</div>
+
+</div>
+
+
+</div>
+
+
+<div class="section">
+
+<h2>📍 د ولایتونو نفوس</h2>
+
+<div id="provinceStats">
+
+معلومات د لوډ کېدو په حال کې دي...
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://bloawlfqbcicuixuzwwu.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
+
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+
+async function loadDashboard() {
+
+
+    try {
+
+
+        const { data, error } =
+        await supabaseClient.rpc(
+            "get_census_dashboard"
+        );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        document.getElementById(
+            "totalHouseholds"
+        ).textContent =
+        data.total_households || 0;
+
+
+        document.getElementById(
+            "totalPopulation"
+        ).textContent =
+        data.total_population || 0;
+
+
+        document.getElementById(
+            "totalMale"
+        ).textContent =
+        data.male || 0;
+
+
+        document.getElementById(
+            "totalFemale"
+        ).textContent =
+        data.female || 0;
+
+
+        await loadProvinceStats();
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "provinceStats"
+        ).innerHTML =
+        '<p class="error">د معلوماتو په راوړلو کې ستونزه رامنځته شوه.</p>';
+
+    }
+
+}
+
+
+
+async function loadProvinceStats() {
+
+
+    const { data, error } =
+    await supabaseClient.rpc(
+        "get_province_stats"
+    );
+
+
+    if (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "provinceStats"
+        ).innerHTML =
+        '<p class="error">د ولایتونو معلومات نه شي راوړل کېدای.</p>';
+
+        return;
+
+    }
+
+
+    const box =
+    document.getElementById(
+        "provinceStats"
+    );
+
+
+    box.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        box.innerHTML =
+        "<p>تر اوسه معلومات نشته.</p>";
+
+        return;
+
+    }
+
+
+    data.forEach(item => {
+
+
+        const row =
+        document.createElement("div");
+
+
+        row.className =
+        "province";
+
+
+        row.innerHTML = `
+
+            <strong>
+                ${item.province}
+            </strong>
+
+            <span>
+                ${item.population} کسان
+            </span>
+
+        `;
+
+
+        box.appendChild(row);
+
+    });
+
+}
+
+
+
+loadDashboard();
+
+
+</script>
+
+
+</body>
+
+</html>
