@@ -141,9 +141,7 @@ margin-top:15px
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -188,7 +186,6 @@ class="dashboard-link"
 
 <div class="container">
 
-
 <div
 class="notice"
 id="notice">
@@ -201,7 +198,6 @@ id="notice">
 
 
 <div class="grid">
-
 
 <div>
 
@@ -253,7 +249,6 @@ required
 
 </div>
 
-
 </div>
 
 
@@ -267,7 +262,6 @@ onclick="saveFamily()"
 >
 </button>
 
-
 </div>
 
 </div>
@@ -275,10 +269,21 @@ onclick="saveFamily()"
 
 <script>
 
+/* =================================
+   VERSION
+================================= */
 
-/* =========================
+const APP_VERSION = "2026-09-15-FIX-01";
+
+console.log(
+"Afghanistan Population Survey:",
+APP_VERSION
+);
+
+
+/* =================================
    SUPABASE
-========================= */
+================================= */
 
 const SUPABASE_URL =
 "https://bloawlfqbcicuixuzwwu.supabase.co";
@@ -286,19 +291,57 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
 
-const db =
+
+let db = null;
+
+
+/* =================================
+   CREATE SUPABASE CLIENT
+================================= */
+
+try{
+
+if(
+typeof supabase === "undefined"
+){
+
+throw new Error(
+"Supabase JavaScript library was not loaded."
+);
+
+}
+
+db =
 supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
+console.log(
+"Supabase client created successfully."
+);
+
+}catch(error){
+
+console.error(
+"Supabase client error:",
+error
+);
+
+alert(
+"د Supabase اتصال جوړ نه شو.\n\n" +
+error.message
+);
+
+}
+
 
 let lang = "ps";
 
 
-/* =========================
+/* =================================
    PROVINCE KEYS
-========================= */
+================================= */
 
 const provinceKeys = [
 
@@ -340,9 +383,9 @@ const provinceKeys = [
 ];
 
 
-/* =========================
+/* =================================
    PROVINCES
-========================= */
+================================= */
 
 const provinces = {
 
@@ -466,9 +509,9 @@ en:[
 };
 
 
-/* =========================
+/* =================================
    TRANSLATIONS
-========================= */
+================================= */
 
 const T = {
 
@@ -687,9 +730,9 @@ error:
 };
 
 
-/* =========================
+/* =================================
    LANGUAGE
-========================= */
+================================= */
 
 function changeLang(x){
 
@@ -698,55 +741,47 @@ lang = x;
 document.documentElement.lang = x;
 
 document.documentElement.dir =
-x === "en" ? "ltr" : "rtl";
+x === "en"
+? "ltr"
+: "rtl";
 
 const t = T[x];
-
 
 document.getElementById("title")
 .textContent =
 t.title;
 
-
 document.getElementById("subtitle")
 .textContent =
 t.subtitle;
-
 
 document.getElementById("notice")
 .innerHTML =
 t.notice;
 
-
 document.getElementById("formTitle")
 .textContent =
 t.form;
-
 
 document.getElementById("provinceLabel")
 .textContent =
 t.province;
 
-
 document.getElementById("districtLabel")
 .textContent =
 t.district;
-
 
 document.getElementById("villageLabel")
 .textContent =
 t.village;
 
-
 document.getElementById("membersLabel")
 .textContent =
 t.members;
 
-
 document.getElementById("submitBtn")
 .textContent =
 t.save;
-
 
 loadProvinces();
 
@@ -755,9 +790,9 @@ makePeople();
 }
 
 
-/* =========================
+/* =================================
    LOAD PROVINCES
-========================= */
+================================= */
 
 function loadProvinces(){
 
@@ -765,7 +800,6 @@ const provinceBox =
 document.getElementById("province");
 
 provinceBox.innerHTML = "";
-
 
 provinces[lang].forEach(
 (name,index) => {
@@ -783,32 +817,27 @@ provinceBox.appendChild(option);
 
 });
 
-
 loadDistricts();
 
 }
 
 
-/* =========================
+/* =================================
    LOAD DISTRICTS
-========================= */
+================================= */
 
 function loadDistricts(){
 
 const province =
 document.getElementById("province").value;
 
-
 const districtBox =
 document.getElementById("district");
 
-
 districtBox.innerHTML = "";
-
 
 const list =
 districts[province] || [];
-
 
 if(list.length === 0){
 
@@ -817,7 +846,6 @@ document.createElement("option");
 
 option.value = "";
 
-
 option.textContent =
 lang === "ps"
 ? "ولسوالۍ نه شته"
@@ -825,13 +853,11 @@ lang === "ps"
 ? "ولسوالی موجود نیست"
 : "No districts available";
 
-
 districtBox.appendChild(option);
 
 return;
 
 }
-
 
 list.forEach(d => {
 
@@ -849,9 +875,9 @@ districtBox.appendChild(option);
 }
 
 
-/* =========================
+/* =================================
    PEOPLE
-========================= */
+================================= */
 
 function makePeople(){
 
@@ -860,16 +886,12 @@ Number(
 document.getElementById("members").value || 0
 );
 
-
 const peopleBox =
 document.getElementById("people");
 
-
 peopleBox.innerHTML = "";
 
-
 const t = T[lang];
-
 
 for(let i=1;i<=n;i++){
 
@@ -881,9 +903,7 @@ peopleBox.innerHTML += `
 ${t.person} ${i}
 </h3>
 
-
 <div class="grid">
-
 
 <div>
 
@@ -924,20 +944,20 @@ ${t.gender}
 <option value="male">
 ${
 lang==="ps"
-?"نارینه"
-:lang==="fa"
-?"مرد"
-:"Male"
+? "نارینه"
+: lang==="fa"
+? "مرد"
+: "Male"
 }
 </option>
 
 <option value="female">
 ${
 lang==="ps"
-?"ښځینه"
-:lang==="fa"
-?"زن"
-:"Female"
+? "ښځینه"
+: lang==="fa"
+? "زن"
+: "Female"
 }
 </option>
 
@@ -974,40 +994,40 @@ ${t.marital}
 <option value="single">
 ${
 lang==="ps"
-?"مجرد"
-:lang==="fa"
-?"مجرد"
-:"Single"
+? "مجرد"
+: lang==="fa"
+? "مجرد"
+: "Single"
 }
 </option>
 
 <option value="married">
 ${
 lang==="ps"
-?"واده شوی"
-:lang==="fa"
-?"متاهل"
-:"Married"
+? "واده شوی"
+: lang==="fa"
+? "متاهل"
+: "Married"
 }
 </option>
 
 <option value="widowed">
 ${
 lang==="ps"
-?"کونډ/کونډه"
-:lang==="fa"
-?"بیوه"
-:"Widowed"
+? "کونډ/کونډه"
+: lang==="fa"
+? "بیوه"
+: "Widowed"
 }
 </option>
 
 <option value="divorced">
 ${
 lang==="ps"
-?"طلاق شوی"
-:lang==="fa"
-?"مطلقه"
-:"Divorced"
+? "طلاق شوی"
+: lang==="fa"
+? "مطلقه"
+: "Divorced"
 }
 </option>
 
@@ -1068,7 +1088,6 @@ class="job"
 
 </div>
 
-
 </div>
 
 </div>
@@ -1080,41 +1099,87 @@ class="job"
 }
 
 
-/* =========================
+/* =================================
    SAVE FAMILY
-========================= */
+================================= */
 
 async function saveFamily(){
 
+console.log(
+"================================="
+);
+
+console.log(
+"START SAVE FAMILY"
+);
+
+console.log(
+"APP VERSION:",
+APP_VERSION
+);
+
 const t = T[lang];
 
+
+/* CHECK SUPABASE */
+
+if(!db){
+
+alert(
+"❌ د معلوماتو د ثبت سیستم له Database سره وصل نه دی."
+);
+
+return;
+
+}
+
+
+/* FAMILY DATA */
+
 const province =
-document.getElementById("province").value;
+document.getElementById(
+"province"
+).value.trim();
 
 const district =
-document.getElementById("district").value.trim();
+document.getElementById(
+"district"
+).value.trim();
 
 const village =
-document.getElementById("village").value.trim();
+document.getElementById(
+"village"
+).value.trim();
 
 const n =
 Number(
-document.getElementById("members").value
+document.getElementById(
+"members"
+).value
 );
 
 
-/* CHECK FAMILY INFORMATION */
+/* CHECK FAMILY */
 
 if(
 !province ||
 !district ||
 !village ||
-!n
+!Number.isInteger(n) ||
+n < 1 ||
+n > 50
 ){
 
 alert(
 t.error +
-"\n\nPlease complete all required fields."
+"\n\n" +
+(
+lang === "ps"
+? "مهرباني وکړئ د کورنۍ ټول معلومات بشپړ کړئ."
+: lang === "fa"
+? "لطفاً تمام معلومات خانواده را تکمیل کنید."
+: "Please complete all family information."
+)
 );
 
 return;
@@ -1122,15 +1187,25 @@ return;
 }
 
 
-const cards =
-document.querySelectorAll(".person");
+/* PEOPLE */
 
+const cards =
+document.querySelectorAll(
+".person"
+);
 
 if(cards.length !== n){
 
 alert(
 t.error +
-"\n\nPlease enter all family members."
+"\n\n" +
+(
+lang === "ps"
+? "د کورنۍ د ټولو غړو معلومات بشپړ کړئ."
+: lang === "fa"
+? "معلومات تمام اعضای خانواده را تکمیل کنید."
+: "Please complete all family members."
+)
 );
 
 return;
@@ -1138,70 +1213,86 @@ return;
 }
 
 
-/* CREATE PEOPLE LIST */
-
 let list = [];
 
 
-for(const card of cards){
+for(let i=0;i<cards.length;i++){
+
+const card =
+cards[i];
+
 
 const name =
-card.querySelector(".pname")
-.value
-.trim();
+card.querySelector(
+".pname"
+).value.trim();
 
 const father =
-card.querySelector(".father")
-.value
-.trim();
+card.querySelector(
+".father"
+).value.trim();
 
 const gender =
-card.querySelector(".gender")
-.value;
+card.querySelector(
+".gender"
+).value;
+
+const ageText =
+card.querySelector(
+".age"
+).value.trim();
 
 const age =
-Number(
-card.querySelector(".age")
-.value
-);
+Number(ageText);
 
 const marital =
-card.querySelector(".marital")
-.value;
+card.querySelector(
+".marital"
+).value;
 
 const relation =
-card.querySelector(".relation")
-.value
-.trim();
+card.querySelector(
+".relation"
+).value.trim();
 
 const education =
-card.querySelector(".education")
-.value
-.trim();
+card.querySelector(
+".education"
+).value.trim();
 
 const work =
-card.querySelector(".work")
-.value
-.trim();
+card.querySelector(
+".work"
+).value.trim();
 
 const job =
-card.querySelector(".job")
-.value
-.trim();
+card.querySelector(
+".job"
+).value.trim();
 
 
-/* CHECK REQUIRED PERSON FIELDS */
+/* CHECK PERSON */
 
 if(
 !name ||
 !father ||
-!age ||
+ageText === "" ||
+!Number.isFinite(age) ||
+age < 0 ||
+age > 120 ||
 !relation
 ){
 
 alert(
 t.error +
-"\n\nPlease complete all required family member information."
+"\n\n" +
+(
+lang === "ps"
+? `د ${i + 1}م غړي معلومات نیمګړي دي.`
+: lang === "fa"
+? `معلومات عضو شماره ${i + 1} ناقص است.`
+: `Family member ${i + 1} is incomplete.`
+)
 );
 
 return;
@@ -1211,41 +1302,30 @@ return;
 
 list.push({
 
-name: name,
+name:name,
 
-father_name: father,
+father_name:father,
 
-gender: gender,
+gender:gender,
 
-age: age,
+age:age,
 
-marital_status: marital,
+marital_status:marital,
 
-relation: relation,
+relation:relation,
 
-education: education,
+education:education,
 
-work_status: work,
+work_status:work,
 
-occupation: job
+occupation:job
 
 });
 
 }
 
 
-/* BUTTON */
-
-const submit =
-document.getElementById("submitBtn");
-
-submit.disabled = true;
-
-submit.textContent =
-t.saving;
-
-
-/* COUNT GENDER */
+/* GENDER COUNT */
 
 const male =
 list.filter(
@@ -1258,56 +1338,86 @@ p => p.gender === "female"
 ).length;
 
 
-/* DATA */
+/* HOUSEHOLD DATA */
 
 const householdData = {
 
-province: province,
+province:province,
 
-district: district,
+district:district,
 
-village: village,
+village:village,
 
-members: n,
+members:n,
 
-male: male,
+male:male,
 
-female: female,
+female:female,
 
-people: list
+people:list
 
 };
 
 
 console.log(
-"Sending household data:",
+"DATA TO SUPABASE:",
 householdData
 );
 
 
-/* INSERT INTO SUPABASE */
+/* BUTTON */
+
+const submit =
+document.getElementById(
+"submitBtn"
+);
+
+submit.disabled = true;
+
+submit.textContent =
+t.saving;
+
+
+/* =================================
+   REAL INSERT
+================================= */
 
 try{
 
-const result =
+console.log(
+"Sending data to Supabase..."
+);
+
+
+const response =
 await db
 .from("households")
-.insert([householdData]);
+.insert(
+householdData
+);
 
 
-/* SUPABASE ERROR */
+/* SHOW SUPABASE RESPONSE */
 
-if(result.error){
+console.log(
+"Supabase response:",
+response
+);
+
+
+/* ERROR */
+
+if(response.error){
 
 console.error(
-"SUPABASE INSERT ERROR:",
-result.error
+"SUPABASE ERROR:",
+response.error
 );
 
 alert(
 t.error +
 "\n\n" +
-result.error.message
+response.error.message
 );
 
 submit.disabled = false;
@@ -1323,13 +1433,24 @@ return;
 /* SUCCESS */
 
 console.log(
-"SUCCESS: Household saved to Supabase."
+"================================="
 );
 
-alert(t.success);
+console.log(
+"SUCCESS: DATA INSERTED"
+);
+
+console.log(
+"================================="
+);
 
 
-/* CLEAR FORM */
+alert(
+t.success
+);
+
+
+/* CLEAR */
 
 document.getElementById(
 "village"
@@ -1344,7 +1465,7 @@ document.getElementById(
 ).innerHTML = "";
 
 
-/* RESET BUTTON */
+/* BUTTON RESET */
 
 submit.disabled = false;
 
@@ -1355,7 +1476,7 @@ t.save;
 }catch(error){
 
 console.error(
-"UNEXPECTED ERROR:",
+"JAVASCRIPT ERROR:",
 error
 );
 
@@ -1375,9 +1496,9 @@ t.save;
 }
 
 
-/* =========================
+/* =================================
    EVENTS
-========================= */
+================================= */
 
 document
 .getElementById("province")
@@ -1395,15 +1516,13 @@ makePeople
 );
 
 
-/* =========================
+/* =================================
    START
-========================= */
+================================= */
 
 changeLang("ps");
 
-
 </script>
-
 
 </body>
 
