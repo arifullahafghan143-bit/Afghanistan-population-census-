@@ -1,47 +1,157 @@
 <!DOCTYPE html>
 <html lang="ps" dir="rtl">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="districts.js"></script>
-  
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7f9;color:#222}
-header{background:#075e54;color:#fff;text-align:center;padding:25px 15px}
-header h1{margin:0 0 10px}
-.lang button{padding:8px 14px;margin:3px;border:0;border-radius:6px;cursor:pointer}
-.container{max-width:900px;margin:auto;padding:15px}
-.card,.form{background:white;padding:20px;margin-top:20px;border-radius:12px;box-shadow:0 2px 8px #0001}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-label{display:block;font-weight:bold;margin-top:14px}
-input,select{width:100%;padding:11px;margin-top:6px;border:1px solid #ccc;border-radius:7px;font-size:16px}
-button.submit{width:100%;padding:14px;margin-top:20px;background:#075e54;color:white;border:0;border-radius:7px;font-size:17px}
-button:disabled{opacity:.6}
-.person{border:1px solid #ddd;padding:15px;margin-top:15px;border-radius:10px}
-.person h3{margin-top:0;color:#075e54}
-.notice{background:#fff3cd;padding:12px;border-radius:8px;margin-top:15px}
+
+*{
+box-sizing:border-box
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f7f9;
+color:#222
+}
+
+header{
+background:#075e54;
+color:#fff;
+text-align:center;
+padding:25px 15px
+}
+
+header h1{
+margin:0 0 10px
+}
+
+.lang button{
+padding:8px 14px;
+margin:3px;
+border:0;
+border-radius:6px;
+cursor:pointer
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:15px
+}
+
+.card,
+.form{
+background:white;
+padding:20px;
+margin-top:20px;
+border-radius:12px;
+box-shadow:0 2px 8px #0001
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px
+}
+
+label{
+display:block;
+font-weight:bold;
+margin-top:14px
+}
+
+input,
+select{
+width:100%;
+padding:11px;
+margin-top:6px;
+border:1px solid #ccc;
+border-radius:7px;
+font-size:16px
+}
+
+button.submit{
+width:100%;
+padding:14px;
+margin-top:20px;
+background:#075e54;
+color:white;
+border:0;
+border-radius:7px;
+font-size:17px
+}
+
+button:disabled{
+opacity:.6
+}
+
+.person{
+border:1px solid #ddd;
+padding:15px;
+margin-top:15px;
+border-radius:10px
+}
+
+.person h3{
+margin-top:0;
+color:#075e54
+}
+
+.notice{
+background:#fff3cd;
+padding:12px;
+border-radius:8px;
+margin-top:15px
+}
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-<h1 id="title">🇦🇫 د افغانستان د نفوس آنلاین شمېرنه</h1>
-<p id="subtitle">د کورنیو د معلوماتو د ثبت آنلاین سیستم</p>
+
+<h1 id="title">
+🇦🇫 د افغانستان د نفوس آنلاین شمېرنه
+</h1>
+
+<p id="subtitle">
+د کورنیو د معلوماتو د ثبت آنلاین سیستم
+</p>
 
 <div class="lang">
-<button onclick="changeLang('ps')">پښتو</button>
-<button onclick="changeLang('fa')">دری</button>
-<button onclick="changeLang('en')">English</button>
+
+<button onclick="changeLang('ps')">
+پښتو
+</button>
+
+<button onclick="changeLang('fa')">
+دری
+</button>
+
+<button onclick="changeLang('en')">
+English
+</button>
+
 </div>
+
 </header>
 
+
 <div class="container">
-  <div class="container">
+
 
 <div class="card" id="dashboard">
 
@@ -49,210 +159,572 @@ button:disabled{opacity:.6}
 
 <div class="grid">
 
+
 <div class="card">
+
 <h3>👨‍👩‍👧 ټولې کورنۍ</h3>
-<h2 id="totalHouseholds">0</h2>
+
+<h2 id="totalHouseholds">
+0
+</h2>
+
 </div>
 
+
 <div class="card">
+
 <h3>👥 ټول نفوس</h3>
-<h2 id="totalPopulation">0</h2>
+
+<h2 id="totalPopulation">
+0
+</h2>
+
 </div>
 
+
 <div class="card">
+
 <h3>👨 نارینه</h3>
-<h2 id="totalMale">0</h2>
+
+<h2 id="totalMale">
+0
+</h2>
+
 </div>
+
 
 <div class="card">
+
 <h3>👩 ښځینه</h3>
-<h2 id="totalFemale">0</h2>
-</div>
+
+<h2 id="totalFemale">
+0
+</h2>
 
 </div>
 
-<button class="submit" onclick="loadDashboard()">
+
+</div>
+
+
+<button
+class="submit"
+onclick="loadDashboard()"
+>
 🔄 احصایې تازه کړئ
 </button>
 
 </div>
+
+
 <div class="card">
-  <h2>📍 د ولایتونو احصایه</h2>
-  <div id="provinceStats">Loading...</div>
+
+<h2>
+📍 د ولایتونو احصایه
+</h2>
+
+<div id="provinceStats">
+Loading...
 </div>
-<div class="notice" id="notice"></div>
+
+</div>
+
 
 <div class="notice" id="notice"></div>
+
 
 <div class="form">
 
 <h2 id="formTitle"></h2>
 
+
 <div class="grid">
 
+
 <div>
+
 <label id="provinceLabel"></label>
-<select id="province" required></select>
+
+<select
+id="province"
+required
+></select>
+
 </div>
 
+
 <div>
+
 <label id="districtLabel"></label>
-<select id="district" required></select>
+
+<select
+id="district"
+required
+></select>
+
 </div>
 
+
 <div>
+
 <label id="villageLabel"></label>
-<input id="village" required>
+
+<input
+id="village"
+required
+>
+
 </div>
+
 
 <div>
+
 <label id="membersLabel"></label>
-<input type="number" id="members" min="1" max="50" required>
-</div>
+
+<input
+type="number"
+id="members"
+min="1"
+max="50"
+required
+>
 
 </div>
+
+
+</div>
+
 
 <div id="people"></div>
 
-<button class="submit" id="submitBtn" onclick="saveFamily()"></button>
+
+<button
+class="submit"
+id="submitBtn"
+onclick="saveFamily()"
+></button>
 
 </div>
+
 </div>
+
 
 <script>
 
-const SUPABASE_URL="https://bloawlfqbcicuixuzwwu.supabase.co";
 
-const SUPABASE_KEY="sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
+const SUPABASE_URL =
+"https://bloawlfqbcicuixuzwwu.supabase.co";
 
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let lang="ps";
+const SUPABASE_KEY =
+"sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
 
-const provinces={
-ps:["کابل","ننګرهار","پکتیا","کندهار","هرات","بلخ","کندز","تخار","بدخشان","لغمان","کنړ","خوست","پکتیکا","لوګر","غزني","زابل","هلمند","فراه","نیمروز","غور","بادغیس","فاریاب","جوزجان","سرپل","سمنګان","بامیان","دایکندي","ارزګان","میدان وردګ","پروان","کاپیسا","پنجشېر","نورستان"],
 
-fa:["کابل","ننگرهار","پکتیا","قندهار","هرات","بلخ","کندز","تخار","بدخشان","لغمان","کنر","خوست","پکتیکا","لوگر","غزنی","زابل","هلمند","فراه","نیمروز","غور","بادغیس","فاریاب","جوزجان","سرپل","سمنگان","بامیان","دایکندی","ارزگان","میدان وردک","پروان","کاپیسا","پنجشیر","نورستان"],
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-en:["Kabul","Nangarhar","Paktia","Kandahar","Herat","Balkh","Kunduz","Takhar","Badakhshan","Laghman","Kunar","Khost","Paktika","Logar","Ghazni","Zabul","Helmand","Farah","Ghor","Badghis","Faryab","Jowzjan","Sar-e Pol","Samangan","Bamyan","Daykundi","Uruzgan","Maidan Wardak","Parwan","Kapisa","Panjshir","Nuristan"]
+
+let lang = "ps";
+
+
+/* =========================
+   PROVINCE KEYS
+========================= */
+
+const provinceKeys = [
+
+"Kabul",
+"Nangarhar",
+"Paktia",
+"Kandahar",
+"Herat",
+"Balkh",
+"Kunduz",
+"Takhar",
+"Badakhshan",
+"Laghman",
+"Kunar",
+"Khost",
+"Paktika",
+"Logar",
+"Ghazni",
+"Zabul",
+"Helmand",
+"Farah",
+"Nimroz",
+"Ghor",
+"Badghis",
+"Faryab",
+"Jawzjan",
+"Sar-e-Pul",
+"Samangan",
+"Bamyan",
+"Daykundi",
+"Uruzgan",
+"Maidan Wardak",
+"Parwan",
+"Kapisa",
+"Panjshir",
+"Nuristan",
+"Baghlan"
+
+];
+
+
+/* =========================
+   PROVINCES
+========================= */
+
+const provinces = {
+
+ps:[
+
+"کابل",
+"ننګرهار",
+"پکتیا",
+"کندهار",
+"هرات",
+"بلخ",
+"کندز",
+"تخار",
+"بدخشان",
+"لغمان",
+"کنړ",
+"خوست",
+"پکتیکا",
+"لوګر",
+"غزني",
+"زابل",
+"هلمند",
+"فراه",
+"نیمروز",
+"غور",
+"بادغیس",
+"فاریاب",
+"جوزجان",
+"سرپل",
+"سمنګان",
+"بامیان",
+"دایکندي",
+"ارزګان",
+"میدان وردګ",
+"پروان",
+"کاپیسا",
+"پنجشېر",
+"نورستان",
+"بغلان"
+
+],
+
+fa:[
+
+"کابل",
+"ننگرهار",
+"پکتیا",
+"قندهار",
+"هرات",
+"بلخ",
+"کندز",
+"تخار",
+"بدخشان",
+"لغمان",
+"کنر",
+"خوست",
+"پکتیکا",
+"لوگر",
+"غزنی",
+"زابل",
+"هلمند",
+"فراه",
+"نیمروز",
+"غور",
+"بادغیس",
+"فاریاب",
+"جوزجان",
+"سرپل",
+"سمنگان",
+"بامیان",
+"دایکندی",
+"ارزگان",
+"میدان وردک",
+"پروان",
+"کاپیسا",
+"پنجشیر",
+"نورستان",
+"بغلان"
+
+],
+
+en:[
+
+"Kabul",
+"Nangarhar",
+"Paktia",
+"Kandahar",
+"Herat",
+"Balkh",
+"Kunduz",
+"Takhar",
+"Badakhshan",
+"Laghman",
+"Kunar",
+"Khost",
+"Paktika",
+"Logar",
+"Ghazni",
+"Zabul",
+"Helmand",
+"Farah",
+"Nimroz",
+"Ghor",
+"Badghis",
+"Faryab",
+"Jawzjan",
+"Sar-e-Pul",
+"Samangan",
+"Bamyan",
+"Daykundi",
+"Uruzgan",
+"Maidan Wardak",
+"Parwan",
+"Kapisa",
+"Panjshir",
+"Nuristan",
+"Baghlan"
+
+]
+
 };
 
-const T={
+
+/* =========================
+   TRANSLATIONS
+========================= */
+
+const T = {
 
 ps:{
+
 title:"🇦🇫 د افغانستان د نفوس آنلاین شمېرنه",
+
 subtitle:"د کورنیو د معلوماتو د ثبت آنلاین سیستم",
+
 notice:"<strong>یادونه:</strong> دا سیستم د آنلاین سروې لپاره دی او د رسمي دولتي سرشمېرنې بدیل نه دی.",
+
 form:"📝 د کورنۍ ثبت",
+
 province:"ولایت",
+
 district:"ولسوالۍ",
+
 village:"ناحیه / کلی",
+
 members:"د کورنۍ د غړو شمېر",
+
 person:"د کورنۍ غړی",
+
 name:"نوم",
+
 father:"د پلار نوم",
+
 gender:"جنسیت",
+
 age:"عمر",
+
 marital:"مدني حالت",
+
 relation:"د کورنۍ له مشر سره اړیکه",
+
 education:"زده کړې",
+
 work:"د کار حالت",
+
 job:"مسلک",
+
 save:"معلومات ثبت کړئ",
+
 saving:"⏳ معلومات ثبتېږي...",
+
 success:"✅ معلومات په بریالیتوب سره ثبت شول.",
+
 error:"❌ معلومات ثبت نه شول."
+
 },
+
 
 fa:{
+
 title:"🇦🇫 سرشماری آنلاین نفوس افغانستان",
+
 subtitle:"سیستم آنلاین ثبت معلومات خانواده‌ها",
+
 notice:"<strong>یادداشت:</strong> این سیستم برای سروی آنلاین است و بدیل سرشماری رسمی دولتی نیست.",
+
 form:"📝 ثبت خانواده",
+
 province:"ولایت",
+
 district:"ولسوالی",
+
 village:"ناحیه / قریه",
+
 members:"تعداد اعضای خانواده",
+
 person:"عضو خانواده",
+
 name:"نام",
+
 father:"نام پدر",
+
 gender:"جنسیت",
+
 age:"سن",
+
 marital:"حالت مدنی",
+
 relation:"ارتباط با سرپرست خانواده",
+
 education:"تحصیلات",
+
 work:"وضعیت کاری",
+
 job:"مسلک",
+
 save:"ثبت معلومات",
+
 saving:"⏳ معلومات ثبت می‌شود...",
+
 success:"✅ معلومات با موفقیت ثبت شد.",
+
 error:"❌ معلومات ثبت نشد."
+
 },
 
+
 en:{
+
 title:"🇦🇫 Afghanistan Population Census",
+
 subtitle:"Online family information registration system",
+
 notice:"<strong>Note:</strong> This system is an online survey and is not a replacement for an official government census.",
+
 form:"📝 Family Registration",
+
 province:"Province",
+
 district:"District",
+
 village:"Area / Village",
+
 members:"Number of Family Members",
+
 person:"Family Member",
+
 name:"Name",
+
 father:"Father's Name",
+
 gender:"Gender",
+
 age:"Age",
+
 marital:"Marital Status",
+
 relation:"Relationship to Head",
+
 education:"Education",
+
 work:"Employment Status",
+
 job:"Occupation",
+
 save:"Register Information",
+
 saving:"⏳ Saving...",
+
 success:"✅ Information registered successfully.",
+
 error:"❌ Information could not be registered."
+
 }
 
 };
 
+
+/* =========================
+   LANGUAGE
+========================= */
+
 function changeLang(x){
 
-lang=x;
+lang = x;
 
-document.documentElement.lang=x;
+document.documentElement.lang = x;
 
-document.documentElement.dir=x==="en"?"ltr":"rtl";
+document.documentElement.dir =
+x === "en" ? "ltr" : "rtl";
 
-let t=T[x];
+const t = T[x];
 
-document.getElementById("title").textContent=t.title;
-document.getElementById("subtitle").textContent=t.subtitle;
-document.getElementById("notice").innerHTML=t.notice;
-document.getElementById("formTitle").textContent=t.form;
-document.getElementById("provinceLabel").textContent=t.province;
-document.getElementById("districtLabel").textContent=t.district;
-document.getElementById("villageLabel").textContent=t.village;
-document.getElementById("membersLabel").textContent=t.members;
-document.getElementById("submitBtn").textContent=t.save;
+document.getElementById("title").textContent =
+t.title;
+
+document.getElementById("subtitle").textContent =
+t.subtitle;
+
+document.getElementById("notice").innerHTML =
+t.notice;
+
+document.getElementById("formTitle").textContent =
+t.form;
+
+document.getElementById("provinceLabel").textContent =
+t.province;
+
+document.getElementById("districtLabel").textContent =
+t.district;
+
+document.getElementById("villageLabel").textContent =
+t.village;
+
+document.getElementById("membersLabel").textContent =
+t.members;
+
+document.getElementById("submitBtn").textContent =
+t.save;
 
 loadProvinces();
+
 makePeople();
 
 }
 
+
+/* =========================
+   LOAD PROVINCES
+========================= */
+
 function loadProvinces(){
 
-const provinceBox=document.getElementById("province");
+const provinceBox =
+document.getElementById("province");
 
-provinceBox.innerHTML="";
+provinceBox.innerHTML = "";
 
-provinces[lang].forEach(p=>{
+provinces[lang].forEach((name,index)=>{
 
-let option=document.createElement("option");
+const option =
+document.createElement("option");
 
-option.value=p;
-option.textContent=p;
+option.value =
+provinceKeys[index];
+
+option.textContent =
+name;
 
 provinceBox.appendChild(option);
 
@@ -262,53 +734,81 @@ loadDistricts();
 
 }
 
-function loadProvinces(){
 
-// ... د loadProvinces کوډ ...
-
-}
+/* =========================
+   LOAD DISTRICTS
+========================= */
 
 function loadDistricts(){
 
-  const province = document.getElementById("province").value;
-  const districtBox = document.getElementById("district");
+const province =
+document.getElementById("province").value;
 
-  districtBox.innerHTML = "";
+const districtBox =
+document.getElementById("district");
 
-  const list = districts[province] || [];
+districtBox.innerHTML = "";
 
-  list.forEach(d => {
+const list =
+districts[province] || [];
 
-    const option = document.createElement("option");
+if(list.length === 0){
 
-    option.value = d;
-    option.textContent = d;
+const option =
+document.createElement("option");
 
-    districtBox.appendChild(option);
+option.value = "";
 
-  });
+option.textContent =
+lang === "ps"
+? "ولسوالۍ نه شته"
+: lang === "fa"
+? "ولسوالی موجود نیست"
+: "No districts available";
+
+districtBox.appendChild(option);
+
+return;
+
+}
+
+list.forEach(d=>{
+
+const option =
+document.createElement("option");
+
+option.value = d;
+
+option.textContent = d;
+
+districtBox.appendChild(option);
+
+});
 
 }
 
 
-
-document.getElementById("province").addEventListener("change",loadDistricts);
-
-document.getElementById("members").addEventListener("input",makePeople);
+/* =========================
+   PEOPLE
+========================= */
 
 function makePeople(){
 
-const n=Number(document.getElementById("members").value||0);
+const n =
+Number(
+document.getElementById("members").value || 0
+);
 
-const peopleBox=document.getElementById("people");
+const peopleBox =
+document.getElementById("people");
 
-peopleBox.innerHTML="";
+peopleBox.innerHTML = "";
 
-let t=T[lang];
+const t = T[lang];
 
 for(let i=1;i<=n;i++){
 
-peopleBox.innerHTML+=`
+peopleBox.innerHTML += `
 
 <div class="person">
 
@@ -317,36 +817,74 @@ peopleBox.innerHTML+=`
 <div class="grid">
 
 <div>
+
 <label>${t.name}</label>
-<input class="pname" required>
+
+<input
+class="pname"
+required
+>
+
 </div>
 
+
 <div>
+
 <label>${t.father}</label>
-<input class="father" required>
+
+<input
+class="father"
+required
+>
+
 </div>
 
+
 <div>
+
 <label>${t.gender}</label>
 
 <select class="gender">
 
 <option value="male">
-${lang==="ps"?"نارینه":lang==="fa"?"مرد":"Male"}
+${
+lang==="ps"
+?"نارینه"
+:lang==="fa"
+?"مرد"
+:"Male"
+}
 </option>
 
 <option value="female">
-${lang==="ps"?"ښځینه":lang==="fa"?"زن":"Female"}
+${
+lang==="ps"
+?"ښځینه"
+:lang==="fa"
+?"زن"
+:"Female"
+}
 </option>
 
 </select>
 
 </div>
 
+
 <div>
+
 <label>${t.age}</label>
-<input type="number" class="age" min="0" max="120" required>
+
+<input
+type="number"
+class="age"
+min="0"
+max="120"
+required
+>
+
 </div>
+
 
 <div>
 
@@ -355,43 +893,92 @@ ${lang==="ps"?"ښځینه":lang==="fa"?"زن":"Female"}
 <select class="marital">
 
 <option value="single">
-${lang==="ps"?"مجرد":lang==="fa"?"مجرد":"Single"}
+${
+lang==="ps"
+?"مجرد"
+:lang==="fa"
+?"مجرد"
+:"Single"
+}
 </option>
 
 <option value="married">
-${lang==="ps"?"واده شوی":lang==="fa"?"متاهل":"Married"}
+${
+lang==="ps"
+?"واده شوی"
+:lang==="fa"
+?"متاهل"
+:"Married"
+}
 </option>
 
 <option value="widowed">
-${lang==="ps"?"کونډ/کونډه":lang==="fa"?"بیوه":"Widowed"}
+${
+lang==="ps"
+?"کونډ/کونډه"
+:lang==="fa"
+?"بیوه"
+:"Widowed"
+}
 </option>
 
 <option value="divorced">
-${lang==="ps"?"طلاق شوی":lang==="fa"?"مطلقه":"Divorced"}
+${
+lang==="ps"
+?"طلاق شوی"
+:lang==="fa"
+?"مطلقه"
+:"Divorced"
+}
 </option>
 
 </select>
 
 </div>
 
+
 <div>
+
 <label>${t.relation}</label>
-<input class="relation" required>
+
+<input
+class="relation"
+required
+>
+
 </div>
 
+
 <div>
+
 <label>${t.education}</label>
-<input class="education">
+
+<input
+class="education"
+>
+
 </div>
 
+
 <div>
+
 <label>${t.work}</label>
-<input class="work">
+
+<input
+class="work"
+>
+
 </div>
 
+
 <div>
+
 <label>${t.job}</label>
-<input class="job">
+
+<input
+class="job"
+>
+
 </div>
 
 </div>
@@ -404,14 +991,29 @@ ${lang==="ps"?"طلاق شوی":lang==="fa"?"مطلقه":"Divorced"}
 
 }
 
+
+/* =========================
+   SAVE FAMILY
+========================= */
+
 async function saveFamily(){
 
-const t=T[lang];
+const t = T[lang];
 
-const province=document.getElementById("province").value;
-const district=document.getElementById("district").value.trim();
-const village=document.getElementById("village").value.trim();
-const n=Number(document.getElementById("members").value);
+const province =
+document.getElementById("province").value;
+
+const district =
+document.getElementById("district").value.trim();
+
+const village =
+document.getElementById("village").value.trim();
+
+const n =
+Number(
+document.getElementById("members").value
+);
+
 
 if(!province || !district || !village || !n){
 
@@ -421,9 +1023,12 @@ return;
 
 }
 
-const cards=document.querySelectorAll(".person");
 
-if(cards.length!==n){
+const cards =
+document.querySelectorAll(".person");
+
+
+if(cards.length !== n){
 
 alert("Please enter all family members.");
 
@@ -431,148 +1036,280 @@ return;
 
 }
 
-let list=[];
+
+let list = [];
+
 
 cards.forEach(card=>{
 
-const gender=card.querySelector(".gender").value;
+const gender =
+card.querySelector(".gender").value;
 
 list.push({
 
-name:card.querySelector(".pname").value.trim(),
+name:
+card.querySelector(".pname").value.trim(),
 
-father_name:card.querySelector(".father").value.trim(),
+father_name:
+card.querySelector(".father").value.trim(),
 
-gender:gender,
+gender:
+gender,
 
-age:Number(card.querySelector(".age").value),
+age:
+Number(
+card.querySelector(".age").value
+),
 
-marital_status:card.querySelector(".marital").value,
+marital_status:
+card.querySelector(".marital").value,
 
-relation:card.querySelector(".relation").value.trim(),
+relation:
+card.querySelector(".relation").value.trim(),
 
-education:card.querySelector(".education").value.trim(),
+education:
+card.querySelector(".education").value.trim(),
 
-work_status:card.querySelector(".work").value.trim(),
+work_status:
+card.querySelector(".work").value.trim(),
 
-occupation:card.querySelector(".job").value.trim()
+occupation:
+card.querySelector(".job").value.trim()
 
 });
 
 });
 
-const submit=document.getElementById("submitBtn");
 
-submit.disabled=true;
+const submit =
+document.getElementById("submitBtn");
 
-submit.textContent=t.saving;
+submit.disabled = true;
 
-const male=list.filter(p=>p.gender==="male").length;
+submit.textContent = t.saving;
 
-const female=list.filter(p=>p.gender==="female").length;
 
-const {error}=await db
+const male =
+list.filter(
+p=>p.gender === "male"
+).length;
+
+
+const female =
+list.filter(
+p=>p.gender === "female"
+).length;
+
+
+const {error} =
+await db
 .from("households")
 .insert([{
 
-province:province,
+province:
+province,
 
-district:district,
+district:
+district,
 
-village:village,
+village:
+village,
 
-members:n,
+members:
+n,
 
-male:male,
+male:
+male,
 
-female:female,
+female:
+female,
 
-people:list
+people:
+list
 
 }]);
 
+
 if(error){
 
 console.error(error);
 
-alert(t.error+"\n\n"+error.message);
+alert(
+t.error +
+"\n\n" +
+error.message
+);
 
-submit.disabled=false;
+submit.disabled = false;
 
-submit.textContent=t.save;
+submit.textContent = t.save;
 
 return;
 
 }
+
 
 alert(t.success);
 
-document.getElementById("district").value="";
-document.getElementById("village").value="";
-document.getElementById("members").value="";
-document.getElementById("people").innerHTML="";
 
-submit.disabled=false;
+document.getElementById("village").value = "";
 
-submit.textContent=t.save;
+document.getElementById("members").value = "";
+
+document.getElementById("people").innerHTML = "";
+
+
+submit.disabled = false;
+
+submit.textContent = t.save;
 
 }
 
-changeLang("ps");
+
+/* =========================
+   DASHBOARD
+========================= */
+
 async function loadDashboard(){
 
-const {data,error}=await db.rpc("get_census_dashboard");
+const {data,error} =
+await db.rpc(
+"get_census_dashboard"
+);
+
 
 if(error){
 
 console.error(error);
 
-alert("د احصایو په راوستلو کې ستونزه:\n\n"+error.message);
+alert(
+"د احصایو په راوستلو کې ستونزه:\n\n" +
+error.message
+);
 
 return;
 
 }
 
-document.getElementById("totalHouseholds").textContent =
+
+document.getElementById(
+"totalHouseholds"
+).textContent =
 data.total_households || 0;
 
-document.getElementById("totalPopulation").textContent =
+
+document.getElementById(
+"totalPopulation"
+).textContent =
 data.total_population || 0;
 
-document.getElementById("totalMale").textContent =
+
+document.getElementById(
+"totalMale"
+).textContent =
 data.male || 0;
 
-document.getElementById("totalFemale").textContent =
+
+document.getElementById(
+"totalFemale"
+).textContent =
 data.female || 0;
 
 }
 
-loadDashboard();
-  async function loadProvinceStats(){
 
-  const {data,error}=await db.rpc("get_province_stats");
+/* =========================
+   PROVINCE STATS
+========================= */
 
-  if(error){
-    console.error(error);
-    return;
-  }
+async function loadProvinceStats(){
 
-  const box=document.getElementById("provinceStats");
+const {data,error} =
+await db.rpc(
+"get_province_stats"
+);
 
-  if(!data || data.length===0){
-    box.innerHTML="تر اوسه معلومات نشته";
-    return;
-  }
 
-  box.innerHTML=data.map(item=>`
-    <div style="padding:10px;border-bottom:1px solid #ddd;">
-      <strong>📍 ${item.province}</strong>
-      <span style="float:left;">${item.population} کسان</span>
-    </div>
-  `).join("");
+if(error){
+
+console.error(error);
+
+return;
+
 }
 
+
+const box =
+document.getElementById(
+"provinceStats"
+);
+
+
+if(!data || data.length === 0){
+
+box.innerHTML =
+"تر اوسه معلومات نشته";
+
+return;
+
+}
+
+
+box.innerHTML =
+data.map(item=>`
+
+<div
+style="
+padding:10px;
+border-bottom:1px solid #ddd;
+"
+>
+
+<strong>
+📍 ${item.province}
+</strong>
+
+<span style="float:left;">
+${item.population} کسان
+</span>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =========================
+   EVENTS
+========================= */
+
+document
+.getElementById("province")
+.addEventListener(
+"change",
+loadDistricts
+);
+
+
+document
+.getElementById("members")
+.addEventListener(
+"input",
+makePeople
+);
+
+
+/* =========================
+   START
+========================= */
+
+changeLang("ps");
+
+loadDashboard();
+
 loadProvinceStats();
+
 </script>
 
 </body>
