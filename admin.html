@@ -304,13 +304,13 @@ margin-top:5px;
 </div>
 
 <script>
-/* SUPABASE CONFIGURATION (ستاسو دقیق ادرس او نوی Publishable Key) */
+/* SUPABASE CONFIGURATION (درسـت URL او سمه anon کیلي) */
 const SUPABASE_URL = "https://lswxkfkqpkzncbpiqqyz.supabase.co";
-const SUPABASE_KEY = "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
+const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxzd3hrZmtxcGt6bmNicGlxcXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyOTg1MjEsImV4cCI6MjEwNDg3NDUyMX0.RVb52nJZP6u7mDjtGFa1U0mp_h4T9hQNVUP_hFWHikE";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// د پاڼې د خلاصولو پر مهال کتل چې ایا اډمین پخوا لاګ ان شوی که نه
+// د پاڼې خلاصولو سره د Session بيا چک کول
 window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
