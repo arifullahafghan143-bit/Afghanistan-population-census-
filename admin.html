@@ -304,13 +304,13 @@ margin-top:5px;
 </div>
 
 <script>
-/* SUPABASE CONFIGURATION (سم شوي درست لنکنونه) */
+/* SUPABASE CONFIGURATION (ستاسو دقیق ادرس او نوی Publishable Key) */
 const SUPABASE_URL = "https://lswxkfkqpkzncbpiqqyz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_fmvy5Dp_k-2RpxY9HlGq5g_2z9ofuNH";
+const SUPABASE_KEY = "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// د پاڼې د خلاصولو پر مهال کتل چې ایا لاګ ان شوی که نه
+// د پاڼې د خلاصولو پر مهال کتل چې ایا اډمین پخوا لاګ ان شوی که نه
 window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
