@@ -4,13 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin - د نفوس سیستم</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
 margin:0;
@@ -79,21 +79,11 @@ button:hover{
 background:#1d4ed8;
 }
 
-.logout{
-background:#dc2626;
-}
+.logout{background:#dc2626}
+.logout:hover{background:#b91c1c}
 
-.logout:hover{
-background:#b91c1c;
-}
-
-.refresh{
-background:#16a34a;
-}
-
-.refresh:hover{
-background:#15803d;
-}
+.refresh{background:#16a34a}
+.refresh:hover{background:#15803d}
 
 .message{
 margin-top:15px;
@@ -129,9 +119,7 @@ gap:10px;
 flex-wrap:wrap;
 }
 
-.header-row h1{
-margin:0;
-}
+.header-row h1{margin:0}
 
 .actions{
 display:flex;
@@ -141,7 +129,7 @@ flex-wrap:wrap;
 
 .stats{
 display:grid;
-grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:15px;
 margin-bottom:20px;
 }
@@ -180,7 +168,7 @@ border-collapse:collapse;
 min-width:1000px;
 }
 
-th, td{
+th,td{
 padding:12px;
 border-bottom:1px solid #e2e8f0;
 text-align:right;
@@ -198,23 +186,19 @@ border-radius:10px;
 padding:10px;
 margin-bottom:8px;
 line-height:1.8;
-border: 1px solid #e2e8f0;
+border:1px solid #e2e8f0;
 }
 
-.member:last-child{
-margin-bottom:0;
-}
+.member:last-child{margin-bottom:0}
 
-.empty, .loading{
+.empty,.loading{
 text-align:center;
 padding:40px;
 color:#64748b;
 font-size:18px;
 }
 
-#adminPanel{
-display:none;
-}
+#adminPanel{display:none}
 
 .small{
 font-size:13px;
@@ -226,259 +210,87 @@ margin-top:5px;
 
 <body>
 
-<!-- LOGIN PANEL -->
+<!-- LOGIN -->
 <div id="loginPanel" class="login-box">
-  <h1>🔐 د Admin سیستم</h1>
-  <div class="subtitle">د افغانستان د نفوس آنلاین شمېرنه</div>
 
-  <label for="email">Email</label>
-  <input type="email" id="email" placeholder="admin@example.com" autocomplete="email">
+<h1>🔐 د Admin سیستم</h1>
 
-  <label for="password">Password</label>
-  <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-
-  <button onclick="login()">ننوتل</button>
-
-  <div id="message" class="message"></div>
-
-  <a href="index.html" style="display:block; text-align:center; margin-top:20px; color:#2563eb; text-decoration:none;">
-    ← اصلي فورم ته ستنېدل
-  </a>
+<div class="subtitle">
+د افغانستان د نفوس آنلاین شمېرنه
 </div>
+
+<label for="email">Email</label>
+
+<input
+type="email"
+id="email"
+placeholder="admin@example.com"
+autocomplete="email"
+>
+
+<label for="password">Password</label>
+
+<input
+type="password"
+id="password"
+placeholder="Password"
+autocomplete="current-password"
+>
+
+<button onclick="login()">
+ننوتل
+</button>
+
+<div id="message" class="message"></div>
+
+<a
+href="index.html"
+style="display:block;text-align:center;margin-top:20px;color:#2563eb;text-decoration:none;"
+>
+← اصلي فورم ته ستنېدل
+</a>
+
+</div>
+
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="container">
-  <div class="admin-header">
-    <div class="header-row">
-      <h1>📊 د نفوس Admin سیستم</h1>
-      <div class="actions">
-        <button class="refresh" onclick="loadData()">🔄 معلومات تازه کول</button>
-        <button class="logout" onclick="logout()">🚪 وتل</button>
-      </div>
-    </div>
-    <div class="small">یوازې د مجاز Admin لپاره</div>
-  </div>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="card">
-      <div class="card-title">ټولې کورنۍ</div>
-      <div id="totalHouseholds" class="card-number">0</div>
-    </div>
-    <div class="card">
-      <div class="card-title">ټول نفوس</div>
-      <div id="totalPopulation" class="card-number">0</div>
-    </div>
-    <div class="card">
-      <div class="card-title">نارینه</div>
-      <div id="totalMale" class="card-number">0</div>
-    </div>
-    <div class="card">
-      <div class="card-title">ښځینه</div>
-      <div id="totalFemale" class="card-number">0</div>
-    </div>
-  </div>
+<div class="admin-header">
 
-  <!-- DATA TABLE -->
-  <div class="table-box">
-    <h2>📋 ثبت شوې کورنۍ</h2>
-    <div id="loading" class="loading">معلومات لوډ کېږي...</div>
-    <div id="empty" class="empty" style="display:none;">تر اوسه هېڅ کورنۍ ثبت شوې نه ده.</div>
+<div class="header-row">
 
-    <table id="dataTable" style="display:none;">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>ولایت</th>
-          <th>ولسوالي</th>
-          <th>سیمه / کلی</th>
-          <th>د غړو شمېر</th>
-          <th>نارینه</th>
-          <th>ښځینه</th>
-          <th>د کورنۍ غړي</th>
-        </tr>
-      </thead>
-      <tbody id="dataBody"></tbody>
-    </table>
-  </div>
+<h1>📊 د نفوس Admin سیستم</h1>
+
+<div class="actions">
+
+<button
+class="refresh"
+onclick="loadData()"
+>
+🔄 معلومات تازه کول
+</button>
+
+<button
+class="logout"
+onclick="logout()"
+>
+🚪 وتل
+</button>
+
 </div>
 
-<script>
-/* SUPABASE CONFIGURATION (درسـت URL او سمه anon کیلي) */
-const SUPABASE_URL = "https://lswxkfkqpkzncbpiqqyz.supabase.co";
-const SUPABASE_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxzd3hrZmtxcGt6bmNicGlxcXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyOTg1MjEsImV4cCI6MjEwNDg3NDUyMX0.RVb52nJZP6u7mDjtGFa1U0mp_h4T9hQNVUP_hFWHikE";
+</div>
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<div class="small">
+یوازې د مجاز Admin لپاره
+</div>
 
-// د پاڼې خلاصولو سره د Session بيا چک کول
-window.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) {
-    showAdminPanel();
-    await loadData();
-  }
-});
+</div>
 
-function showMessage(text, type) {
-  const message = document.getElementById("message");
-  message.textContent = text;
-  message.className = "message " + type;
-  message.style.display = "block";
-}
 
-function showAdminPanel() {
-  document.getElementById("loginPanel").style.display = "none";
-  document.getElementById("adminPanel").style.display = "block";
-}
+<!-- STATS -->
+<div class="stats">
 
-/* LOGIN */
-async function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  if (!email || !password) {
-    showMessage("مهرباني وکړئ Email او Password ولیکئ.", "error");
-    return;
-  }
-
-  showMessage("Login کېږي...", "success");
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
-
-  if (error) {
-    showMessage("Login ناکام شو: " + error.message, "error");
-    return;
-  }
-
-  showAdminPanel();
-  await loadData();
-}
-
-/* LOAD ADMIN DATA */
-async function loadData() {
-  const loading = document.getElementById("loading");
-  const table = document.getElementById("dataTable");
-  const empty = document.getElementById("empty");
-  const body = document.getElementById("dataBody");
-
-  loading.style.display = "block";
-  table.style.display = "none";
-  empty.style.display = "none";
-  body.innerHTML = "";
-
-  /* RPC FUNCTION CALL */
-  const { data, error } = await supabaseClient.rpc("admin_get_households");
-
-  if (error) {
-    console.error("RPC Error Details:", error);
-    loading.innerHTML = "❌ معلومات نه شول راوړل کېدای.<br><br><b>د تېروتنې تفصیل:</b> " + escapeHTML(error.message);
-    return;
-  }
-
-  loading.style.display = "none";
-
-  let households = data || [];
-
-  if (typeof households === "string") {
-    try { households = JSON.parse(households); } catch(e) { households = []; }
-  }
-
-  if (!Array.isArray(households)) households = [];
-
-  /* STATS */
-  let totalHouseholds = households.length;
-  let totalPopulation = 0;
-  let totalMale = 0;
-  let totalFemale = 0;
-
-  households.forEach(household => {
-    totalPopulation += Number(household.members || 0);
-    totalMale += Number(household.male || 0);
-    totalFemale += Number(household.female || 0);
-  });
-
-  document.getElementById("totalHouseholds").textContent = totalHouseholds;
-  document.getElementById("totalPopulation").textContent = totalPopulation;
-  document.getElementById("totalMale").textContent = totalMale;
-  document.getElementById("totalFemale").textContent = totalFemale;
-
-  if (households.length === 0) {
-    empty.style.display = "block";
-    return;
-  }
-
-  /* RENDER TABLE */
-  households.forEach((household, index) => {
-    const row = document.createElement("tr");
-
-    let people = household.people || [];
-    if (typeof people === "string") {
-      try { people = JSON.parse(people); } catch(e) { people = []; }
-    }
-    if (!Array.isArray(people)) people = [];
-
-    let peopleHTML = "";
-    people.forEach((person, personIndex) => {
-      const name = person.name || "";
-      const father = person.father || person.father_name || "";
-      const gender = person.gender || "";
-      const age = person.age || "";
-      const marital = person.marital || person.marital_status || "";
-      const relation = person.relation || person.relationship || "";
-      const education = person.education || "";
-      const employment = person.employment || person.employment_status || "";
-      const occupation = person.occupation || "";
-
-      peopleHTML += `
-        <div class="member">
-          <strong>${personIndex + 1}. ${escapeHTML(name)}</strong><br>
-          <b>د پلار نوم:</b> ${escapeHTML(father)} | <b>جنس:</b> ${escapeHTML(gender)} | <b>عمر:</b> ${escapeHTML(age)}<br>
-          <b>مدني حالت:</b> ${escapeHTML(marital)} | <b>اړیکه:</b> ${escapeHTML(relation)}<br>
-          <b>زده کړه:</b> ${escapeHTML(education)} | <b>کار:</b> ${escapeHTML(employment)} (${escapeHTML(occupation)})
-        </div>
-      `;
-    });
-
-    if (!peopleHTML) peopleHTML = "—";
-
-    row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${escapeHTML(household.province || "")}</td>
-      <td>${escapeHTML(household.district || "")}</td>
-      <td>${escapeHTML(household.village || "")}</td>
-      <td>${escapeHTML(household.members || 0)}</td>
-      <td>${escapeHTML(household.male || 0)}</td>
-      <td>${escapeHTML(household.female || 0)}</td>
-      <td>${peopleHTML}</td>
-    `;
-
-    body.appendChild(row);
-  });
-
-  table.style.display = "table";
-}
-
-function escapeHTML(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/* LOGOUT */
-async function logout() {
-  await supabaseClient.auth.signOut();
-  document.getElementById("adminPanel").style.display = "none";
-  document.getElementById("loginPanel").style.display = "block";
-  document.getElementById("password").value = "";
-  showMessage("له سیستم څخه ووتل شو.", "success");
-}
-</script>
-
-</body>
-</html>
+<div class="card">
+<div class="card-title">ټولې کورنۍ</div
