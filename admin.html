@@ -7,10 +7,13 @@
 
 <title>Admin - د نفوس سیستم</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
@@ -65,6 +68,7 @@ direction:ltr;
 }
 
 button{
+width:100%;
 padding:12px 18px;
 border:none;
 border-radius:10px;
@@ -79,11 +83,36 @@ button:hover{
 background:#1d4ed8;
 }
 
-.logout{background:#dc2626}
-.logout:hover{background:#b91c1c}
+button:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
 
-.refresh{background:#16a34a}
-.refresh:hover{background:#15803d}
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.actions button{
+width:auto;
+}
+
+.logout{
+background:#dc2626;
+}
+
+.logout:hover{
+background:#b91c1c;
+}
+
+.refresh{
+background:#16a34a;
+}
+
+.refresh:hover{
+background:#15803d;
+}
 
 .message{
 margin-top:15px;
@@ -91,6 +120,7 @@ padding:12px;
 border-radius:10px;
 text-align:center;
 display:none;
+line-height:1.8;
 }
 
 .error{
@@ -101,6 +131,11 @@ color:#991b1b;
 .success{
 background:#dcfce7;
 color:#166534;
+}
+
+.info{
+background:#dbeafe;
+color:#1e40af;
 }
 
 .admin-header{
@@ -119,12 +154,8 @@ gap:10px;
 flex-wrap:wrap;
 }
 
-.header-row h1{margin:0}
-
-.actions{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+.header-row h1{
+margin:0;
 }
 
 .stats{
@@ -165,7 +196,7 @@ overflow-x:auto;
 table{
 width:100%;
 border-collapse:collapse;
-min-width:1000px;
+min-width:1100px;
 }
 
 th,td{
@@ -189,21 +220,44 @@ line-height:1.8;
 border:1px solid #e2e8f0;
 }
 
-.member:last-child{margin-bottom:0}
+.member:last-child{
+margin-bottom:0;
+}
 
-.empty,.loading{
+.empty,
+.loading{
 text-align:center;
 padding:40px;
 color:#64748b;
 font-size:18px;
 }
 
-#adminPanel{display:none}
+#adminPanel{
+display:none;
+}
 
 .small{
 font-size:13px;
 color:#64748b;
 margin-top:5px;
+}
+
+.status{
+margin-top:15px;
+padding:10px;
+border-radius:8px;
+text-align:center;
+font-size:13px;
+}
+
+.status.ok{
+background:#dcfce7;
+color:#166534;
+}
+
+.status.bad{
+background:#fee2e2;
+color:#991b1b;
 }
 </style>
 </head>
@@ -237,11 +291,15 @@ placeholder="Password"
 autocomplete="current-password"
 >
 
-<button onclick="login()">
+<button id="loginButton" type="button">
 ننوتل
 </button>
 
 <div id="message" class="message"></div>
+
+<div id="connectionStatus" class="status">
+سیستم چک کېږي...
+</div>
 
 <a
 href="index.html"
@@ -266,14 +324,16 @@ style="display:block;text-align:center;margin-top:20px;color:#2563eb;text-decora
 
 <button
 class="refresh"
-onclick="loadData()"
+id="refreshButton"
+type="button"
 >
 🔄 معلومات تازه کول
 </button>
 
 <button
 class="logout"
-onclick="logout()"
+id="logoutButton"
+type="button"
 >
 🚪 وتل
 </button>
@@ -293,4 +353,722 @@ onclick="logout()"
 <div class="stats">
 
 <div class="card">
-<div class="card-title">ټولې کورنۍ</div
+<div class="card-title">ټولې کورنۍ</div>
+<div id="totalHouseholds" class="card-number">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">ټول نفوس</div>
+<div id="totalPopulation" class="card-number">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">نارینه</div>
+<div id="totalMale" class="card-number">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">ښځینه</div>
+<div id="totalFemale" class="card-number">0</div>
+</div>
+
+</div>
+
+
+<!-- TABLE -->
+<div class="table-box">
+
+<h2>📋 د ثبت شوو کورنیو تاریخ</h2>
+
+<div id="tableContainer">
+<div class="loading">
+معلومات لوډ کېږي...
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://lswxkfkqpkzncbpiqqyz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
+
+
+let supabaseClient = null;
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(text,type="error"){
+
+const box =
+document.getElementById("message");
+
+box.textContent = text;
+
+box.className =
+"message " + type;
+
+box.style.display = "block";
+
+}
+
+
+/* =========================
+   CHECK SUPABASE
+========================= */
+
+function checkSupabase(){
+
+const status =
+document.getElementById("connectionStatus");
+
+if(
+typeof window.supabase === "undefined"
+){
+
+status.textContent =
+"❌ Supabase سیستم لوډ نه شو. انټرنېټ یا CDN وګورئ.";
+
+status.className =
+"status bad";
+
+return false;
+}
+
+try{
+
+supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+status.textContent =
+"✅ Supabase سیستم تیار دی.";
+
+status.className =
+"status ok";
+
+return true;
+
+}catch(error){
+
+status.textContent =
+"❌ Supabase جوړ نه شو.";
+
+status.className =
+"status bad";
+
+console.error(error);
+
+return false;
+}
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+const button =
+document.getElementById("loginButton");
+
+
+if(!email){
+
+showMessage(
+"مهرباني وکړئ Email ولیکئ.",
+"error"
+);
+
+return;
+}
+
+
+if(!password){
+
+showMessage(
+"مهرباني وکړئ Password ولیکئ.",
+"error"
+);
+
+return;
+}
+
+
+if(!supabaseClient){
+
+const ready =
+checkSupabase();
+
+if(!ready){
+
+showMessage(
+"Supabase سیستم تیار نه دی.",
+"error"
+);
+
+return;
+}
+
+}
+
+
+button.disabled = true;
+
+button.textContent =
+"ننوتل کېږي...";
+
+showMessage(
+"مهرباني وکړئ انتظار وکړئ...",
+"info"
+);
+
+
+try{
+
+const {data,error} =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+console.error(
+"LOGIN ERROR:",
+error
+);
+
+showMessage(
+"❌ ننوتل ناکام شول: " +
+error.message,
+"error"
+);
+
+button.disabled = false;
+
+button.textContent =
+"ننوتل";
+
+return;
+}
+
+
+if(!data || !data.user){
+
+showMessage(
+"❌ User ونه موندل شو.",
+"error"
+);
+
+button.disabled = false;
+
+button.textContent =
+"ننوتل";
+
+return;
+}
+
+
+showMessage(
+"✅ ننوتل بریالي شول.",
+"success"
+);
+
+
+document.getElementById(
+"loginPanel"
+).style.display = "none";
+
+
+document.getElementById(
+"adminPanel"
+).style.display = "block";
+
+
+await loadData();
+
+
+}catch(error){
+
+console.error(
+"UNEXPECTED LOGIN ERROR:",
+error
+);
+
+showMessage(
+"❌ یوه تېروتنه رامنځته شوه: " +
+error.message,
+"error"
+);
+
+}
+
+
+button.disabled = false;
+
+button.textContent =
+"ننوتل";
+
+}
+
+
+/* =========================
+   LOAD ADMIN DATA
+========================= */
+
+async function loadData(){
+
+if(!supabaseClient){
+
+showMessage(
+"Supabase سیستم تیار نه دی.",
+"error"
+);
+
+return;
+}
+
+
+const container =
+document.getElementById(
+"tableContainer"
+);
+
+container.innerHTML =
+'<div class="loading">معلومات لوډ کېږي...</div>';
+
+
+try{
+
+const {data,error} =
+await supabaseClient.rpc(
+"admin_get_households"
+);
+
+
+if(error){
+
+console.error(
+"RPC ERROR:",
+error
+);
+
+container.innerHTML =
+'<div class="empty">❌ معلومات ترلاسه نه شول.<br>' +
+error.message +
+'</div>';
+
+return;
+}
+
+
+let rows = data || [];
+
+
+if(typeof rows === "string"){
+
+try{
+
+rows = JSON.parse(rows);
+
+}catch(e){
+
+rows = [];
+
+}
+
+}
+
+
+if(!Array.isArray(rows)){
+
+rows = [];
+
+}
+
+
+/* STATS */
+
+let totalHouseholds =
+rows.length;
+
+let totalPopulation = 0;
+
+let totalMale = 0;
+
+let totalFemale = 0;
+
+
+rows.forEach(row => {
+
+totalPopulation +=
+Number(row.members || 0);
+
+totalMale +=
+Number(row.male || 0);
+
+totalFemale +=
+Number(row.female || 0);
+
+});
+
+
+document.getElementById(
+"totalHouseholds"
+).textContent =
+totalHouseholds.toLocaleString("en-US");
+
+
+document.getElementById(
+"totalPopulation"
+).textContent =
+totalPopulation.toLocaleString("en-US");
+
+
+document.getElementById(
+"totalMale"
+).textContent =
+totalMale.toLocaleString("en-US");
+
+
+document.getElementById(
+"totalFemale"
+).textContent =
+totalFemale.toLocaleString("en-US");
+
+
+/* EMPTY */
+
+if(rows.length === 0){
+
+container.innerHTML =
+'<div class="empty">تر اوسه هېڅ کورنۍ ثبت شوې نه ده.</div>';
+
+return;
+}
+
+
+/* TABLE */
+
+let html = `
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>نېټه</th>
+
+<th>ولایت</th>
+
+<th>ولسوالي</th>
+
+<th>سیمه / کلی</th>
+
+<th>د کورنۍ غړي</th>
+
+<th>نارینه</th>
+
+<th>ښځینه</th>
+
+<th>د کورنۍ د غړو معلومات</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+`;
+
+
+rows.forEach(row => {
+
+
+let membersHtml = "";
+
+
+let people = row.people || [];
+
+
+if(typeof people === "string"){
+
+try{
+
+people =
+JSON.parse(people);
+
+}catch(e){
+
+people = [];
+
+}
+
+}
+
+
+if(!Array.isArray(people)){
+
+people = [];
+
+}
+
+
+people.forEach((person,index) => {
+
+membersHtml += `
+
+<div class="member">
+
+<b>شخص ${index + 1}</b><br>
+
+نوم:
+${escapeHtml(person.name || "-")}
+<br>
+
+د پلار نوم:
+${escapeHtml(person.father_name || "-")}
+<br>
+
+جنس:
+${escapeHtml(person.gender || "-")}
+<br>
+
+عمر:
+${escapeHtml(person.age || "-")}
+<br>
+
+مدني حالت:
+${escapeHtml(person.marital_status || "-")}
+<br>
+
+د کورنۍ اړیکه:
+${escapeHtml(person.relationship || "-")}
+<br>
+
+زده کړې:
+${escapeHtml(person.education || "-")}
+<br>
+
+د کار حالت:
+${escapeHtml(person.employment || "-")}
+<br>
+
+دنده:
+${escapeHtml(person.occupation || "-")}
+
+</div>
+
+`;
+
+});
+
+
+const date =
+row.created_at
+?
+new Date(
+row.created_at
+).toLocaleString(
+"en-GB"
+)
+:
+"-";
+
+
+html += `
+
+<tr>
+
+<td>${date}</td>
+
+<td>${escapeHtml(row.province || "-")}</td>
+
+<td>${escapeHtml(row.district || "-")}</td>
+
+<td>${escapeHtml(row.village || "-")}</td>
+
+<td>${row.members || 0}</td>
+
+<td>${row.male || 0}</td>
+
+<td>${row.female || 0}</td>
+
+<td>${membersHtml || "-"}</td>
+
+</tr>
+
+`;
+
+});
+
+
+html += `
+
+</tbody>
+
+</table>
+
+`;
+
+
+container.innerHTML = html;
+
+
+}catch(error){
+
+console.error(
+"LOAD ERROR:",
+error
+);
+
+container.innerHTML =
+'<div class="empty">❌ تېروتنه: ' +
+escapeHtml(error.message) +
+'</div>';
+
+}
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+if(supabaseClient){
+
+await supabaseClient.auth.signOut();
+
+}
+
+
+document.getElementById(
+"adminPanel"
+).style.display = "none";
+
+
+document.getElementById(
+"loginPanel"
+).style.display = "block";
+
+
+document.getElementById(
+"password"
+).value = "";
+
+
+showMessage(
+"له سیستم څخه ووتل.",
+"success"
+);
+
+}
+
+
+/* =========================
+   BUTTON EVENTS
+========================= */
+
+document
+.getElementById("loginButton")
+.addEventListener(
+"click",
+login
+);
+
+
+document
+.getElementById("refreshButton")
+.addEventListener(
+"click",
+loadData
+);
+
+
+document
+.getElementById("logoutButton")
+.addEventListener(
+"click",
+logout
+);
+
+
+/* =========================
+   ENTER KEY
+========================= */
+
+document
+.getElementById("password")
+.addEventListener(
+"keydown",
+function(event){
+
+if(event.key === "Enter"){
+
+login();
+
+}
+
+});
+
+
+/* =========================
+   START
+========================= */
+
+window.addEventListener(
+"load",
+function(){
+
+checkSupabase();
+
+}
+);
+
+</script>
+
+</body>
+</html>
