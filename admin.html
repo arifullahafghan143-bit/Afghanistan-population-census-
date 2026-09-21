@@ -8,267 +8,253 @@
 <title>د نفوس Admin سیستم</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-<script src="districts.js"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
-  margin:0;
-  font-family:Arial,Tahoma,sans-serif;
-  background:#f4f7fb;
-  color:#172033;
+margin:0;
+font-family:Arial,Tahoma,sans-serif;
+background:#f4f7fb;
+color:#172033
 }
 
 .container{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
+max-width:1200px;
+margin:auto;
+padding:20px
 }
 
 header{
-  background:#123c69;
-  color:white;
-  padding:20px;
-  border-radius:14px;
-  margin-bottom:20px;
+background:#123c69;
+color:white;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px
 }
 
 header h1{
-  margin:0 0 8px;
-  font-size:25px;
+margin:0 0 8px;
+font-size:25px
 }
 
 header p{
-  margin:0;
-  opacity:.9;
+margin:0;
+opacity:.9
 }
 
 .status{
-  padding:12px;
-  border-radius:10px;
-  margin:15px 0;
-  background:#fff3cd;
-  color:#664d03;
+padding:12px;
+border-radius:10px;
+margin:15px 0;
+background:#fff3cd;
+color:#664d03
 }
 
 .status.ok{
-  background:#d1e7dd;
-  color:#0f5132;
+background:#d1e7dd;
+color:#0f5132
 }
 
 .status.bad{
-  background:#f8d7da;
-  color:#842029;
+background:#f8d7da;
+color:#842029
 }
 
 .card{
-  background:white;
-  padding:20px;
-  border-radius:14px;
-  margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,.06);
+background:white;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px;
+box-shadow:0 2px 10px rgba(0,0,0,.06)
 }
 
-input,
-select{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccd4df;
-  border-radius:8px;
-  font-size:15px;
-  margin-top:6px;
-  background:white;
+input,select{
+width:100%;
+padding:12px;
+border:1px solid #ccd4df;
+border-radius:8px;
+font-size:15px;
+margin-top:6px;
+background:white
 }
 
 label{
-  font-weight:bold;
-  display:block;
-  margin-bottom:14px;
+font-weight:bold;
+display:block;
+margin-bottom:14px
 }
 
 button{
-  border:0;
-  border-radius:8px;
-  padding:11px 18px;
-  cursor:pointer;
-  font-size:15px;
-  font-weight:bold;
+border:0;
+border-radius:8px;
+padding:11px 18px;
+cursor:pointer;
+font-size:15px;
+font-weight:bold
 }
 
 .btn-primary{
-  background:#123c69;
-  color:white;
+background:#123c69;
+color:white
 }
 
 .btn-success{
-  background:#198754;
-  color:white;
+background:#198754;
+color:white
 }
 
 .btn-danger{
-  background:#dc3545;
-  color:white;
+background:#dc3545;
+color:white
 }
 
 .btn-secondary{
-  background:#6c757d;
-  color:white;
+background:#6c757d;
+color:white
 }
 
 .btn-light{
-  background:#e9ecef;
-  color:#222;
+background:#e9ecef;
+color:#222
 }
 
 .login{
-  max-width:450px;
-  margin:40px auto;
+max-width:450px;
+margin:40px auto
 }
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px
 }
 
 .stat{
-  background:#fff;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.05);
+background:white;
+border-radius:12px;
+padding:20px;
+text-align:center;
+box-shadow:0 2px 8px rgba(0,0,0,.05)
 }
 
 .stat strong{
-  display:block;
-  font-size:30px;
-  margin-top:8px;
-  color:#123c69;
+display:block;
+font-size:30px;
+margin-top:8px;
+color:#123c69
 }
 
 .filters{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px
 }
 
 .table-wrap{
-  overflow-x:auto;
+overflow-x:auto
 }
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:900px;
+width:100%;
+border-collapse:collapse;
+min-width:1000px
 }
 
-th,
-td{
-  border-bottom:1px solid #e1e5ea;
-  padding:12px 8px;
-  text-align:right;
-  vertical-align:top;
+th,td{
+border-bottom:1px solid #e1e5ea;
+padding:12px 8px;
+text-align:right;
+vertical-align:top
 }
 
 th{
-  background:#eef3f8;
+background:#eef3f8
 }
 
 .member{
-  background:#f7f9fc;
-  padding:10px;
-  border-radius:8px;
-  margin-bottom:8px;
-}
-
-.member:last-child{
-  margin-bottom:0;
+background:#f7f9fc;
+padding:10px;
+border-radius:8px;
+margin-bottom:8px
 }
 
 .actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
+display:flex;
+gap:7px;
+flex-wrap:wrap
 }
 
 .hidden{
-  display:none !important;
+display:none!important
 }
 
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:15px;
-  z-index:1000;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+display:flex;
+justify-content:center;
+align-items:center;
+padding:15px;
+z-index:1000
 }
 
 .modal-box{
-  background:white;
-  width:100%;
-  max-width:850px;
-  max-height:90vh;
-  overflow-y:auto;
-  border-radius:15px;
-  padding:20px;
+background:white;
+width:100%;
+max-width:850px;
+max-height:90vh;
+overflow-y:auto;
+border-radius:15px;
+padding:20px
 }
 
 .member-edit{
-  border:1px solid #dce2e8;
-  border-radius:10px;
-  padding:15px;
-  margin-bottom:15px;
+border:1px solid #dce2e8;
+border-radius:10px;
+padding:15px;
+margin-bottom:15px
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px
 }
 
 .footer-actions{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
+display:flex;
+gap:10px;
+margin-top:15px
 }
 
 @media(max-width:800px){
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
+.stats{
+grid-template-columns:repeat(2,1fr)
+}
 
-  .filters{
-    grid-template-columns:1fr;
-  }
+.filters{
+grid-template-columns:1fr
+}
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+.grid{
+grid-template-columns:1fr
+}
 }
 
 @media(max-width:500px){
-  .container{
-    padding:10px;
-  }
+.container{
+padding:10px
+}
 
-  .stats{
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-  }
+.stat{
+padding:14px 8px
+}
 
-  .stat{
-    padding:14px 8px;
-  }
-
-  .stat strong{
-    font-size:24px;
-  }
+.stat strong{
+font-size:24px
+}
 }
 </style>
 </head>
@@ -278,148 +264,158 @@ th{
 <div class="container">
 
 <header>
-  <h1>د نفوس Admin سیستم</h1>
-  <p>یوازې د مجاز Admin لپاره</p>
+<h1>د نفوس Admin سیستم</h1>
+<p>یوازې د مجاز Admin لپاره</p>
 </header>
 
 <div id="connectionStatus" class="status">
-  سیستم چک کېږي...
+سیستم چک کېږي...
 </div>
 
 <!-- LOGIN -->
+
 <div id="loginBox" class="card login hidden">
 
-  <h2>Admin Login</h2>
+<h2>Admin Login</h2>
 
-  <label>
-    Email
-    <input id="email" type="email" placeholder="Email">
-  </label>
+<label>
+Email
+<input id="email" type="email" placeholder="Email">
+</label>
 
-  <label>
-    Password
-    <input id="password" type="password" placeholder="Password">
-  </label>
+<label>
+Password
+<input id="password" type="password" placeholder="Password">
+</label>
 
-  <button class="btn-primary" onclick="login()">
-    Login
-  </button>
+<button class="btn-primary" onclick="login()">
+Login
+</button>
 
-  <div id="loginMessage" class="status hidden"></div>
+<div id="loginMessage" class="status hidden"></div>
 
 </div>
 
-<!-- ADMIN PANEL -->
+
+<!-- ADMIN -->
+
 <div id="adminPanel" class="hidden">
 
-  <div class="card">
-    <div class="actions">
+<div class="card">
 
-      <button class="btn-primary" onclick="loadData()">
-        🔄 معلومات تازه کول
-      </button>
+<div class="actions">
 
-      <button class="btn-secondary" onclick="logout()">
-        🚪 وتل
-      </button>
+<button class="btn-primary" onclick="loadData()">
+🔄 معلومات تازه کول
+</button>
 
-    </div>
-  </div>
+<button class="btn-secondary" onclick="logout()">
+🚪 وتل
+</button>
 
-  <!-- STATS -->
-  <div class="stats">
+</div>
 
-    <div class="stat">
-      ټولې کورنۍ
-      <strong id="totalHouseholds">0</strong>
-    </div>
+</div>
 
-    <div class="stat">
-      ټول نفوس
-      <strong id="totalPopulation">0</strong>
-    </div>
 
-    <div class="stat">
-      نارینه
-      <strong id="totalMale">0</strong>
-    </div>
+<!-- STATS -->
 
-    <div class="stat">
-      ښځینه
-      <strong id="totalFemale">0</strong>
-    </div>
+<div class="stats">
 
-  </div>
+<div class="stat">
+ټولې کورنۍ
+<strong id="totalHouseholds">0</strong>
+</div>
 
-  <!-- FILTERS -->
-  <div class="card">
+<div class="stat">
+ټول نفوس
+<strong id="totalPopulation">0</strong>
+</div>
 
-    <h2>🔎 د معلوماتو لټون او Filter</h2>
+<div class="stat">
+نارینه
+<strong id="totalMale">0</strong>
+</div>
 
-    <div class="filters">
+<div class="stat">
+ښځینه
+<strong id="totalFemale">0</strong>
+</div>
 
-      <label>
-        ولایت
-        <select id="provinceFilter" onchange="provinceChanged()">
-          <option value="">ټول ولایتونه</option>
-        </select>
-      </label>
+</div>
 
-      <label>
-        ولسوالۍ
-        <select id="districtFilter" onchange="applyFilters()">
-          <option value="">ټولې ولسوالۍ</option>
-        </select>
-      </label>
 
-      <label>
-        د شخص نوم
-        <input
-          id="nameSearch"
-          type="text"
-          placeholder="د شخص یا پلار نوم ولیکئ..."
-          oninput="applyFilters()"
-        >
-      </label>
+<!-- FILTER -->
 
-    </div>
+<div class="card">
 
-  </div>
+<h2>🔎 د معلوماتو لټون او Filter</h2>
 
-  <!-- TABLE -->
-  <div class="card">
+<div class="filters">
 
-    <h2>📋 د ثبت شوو کورنیو تاریخ</h2>
+<label>
+ولایت
+<select id="provinceFilter" onchange="provinceChanged()">
+<option value="">ټول ولایتونه</option>
+</select>
+</label>
 
-    <div id="dataMessage" class="status hidden"></div>
+<label>
+ولسوالي
+<select id="districtFilter" onchange="applyFilters()">
+<option value="">ټولې ولسوالۍ</option>
+</select>
+</label>
 
-    <div class="table-wrap">
+<label>
+د شخص نوم
+<input
+id="nameSearch"
+type="text"
+placeholder="د شخص یا پلار نوم ولیکئ..."
+oninput="applyFilters()">
+</label>
 
-      <table>
+</div>
 
-        <thead>
+</div>
 
-          <tr>
-            <th>نېټه</th>
-            <th>ولایت</th>
-            <th>ولسوالي</th>
-            <th>سیمه / کلی</th>
-            <th>کورنۍ</th>
-            <th>نارینه</th>
-            <th>ښځینه</th>
-            <th>د کورنۍ غړي</th>
-            <th>عملیات</th>
-          </tr>
 
-        </thead>
+<!-- DATA -->
 
-        <tbody id="dataBody"></tbody>
+<div class="card">
 
-      </table>
+<h2>📋 د ثبت شوو کورنیو تاریخ</h2>
 
-    </div>
+<div id="dataMessage" class="status hidden"></div>
 
-  </div>
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>نېټه</th>
+<th>ولایت</th>
+<th>ولسوالي</th>
+<th>سیمه / کلی</th>
+<th>کورنۍ</th>
+<th>نارینه</th>
+<th>ښځینه</th>
+<th>د کورنۍ غړي</th>
+<th>عملیات</th>
+</tr>
+
+</thead>
+
+<tbody id="dataBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
 
 </div>
 
@@ -427,50 +423,51 @@ th{
 
 
 <!-- EDIT MODAL -->
+
 <div id="editModal" class="modal hidden">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <h2>✏️ د کورنۍ معلومات بدلول</h2>
+<h2>✏️ د کورنۍ معلومات بدلول</h2>
 
-    <div class="grid">
+<div class="grid">
 
-      <label>
-        ولایت
-        <select id="editProvince"></select>
-      </label>
+<label>
+ولایت
+<select id="editProvince"></select>
+</label>
 
-      <label>
-        ولسوالۍ
-        <select id="editDistrict"></select>
-      </label>
+<label>
+ولسوالي
+<select id="editDistrict"></select>
+</label>
 
-      <label>
-        سیمه / کلی
-        <input id="editVillage" type="text">
-      </label>
+<label>
+سیمه / کلی
+<input id="editVillage" type="text">
+</label>
 
-    </div>
+</div>
 
-    <h3>د کورنۍ غړي</h3>
+<h3>د کورنۍ غړي</h3>
 
-    <div id="editMembers"></div>
+<div id="editMembers"></div>
 
-    <div class="footer-actions">
+<div class="footer-actions">
 
-      <button class="btn-success" onclick="saveEdit()">
-        💾 معلومات ثبتول
-      </button>
+<button class="btn-success" onclick="saveEdit()">
+💾 معلومات ثبتول
+</button>
 
-      <button class="btn-light" onclick="closeEdit()">
-        لغوه
-      </button>
+<button class="btn-light" onclick="closeEdit()">
+لغوه
+</button>
 
-    </div>
+</div>
 
-    <div id="editMessage" class="status hidden"></div>
+<div id="editMessage" class="status hidden"></div>
 
-  </div>
+</div>
 
 </div>
 
@@ -478,7 +475,7 @@ th{
 <script>
 
 /* =========================
-   SUPABASE
+SUPABASE
 ========================= */
 
 const SUPABASE_URL =
@@ -487,861 +484,1223 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
 
-let supabaseClient = null;
+let supabaseClient=null;
 
-let allRows = [];
+let allRows=[];
 
-let filteredRows = [];
+let filteredRows=[];
 
-let editingId = null;
+let editingId=null;
 
 
 /* =========================
-   PROVINCES
+PROVINCES
 ========================= */
 
-const provinceNames = {
+const provinceNames={
 
-  "Badakhshan":"بدخشان",
-  "Badghis":"بادغیس",
-  "Baghlan":"بغلان",
-  "Balkh":"بلخ",
-  "Bamyan":"بامیان",
-  "Daykundi":"دایکندي",
-  "Farah":"فراه",
-  "Faryab":"فاریاب",
-  "Ghazni":"غزني",
-  "Ghor":"غور",
-  "Helmand":"هلمند",
-  "Herat":"هرات",
-  "Jowzjan":"جوزجان",
-  "Kabul":"کابل",
-  "Kandahar":"کندهار",
-  "Kapisa":"کاپیسا",
-  "Khost":"خوست",
-  "Kunar":"کونړ",
-  "Kunduz":"کندز",
-  "Laghman":"لغمان",
-  "Logar":"لوګر",
-  "Nangarhar":"ننګرهار",
-  "Nimroz":"نیمروز",
-  "Nuristan":"نورستان",
-  "Paktia":"پکتیا",
-  "Paktika":"پکتیکا",
-  "Panjshir":"پنجشیر",
-  "Parwan":"پروان",
-  "Samangan":"سمنګان",
-  "Sar-e Pol":"سرپل",
-  "Takhar":"تخار",
-  "Uruzgan":"اروزګان",
-  "Wardak":"وردګ",
-  "Zabul":"زابل"
+"Badakhshan":"بدخشان",
+"Badghis":"بادغیس",
+"Baghlan":"بغلان",
+"Balkh":"بلخ",
+"Bamyan":"بامیان",
+"Daykundi":"دایکندي",
+"Farah":"فراه",
+"Faryab":"فاریاب",
+"Ghazni":"غزني",
+"Ghor":"غور",
+"Helmand":"هلمند",
+"Herat":"هرات",
+"Jowzjan":"جوزجان",
+"Kabul":"کابل",
+"Kandahar":"کندهار",
+"Kapisa":"کاپیسا",
+"Khost":"خوست",
+"Kunar":"کونړ",
+"Kunduz":"کندز",
+"Laghman":"لغمان",
+"Logar":"لوګر",
+"Nangarhar":"ننګرهار",
+"Nimroz":"نیمروز",
+"Nuristan":"نورستان",
+"Paktia":"پکتیا",
+"Paktika":"پکتیکا",
+"Panjshir":"پنجشیر",
+"Parwan":"پروان",
+"Samangan":"سمنګان",
+"Sar-e Pol":"سرپل",
+"Takhar":"تخار",
+"Uruzgan":"اروزګان",
+"Wardak":"وردګ",
+"Zabul":"زابل"
 
 };
 
-const provinceKeys = Object.keys(provinceNames);
+const provinceKeys=Object.keys(provinceNames);
 
 
 /* =========================
-   SAFE START
+START
 ========================= */
 
 function startAdmin(){
 
-  const status =
-    document.getElementById("connectionStatus");
+const status=
+document.getElementById("connectionStatus");
 
-  try{
+try{
 
-    if(
-      !window.supabase ||
-      typeof window.supabase.createClient !== "function"
-    ){
+if(
+!window.supabase ||
+typeof window.supabase.createClient!=="function"
+){
 
-      status.textContent =
-      "❌ Supabase سیستم لوډ نه شو.";
+status.textContent=
+"❌ Supabase سیستم لوډ نه شو.";
 
-      status.className =
-      "status bad";
+status.className="status bad";
 
-      showLogin();
+showLogin();
 
-      return;
+return;
+}
 
-    }
 
-    supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+supabaseClient=
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-    status.textContent =
-    "✅ Supabase سیستم تیار دی.";
 
-    status.className =
-    "status ok";
+status.textContent=
+"✅ Supabase سیستم تیار دی.";
 
-    fillProvinceFilters();
+status.className="status ok";
 
-    showLogin();
 
-    checkSession();
+fillProvinceFilters();
 
-  }catch(error){
+showLogin();
 
-    console.error(error);
+checkSession();
 
-    status.textContent =
-    "❌ د سیستم د پیل ستونزه: " +
-    (error.message || error);
 
-    status.className =
-    "status bad";
+}catch(error){
 
-    showLogin();
+console.error(error);
 
-  }
+status.textContent=
+"❌ د سیستم د پیل ستونزه: "+
+(error.message||error);
+
+status.className="status bad";
+
+showLogin();
+
+}
 
 }
 
 
 /* =========================
-   SHOW LOGIN
+LOGIN BOX
 ========================= */
 
 function showLogin(){
 
-  document
-  .getElementById("loginBox")
-  .classList
-  .remove("hidden");
+document
+.getElementById("loginBox")
+.classList
+.remove("hidden");
 
 }
 
 
 /* =========================
-   LOGIN
+LOGIN
 ========================= */
 
 async function login(){
 
-  const email =
-    document.getElementById("email").value.trim();
+const email=
+document.getElementById("email")
+.value.trim();
 
-  const password =
-    document.getElementById("password").value;
+const password=
+document.getElementById("password")
+.value;
 
-  const message =
-    document.getElementById("loginMessage");
+const message=
+document.getElementById("loginMessage");
 
-  if(!email || !password){
 
-    message.textContent =
-    "Email او Password ولیکئ.";
+if(!email||!password){
 
-    message.className =
-    "status bad";
+message.textContent=
+"Email او Password ولیکئ.";
 
-    return;
+message.className="status bad";
 
-  }
+return;
+}
 
-  message.textContent =
-  "Login کېږي...";
 
-  message.className =
-  "status";
+message.textContent=
+"Login کېږي...";
 
-  try{
+message.className="status";
 
-    const {data,error} =
-      await supabaseClient.auth.signInWithPassword({
-        email:email,
-        password:password
-      });
 
-    if(error) throw error;
+try{
 
-    message.textContent =
-    "✅ Login بریالی شو.";
+const {error}=
+await supabaseClient.auth
+.signInWithPassword({
 
-    message.className =
-    "status ok";
+email:email,
+password:password
 
-    setTimeout(function(){
+});
 
-      document
-      .getElementById("loginBox")
-      .classList
-      .add("hidden");
 
-      document
-      .getElementById("adminPanel")
-      .classList
-      .remove("hidden");
+if(error)throw error;
 
-      loadData();
 
-    },500);
+message.textContent=
+"✅ Login بریالی شو.";
 
-  }catch(error){
+message.className="status ok";
 
-    console.error(error);
 
-    message.textContent =
-    "❌ Login ستونزه: " +
-    (error.message || error);
+setTimeout(function(){
 
-    message.className =
-    "status bad";
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
 
-  }
+document
+.getElementById("adminPanel")
+.classList
+.remove("hidden");
+
+loadData();
+
+},500);
+
+
+}catch(error){
+
+console.error(error);
+
+message.textContent=
+"❌ Login ستونزه: "+
+(error.message||error);
+
+message.className="status bad";
+
+}
 
 }
 
 
 /* =========================
-   CHECK SESSION
+SESSION
 ========================= */
 
 async function checkSession(){
 
-  if(!supabaseClient) return;
+if(!supabaseClient)return;
 
-  try{
+try{
 
-    const {data} =
-      await supabaseClient.auth.getSession();
+const {data}=
+await supabaseClient.auth.getSession();
 
-    if(
-      data &&
-      data.session
-    ){
+if(data&&data.session){
 
-      document
-      .getElementById("loginBox")
-      .classList
-      .add("hidden");
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
 
-      document
-      .getElementById("adminPanel")
-      .classList
-      .remove("hidden");
+document
+.getElementById("adminPanel")
+.classList
+.remove("hidden");
 
-      loadData();
+loadData();
 
-    }
+}
 
-  }catch(error){
+}catch(error){
 
-    console.error(error);
+console.error(error);
 
-  }
+}
 
 }
 
 
 /* =========================
-   LOGOUT
+LOGOUT
 ========================= */
 
 async function logout(){
 
-  if(!supabaseClient) return;
+await supabaseClient.auth.signOut();
 
-  await supabaseClient.auth.signOut();
-
-  location.reload();
+location.reload();
 
 }
 
 
 /* =========================
-   PROVINCE FILTER
+PROVINCE FILTERS
 ========================= */
 
 function fillProvinceFilters(){
 
-  const filter =
-    document.getElementById("provinceFilter");
+const filter=
+document.getElementById("provinceFilter");
 
-  const edit =
-    document.getElementById("editProvince");
+const edit=
+document.getElementById("editProvince");
 
-  if(!filter) return;
 
-  filter.innerHTML =
-  '<option value="">ټول ولایتونه</option>';
+filter.innerHTML=
+'<option value="">ټول ولایتونه</option>';
 
-  if(edit){
+edit.innerHTML=
+'<option value="">ولایت انتخاب کړئ</option>';
 
-    edit.innerHTML =
-    '<option value="">ولایت انتخاب کړئ</option>';
 
-  }
+provinceKeys.forEach(function(key){
 
-  provinceKeys.forEach(function(key){
+const option=
+document.createElement("option");
 
-    const option =
-      document.createElement("option");
+option.value=key;
 
-    option.value = key;
+option.textContent=
+provinceNames[key];
 
-    option.textContent =
-      provinceNames[key] || key;
+filter.appendChild(option);
 
-    filter.appendChild(option);
 
-    if(edit){
+const editOption=
+document.createElement("option");
 
-      const editOption =
-        document.createElement("option");
+editOption.value=key;
 
-      editOption.value = key;
+editOption.textContent=
+provinceNames[key];
 
-      editOption.textContent =
-        provinceNames[key] || key;
+edit.appendChild(editOption);
 
-      edit.appendChild(editOption);
-
-    }
-
-  });
+});
 
 }
 
 
 /* =========================
-   DISTRICTS
+DISTRICT DATA
+========================= */
+
+let districtData={};
+
+
+/*
+د ولسوالیو فایل یوازې د filter لپاره
+په جلا توګه راځي.
+که فایل خراب هم شي، Admin نه بندېږي.
+*/
+
+async function loadDistricts(){
+
+try{
+
+const response=
+await fetch(
+"https://raw.githubusercontent.com/open-admin-data/afghanistan-administrative-divisions/main/data/all-district.json"
+);
+
+if(!response.ok){
+
+throw new Error(
+"District data load failed"
+);
+
+}
+
+const data=
+await response.json();
+
+
+districtData={};
+
+
+if(Array.isArray(data)){
+
+data.forEach(function(item){
+
+const province=
+item.province ||
+item.Province ||
+item.province_name ||
+item.ProvinceName;
+
+const district=
+item.district ||
+item.District ||
+item.name ||
+item.Name;
+
+if(province&&district){
+
+if(!districtData[province]){
+
+districtData[province]=[];
+
+}
+
+if(
+!districtData[province]
+.includes(district)
+){
+
+districtData[province].push(district);
+
+}
+
+}
+
+});
+
+}
+
+}catch(error){
+
+console.warn(
+"Districts load error:",
+error
+);
+
+districtData={};
+
+}
+
+}
+
+
+/* =========================
+GET DISTRICTS
 ========================= */
 
 function getDistrictList(province){
 
-  try{
+if(
+districtData[province] &&
+Array.isArray(districtData[province])
+){
 
-    if(
-      typeof districts !== "undefined" &&
-      districts
-    ){
+return districtData[province];
 
-      if(Array.isArray(districts)){
+}
 
-        return districts
-        .filter(function(item){
-
-          return (
-            item.province === province ||
-            item.Province === province
-          );
-
-        })
-        .map(function(item){
-
-          return (
-            item.district ||
-            item.District ||
-            item.name ||
-            item.Name
-          );
-
-        })
-        .filter(Boolean);
-
-      }
-
-      if(
-        typeof districts === "object" &&
-        Array.isArray(districts[province])
-      ){
-
-        return districts[province];
-
-      }
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "districts.js error:",
-      error
-    );
-
-  }
-
-  return [];
+return [];
 
 }
 
 
 /* =========================
-   PROVINCE CHANGED
+PROVINCE CHANGED
 ========================= */
 
 function provinceChanged(){
 
-  const province =
-    document.getElementById(
-      "provinceFilter"
-    ).value;
+const province=
+document
+.getElementById("provinceFilter")
+.value;
 
-  const district =
-    document.getElementById(
-      "districtFilter"
-    );
+const district=
+document
+.getElementById("districtFilter");
 
-  district.innerHTML =
-  '<option value="">ټولې ولسوالۍ</option>';
 
-  if(province){
+district.innerHTML=
+'<option value="">ټولې ولسوالۍ</option>';
 
-    const list =
-      getDistrictList(province);
 
-    list.forEach(function(name){
+getDistrictList(province)
+.forEach(function(name){
 
-      const option =
-        document.createElement("option");
+const option=
+document.createElement("option");
 
-      option.value = name;
+option.value=name;
 
-      option.textContent = name;
+option.textContent=name;
 
-      district.appendChild(option);
+district.appendChild(option);
 
-    });
+});
 
-  }
 
-  applyFilters();
+applyFilters();
 
 }
 
 
 /* =========================
-   LOAD DATA
+LOAD DATA
 ========================= */
 
 async function loadData(){
 
-  if(!supabaseClient) return;
+if(!supabaseClient)return;
 
-  const message =
-    document.getElementById("dataMessage");
+const message=
+document.getElementById("dataMessage");
 
-  message.classList.remove("hidden");
+message.classList.remove("hidden");
 
-  message.textContent =
-    "معلومات لوډ کېږي...";
+message.textContent=
+"معلومات لوډ کېږي...";
 
-  message.className =
-    "status";
+message.className="status";
 
-  try{
 
-    const {data,error} =
-      await supabaseClient.rpc(
-        "admin_get_households"
-      );
+try{
 
-    if(error) throw error;
+const {data,error}=
+await supabaseClient.rpc(
+"admin_get_households"
+);
 
-    allRows =
-      Array.isArray(data)
-      ? data
-      : [];
 
-    applyFilters();
+if(error)throw error;
 
-    message.classList.add("hidden");
 
-  }catch(error){
+allRows=
+Array.isArray(data)
+?data
+:[];
 
-    console.error(error);
 
-    message.textContent =
-    "❌ معلومات ونه لوډ شول: " +
-    (error.message || error);
+applyFilters();
 
-    message.className =
-    "status bad";
+message.classList.add("hidden");
 
-  }
+
+}catch(error){
+
+console.error(error);
+
+message.textContent=
+"❌ معلومات ونه لوډ شول: "+
+(error.message||error);
+
+message.className="status bad";
+
+}
 
 }
 
 
 /* =========================
-   FILTER
+FILTER
 ========================= */
 
 function applyFilters(){
 
-  const province =
-    document
-    .getElementById("provinceFilter")
-    .value
-    .toLowerCase();
+const province=
+document
+.getElementById("provinceFilter")
+.value
+.toLowerCase();
 
-  const district =
-    document
-    .getElementById("districtFilter")
-    .value
-    .toLowerCase();
+const district=
+document
+.getElementById("districtFilter")
+.value
+.toLowerCase();
 
-  const search =
-    document
-    .getElementById("nameSearch")
-    .value
-    .trim()
-    .toLowerCase();
+const search=
+document
+.getElementById("nameSearch")
+.value
+.trim()
+.toLowerCase();
 
-  filteredRows =
-    allRows.filter(function(row){
 
-      if(
-        province &&
-        String(row.province || "")
-        .toLowerCase() !== province
-      ){
+filteredRows=
+allRows.filter(function(row){
 
-        return false;
+if(
+province &&
+String(row.province||"")
+.toLowerCase()!==province
+){
 
-      }
+return false;
 
-      if(
-        district &&
-        String(row.district || "")
-        .toLowerCase() !== district
-      ){
+}
 
-        return false;
 
-      }
+if(
+district &&
+String(row.district||"")
+.toLowerCase()!==district
+){
 
-      if(search){
+return false;
 
-        const people =
-          Array.isArray(row.people)
-          ? row.people
-          : [];
+}
 
-        const found =
-          people.some(function(person){
 
-            const name =
-              String(
-                person.name || ""
-              ).toLowerCase();
+if(search){
 
-            const father =
-              String(
-                person.father_name || ""
-              ).toLowerCase();
+const people=
+Array.isArray(row.people)
+?row.people
+:[];
 
-            return (
-              name.includes(search) ||
-              father.includes(search)
-            );
 
-          });
+const found=
+people.some(function(person){
 
-        if(!found) return false;
+const name=
+String(person.name||"")
+.toLowerCase();
 
-      }
+const father=
+String(person.father_name||"")
+.toLowerCase();
 
-      return true;
+return(
+name.includes(search)||
+father.includes(search)
+);
 
-    });
+});
 
-  renderStats();
 
-  renderTable();
+if(!found)return false;
+
+}
+
+
+return true;
+
+});
+
+
+renderStats();
+
+renderTable();
 
 }
 
 
 /* =========================
-   STATS
+STATS
 ========================= */
 
 function renderStats(){
 
-  let households =
-    filteredRows.length;
+let population=0;
 
-  let population = 0;
+let male=0;
 
-  let male = 0;
+let female=0;
 
-  let female = 0;
 
-  filteredRows.forEach(function(row){
+filteredRows.forEach(function(row){
 
-    population +=
-      Number(row.members || 0);
+population+=Number(row.members||0);
 
-    male +=
-      Number(row.male || 0);
+male+=Number(row.male||0);
 
-    female +=
-      Number(row.female || 0);
+female+=Number(row.female||0);
 
-  });
+});
 
-  document
-  .getElementById("totalHouseholds")
-  .textContent = households;
 
-  document
-  .getElementById("totalPopulation")
-  .textContent = population;
+document
+.getElementById("totalHouseholds")
+.textContent=
+filteredRows.length;
 
-  document
-  .getElementById("totalMale")
-  .textContent = male;
+document
+.getElementById("totalPopulation")
+.textContent=
+population;
 
-  document
-  .getElementById("totalFemale")
-  .textContent = female;
+document
+.getElementById("totalMale")
+.textContent=
+male;
+
+document
+.getElementById("totalFemale")
+.textContent=
+female;
 
 }
 
 
 /* =========================
-   MEMBER DETAILS
+ESCAPE
+========================= */
+
+function escapeHTML(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+MEMBER HTML
 ========================= */
 
 function memberHTML(person){
 
-  const relation =
-    person.relation ||
-    person.relationship ||
-    "";
+const relation=
+person.relation||
+person.relationship||
+"";
 
-  const work =
-    person.work_status ||
-    person.employment ||
-    "";
+const work=
+person.work_status||
+person.employment||
+"";
 
-  return `
-    <div class="member">
 
-      <b>نوم:</b>
-      ${escapeHTML(person.name || "")}
-      <br>
+return `
 
-      <b>د پلار نوم:</b>
-      ${escapeHTML(person.father_name || "")}
-      <br>
+<div class="member">
 
-      <b>جنس:</b>
-      ${escapeHTML(person.gender || "")}
-      <br>
+<b>نوم:</b>
+${escapeHTML(person.name||"")}
+<br>
 
-      <b>عمر:</b>
-      ${escapeHTML(String(person.age || ""))}
-      <br>
+<b>د پلار نوم:</b>
+${escapeHTML(person.father_name||"")}
+<br>
 
-      <b>مدني حالت:</b>
-      ${escapeHTML(person.marital_status || "")}
-      <br>
+<b>جنس:</b>
+${escapeHTML(person.gender||"")}
+<br>
 
-      <b>د کورنۍ اړیکه:</b>
-      ${escapeHTML(relation)}
-      <br>
+<b>عمر:</b>
+${escapeHTML(person.age||"")}
+<br>
 
-      <b>زده کړه:</b>
-      ${escapeHTML(person.education || "")}
-      <br>
+<b>مدني حالت:</b>
+${escapeHTML(person.marital_status||"")}
+<br>
 
-      <b>د کار حالت:</b>
-      ${escapeHTML(work)}
-      <br>
+<b>د کورنۍ اړیکه:</b>
+${escapeHTML(relation)}
+<br>
 
-      <b>دنده:</b>
-      ${escapeHTML(person.occupation || "")}
+<b>زده کړه:</b>
+${escapeHTML(person.education||"")}
+<br>
 
-    </div>
-  `;
+<b>د کار حالت:</b>
+${escapeHTML(work)}
+<br>
+
+<b>دنده:</b>
+${escapeHTML(person.occupation||"")}
+
+</div>
+
+`;
 
 }
 
 
 /* =========================
-   TABLE
+TABLE
 ========================= */
 
 function renderTable(){
 
-  const body =
-    document.getElementById("dataBody");
+const body=
+document.getElementById("dataBody");
 
-  body.innerHTML = "";
+body.innerHTML="";
 
-  if(filteredRows.length === 0){
 
-    body.innerHTML = `
-      <tr>
-        <td colspan="9">
-          تر اوسه هېڅ معلومات ونه موندل شول.
-        </td>
-      </tr>
-    `;
+if(filteredRows.length===0){
 
-    return;
+body.innerHTML=`
 
-  }
+<tr>
 
-  filteredRows.forEach(function(row){
+<td colspan="9">
+تر اوسه هېڅ معلومات ونه موندل شول.
+</td>
 
-    const tr =
-      document.createElement("tr");
+</tr>
 
-    const people =
-      Array.isArray(row.people)
-      ? row.people
-      : [];
+`;
 
-    const membersHTML =
-      people
-      .map(memberHTML)
-      .join("");
+return;
 
-    const date =
-      row.created_at
-      ? new Date(row.created_at)
-        .toLocaleString("ps-AF")
-      : "";
+}
 
-    tr.innerHTML = `
 
-      <td>
-        ${escapeHTML(date)}
-      </td>
+filteredRows.forEach(function(row){
 
-      <td>
-        ${escapeHTML(
-          provinceNames[row.province] ||
-          row.province ||
-          ""
-        )}
-      </td>
+const tr=
+document.createElement("tr");
 
-      <td>
-        ${escapeHTML(row.district || "")}
-      </td>
 
-      <td>
-        ${escapeHTML(row.village || "")}
-      </td>
+const people=
+Array.isArray(row.people)
+?row.people
+:[];
 
-      <td>
-        ${Number(row.members || 0)}
-      </td>
 
-      <td>
-        ${Number(row.male || 0)}
-      </td>
+const membersHTML=
+people
+.map(memberHTML)
+.join("");
 
-      <td>
-        ${Number(row.female || 0)}
-      </td>
 
-      <td>
-        ${membersHTML}
-      </td>
+const date=
+row.created_at
+?new Date(row.created_at)
+.toLocaleString("ps-AF")
+:"";
 
-      <td>
 
-        <div class="actions">
+tr.innerHTML=`
 
-          <button
-            class="btn-primary"
-            onclick="openEdit('${String(row.id)}')"
-          >
-            ✏️ Edit
-          </button>
+<td>
+${escapeHTML(date)}
+</td>
 
-          <button
-            class="btn-danger"
-            onclick="deleteRow('${String(row.id)}')"
-          >
-            🗑️ Delete
-          </button>
+<td>
+${escapeHTML(
+provinceNames[row.province]||
+row.province||
+""
+)}
+</td>
 
-        </div>
+<td>
+${escapeHTML(row.district||"")}
+</td>
 
-      </td>
+<td>
+${escapeHTML(row.village||"")}
+</td>
 
-    `;
+<td>
+${Number(row.members||0)}
+</td>
 
-    body.appendChild(tr);
+<td>
+${Number(row.male||0)}
+</td>
 
-  });
+<td>
+${Number(row.female||0)}
+</td>
+
+<td>
+${membersHTML}
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+class="btn-primary"
+onclick="openEdit('${String(row.id)}')">
+✏️ Edit
+</button>
+
+<button
+class="btn-danger"
+onclick="deleteRow('${String(row.id)}')">
+🗑️ Delete
+</button>
+
+</div>
+
+</td>
+
+`;
+
+
+body.appendChild(tr);
+
+});
 
 }
 
 
 /* =========================
-   EDIT
+EDIT
 ========================= */
 
 function openEdit(id){
 
-  const row =
-    allRows.find(function(item){
+const row=
+allRows.find(function(item){
 
-      return String(item.id) === String(id);
+return String(item.id)===String(id);
 
-    });
+});
 
-  if(!row) return;
 
-  editingId = id;
+if(!row)return;
 
-  document
-  .getElementById("editProvince")
-  .value =
-    row.province || "";
 
-  fillEditDistricts(
-    row.province || "",
-    row.district || ""
-  );
+editingId=id;
 
-  document
-  .getElementById("editVillage")
-  .value =
-    row.village || "";
 
-  const box =
-    document.getElementById(
-      "editMembers"
-    );
+document
+.getElementById("editProvince")
+.value=
+row.province||"";
 
-  box.innerHTML = "";
 
-  const people =
-    Array.isArray(row.people)
-    ? row.people
-    : [];
+fillEditDistricts(
+row.province||"",
+row.district||""
+);
 
-  people.forEach(function(person,index){
 
-    const relation =
-      person.relation ||
-      person.relationship ||
-      "";
+document
+.getElementById("editVillage")
+.value=
+row.village||"";
 
-    const work =
-      person.work_status ||
-      person.employment ||
-      "";
 
-    box.innerHTML += `
+const box=
+document.getElementById("editMembers");
 
-      <div class="member-edit">
+box.innerHTML="";
 
-       
+
+const people=
+Array.isArray(row.people)
+?row.people
+:[];
+
+
+people.forEach(function(person,index){
+
+const relation=
+person.relation||
+person.relationship||
+"";
+
+const work=
+person.work_status||
+person.employment||
+"";
+
+
+box.innerHTML+=`
+
+<div class="member-edit">
+
+<h3>
+د کورنۍ غړی ${index+1}
+</h3>
+
+<div class="grid">
+
+<label>
+نوم
+<input
+class="edit-name"
+value="${escapeHTML(person.name||"")}">
+</label>
+
+<label>
+د پلار نوم
+<input
+class="edit-father"
+value="${escapeHTML(person.father_name||"")}">
+</label>
+
+<label>
+جنس
+
+<select class="edit-gender">
+
+<option value="male"
+${person.gender==="male"?"selected":""}>
+نارینه
+</option>
+
+<option value="female"
+${person.gender==="female"?"selected":""}>
+ښځینه
+</option>
+
+</select>
+
+</label>
+
+<label>
+عمر
+<input
+type="number"
+class="edit-age"
+value="${escapeHTML(person.age||"")}">
+</label>
+
+<label>
+مدني حالت
+<input
+class="edit-marital"
+value="${escapeHTML(person.marital_status||"")}">
+</label>
+
+<label>
+د کورنۍ اړیکه
+<input
+class="edit-relation"
+value="${escapeHTML(relation)}">
+</label>
+
+<label>
+زده کړه
+<input
+class="edit-education"
+value="${escapeHTML(person.education||"")}">
+</label>
+
+<label>
+د کار حالت
+<input
+class="edit-work"
+value="${escapeHTML(work)}">
+</label>
+
+<label>
+دنده
+<input
+class="edit-occupation"
+value="${escapeHTML(person.occupation||"")}">
+</label>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+document
+.getElementById("editModal")
+.classList
+.remove("hidden");
+
+}
+
+
+/* =========================
+EDIT DISTRICTS
+========================= */
+
+function fillEditDistricts(
+province,
+selected
+){
+
+const select=
+document.getElementById(
+"editDistrict"
+);
+
+
+select.innerHTML=
+'<option value="">ولسوالي انتخاب کړئ</option>';
+
+
+getDistrictList(province)
+.forEach(function(name){
+
+const option=
+document.createElement("option");
+
+option.value=name;
+
+option.textContent=name;
+
+if(name===selected){
+
+option.selected=true;
+
+}
+
+select.appendChild(option);
+
+});
+
+}
+
+
+/* =========================
+EDIT PROVINCE
+========================= */
+
+document.addEventListener(
+"change",
+function(event){
+
+if(
+event.target &&
+event.target.id==="editProvince"
+){
+
+fillEditDistricts(
+event.target.value,
+""
+);
+
+}
+
+});
+
+
+/* =========================
+SAVE EDIT
+========================= */
+
+async function saveEdit(){
+
+if(!editingId)return;
+
+
+const message=
+document.getElementById(
+"editMessage"
+);
+
+
+message.classList.remove("hidden");
+
+message.textContent=
+"معلومات ثبتېږي...";
+
+message.className="status";
+
+
+try{
+
+const names=
+document.querySelectorAll(
+".edit-name"
+);
+
+const fathers=
+document.querySelectorAll(
+".edit-father"
+);
+
+const genders=
+document.querySelectorAll(
+".edit-gender"
+);
+
+const ages=
+document.querySelectorAll(
+".edit-age"
+);
+
+const maritals=
+document.querySelectorAll(
+".edit-marital"
+);
+
+const relations=
+document.querySelectorAll(
+".edit-relation"
+);
+
+const educations=
+document.querySelectorAll(
+".edit-education"
+);
+
+const works=
+document.querySelectorAll(
+".edit-work"
+);
+
+const occupations=
+document.querySelectorAll(
+".edit-occupation"
+);
+
+
+const people=[];
+
+let male=0;
+
+let female=0;
+
+
+for(
+let i=0;
+i<names.length;
+i++
+){
+
+const gender=
+genders[i].value;
+
+
+if(gender==="male")male++;
+
+if(gender==="female")female++;
+
+
+people.push({
+
+name:
+names[i].value.trim(),
+
+father_name:
+fathers[i].value.trim(),
+
+gender:
+gender,
+
+age:
+Number(ages[i].value||0),
+
+marital_status:
+maritals[i].value.trim(),
+
+relation:
+relations[i].value.trim(),
+
+education:
+educations[i].value.trim(),
+
+work_status:
+works[i].v
