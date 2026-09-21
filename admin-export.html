@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Admin Export</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#f1f5f9;
+color:#172033;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:25px;
+margin-top:25px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.header{
+background:linear-gradient(135deg,#075985,#0f766e);
+color:white;
+padding:25px;
+border-radius:18px;
+}
+
+h1,h2{
+margin-top:0;
+}
+
+input,select{
+width:100%;
+padding:13px;
+margin:7px 0 15px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+font-size:15px;
+}
+
+button{
+border:0;
+border-radius:9px;
+padding:12px 18px;
+font-family:inherit;
+font-size:15px;
+cursor:pointer;
+margin:5px;
+}
+
+.primary{
+background:#0f766e;
+color:white;
+}
+
+.excel{
+background:#166534;
+color:white;
+}
+
+.csv{
+background:#2563eb;
+color:white;
+}
+
+.logout{
+background:#dc2626;
+color:white;
+}
+
+.hidden{
+display:none!important;
+}
+
+.message{
+margin-top:15px;
+font-weight:bold;
+}
+
+.error{
+color:#b91c1c;
+}
+
+.success{
+color:#15803d;
+}
+
+.filters{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.info{
+background:#f0fdfa;
+border:1px solid #99f6e4;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+}
+
+@media(max-width:600px){
+
+.filters{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="container">
+
+
+<!-- LOGIN -->
+
+<div id="loginBox" class="card">
+
+<div class="header">
+
+<h1>
+د معلوماتو Export
+</h1>
+
+<p>
+یوازې د Admin لپاره
+</p>
+
+</div>
+
+
+<label>
+ایمیل
+</label>
+
+<input
+id="email"
+type="email"
+placeholder="Admin Email">
+
+
+<label>
+پاسورډ
+</label>
+
+<input
+id="password"
+type="password"
+placeholder="Password">
+
+
+<button
+class="primary"
+onclick="login()">
+
+Login
+
+</button>
+
+
+<div
+id="loginMessage"
+class="message">
+</div>
+
+</div>
+
+
+
+<!-- EXPORT PANEL -->
+
+<div
+id="exportPanel"
+class="hidden">
+
+
+<div class="header">
+
+<h1>
+📥 د نفوس معلومات Export
+</h1>
+
+<p>
+د کورنیو او ټولو غړو معلومات Excel یا CSV ته وباسئ.
+</p>
+
+<button
+class="logout"
+onclick="logout()">
+
+وتل
+
+</button>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+🔎 Filter
+</h2>
+
+
+<div class="filters">
+
+
+<div>
+
+<label>
+ولایت
+</label>
+
+<select
+id="province"
+onchange="provinceChanged()">
+
+<option value="">
+ټول ولایتونه
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+ولسوالي
+</label>
+
+<select
+id="district"
+onchange="filterData()">
+
+<option value="">
+ټولې ولسوالۍ
+</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+<label>
+د شخص نوم یا د پلار نوم
+</label>
+
+<input
+id="search"
+placeholder="Search..."
+oninput="filterData()">
+
+
+<div class="info">
+
+د Export لپاره موجودې کورنۍ:
+
+<strong id="count">
+0
+</strong>
+
+<br>
+
+ټول نفوس:
+
+<strong id="population">
+0
+</strong>
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+📥 Export
+</h2>
+
+
+<button
+class="excel"
+onclick="exportExcel()">
+
+📊 Excel (.xlsx)
+
+</button>
+
+
+<button
+class="csv"
+onclick="exportCSV()">
+
+📄 CSV
+
+</button>
+
+
+<div
+id="message"
+class="message">
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+"https://lswxkfkqpkzncbpiqqyz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
+
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* DATA */
+
+let rows = [];
+
+let filtered = [];
+
+
+
+/* LOGIN */
+
+async function login(){
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+const message =
+document
+.getElementById("loginMessage");
+
+
+if(!email || !password){
+
+message.className =
+"message error";
+
+message.textContent =
+"ایمیل او پاسورډ ولیکئ.";
+
+return;
+
+}
+
+
+message.textContent =
+"Login کېږي...";
+
+
+const result =
+await db.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(result.error){
+
+message.className =
+"message error";
+
+message.textContent =
+"Login ناکام شو: " +
+result.error.message;
+
+return;
+
+}
+
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+
+document
+.getElementById("exportPanel")
+.classList.remove("hidden");
+
+
+await loadData();
+
+}
+
+
+/* LOAD */
+
+async function loadData(){
+
+const result =
+await db.rpc(
+"admin_get_households"
+);
+
+
+if(result.error){
+
+showMessage(
+"معلومات ونه لوستل شول: " +
+result.error.message,
+true
+);
+
+return;
+
+}
+
+
+rows =
+Array.isArray(result.data)
+? result.data
+: [];
+
+
+filtered =
+[...rows];
+
+
+fillProvinces();
+
+renderInfo();
+
+}
+
+
+/* PROVINCES */
+
+function fillProvinces(){
+
+const select =
+document.getElementById(
+"province"
+);
+
+const provinces =
+[
+...new Set(
+rows
+.map(x=>x.province)
+.filter(Boolean)
+)
+].sort();
+
+
+select.innerHTML =
+`
+<option value="">
+ټول ولایتونه
+</option>
+`;
+
+
+provinces.forEach(
+province=>{
+
+select.innerHTML +=
+`
+<option value="${escapeHTML(province)}">
+${escapeHTML(province)}
+</option>
+`;
+
+});
+
+
+fillDistricts();
+
+}
+
+
+/* DISTRICTS */
+
+function provinceChanged(){
+
+fillDistricts();
+
+filterData();
+
+}
+
+
+function fillDistricts(){
+
+const province =
+document
+.getElementById("province")
+.value;
+
+let data = rows;
+
+
+if(province){
+
+data =
+rows.filter(
+x=>x.province === province
+);
+
+}
+
+
+const districts =
+[
+...new Set(
+data
+.map(x=>x.district)
+.filter(Boolean)
+)
+].sort();
+
+
+const select =
+document.getElementById(
+"district"
+);
+
+
+select.innerHTML =
+`
+<option value="">
+ټولې ولسوالۍ
+</option>
+`;
+
+
+districts.forEach(
+district=>{
+
+select.innerHTML +=
+`
+<option value="${escapeHTML(district)}">
+${escapeHTML(district)}
+</option>
+`;
+
+});
+
+}
+
+
+/* FILTER */
+
+function filterData(){
+
+const search =
+document
+.getElementById("search")
+.value
+.trim()
+.toLowerCase();
+
+const province =
+document
+.getElementById("province")
+.value;
+
+const district =
+document
+.getElementById("district")
+.value;
+
+
+filtered =
+rows.filter(row=>{
+
+if(
+province &&
+row.province !== province
+){
+
+return false;
+
+}
+
+
+if(
+district &&
+row.district !== district
+){
+
+return false;
+
+}
+
+
+if(search){
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+const found =
+people.some(person=>{
+
+const name =
+String(
+person.name || ""
+)
+.toLowerCase();
+
+const father =
+String(
+person.father_name || ""
+)
+.toLowerCase();
+
+
+return(
+name.includes(search) ||
+father.includes(search)
+);
+
+});
+
+
+if(!found){
+
+return false;
+
+}
+
+}
+
+
+return true;
+
+});
+
+
+renderInfo();
+
+}
+
+
+/* INFO */
+
+function renderInfo(){
+
+let population = 0;
+
+
+filtered.forEach(row=>{
+
+population +=
+Number(row.members || 0);
+
+});
+
+
+document
+.getElementById("count")
+.textContent =
+filtered.length;
+
+
+document
+.getElementById("population")
+.textContent =
+population;
+
+}
+
+
+/* EXCEL */
+
+function exportExcel(){
+
+if(!filtered.length){
+
+showMessage(
+"د Export لپاره معلومات نشته.",
+true
+);
+
+return;
+
+}
+
+
+const data = [];
+
+
+filtered.forEach(row=>{
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+people.forEach(person=>{
+
+data.push({
+
+"Household ID":
+row.id,
+
+"Province":
+row.province || "",
+
+"District":
+row.district || "",
+
+"Village":
+row.village || "",
+
+"Household Members":
+row.members || 0,
+
+"Male":
+row.male || 0,
+
+"Female":
+row.female || 0,
+
+"Name":
+person.name || "",
+
+"Father Name":
+person.father_name || "",
+
+"Gender":
+person.gender || "",
+
+"Age":
+person.age || "",
+
+"Marital Status":
+person.marital_status || "",
+
+"Relation":
+person.relation || "",
+
+"Education":
+person.education || "",
+
+"Work Status":
+person.work_status || "",
+
+"Occupation":
+person.occupation || "",
+
+"Created At":
+row.created_at || ""
+
+});
+
+});
+
+});
+
+
+const worksheet =
+XLSX.utils.json_to_sheet(data);
+
+
+const workbook =
+XLSX.utils.book_new();
+
+
+XLSX.utils.book_append_sheet(
+workbook,
+worksheet,
+"Population"
+);
+
+
+XLSX.writeFile(
+workbook,
+"Afghanistan-Population.xlsx"
+);
+
+
+showMessage(
+"Excel فایل جوړ شو."
+);
+
+}
+
+
+/* CSV */
+
+function exportCSV(){
+
+if(!filtered.length){
+
+showMessage(
+"د Export لپاره معلومات نشته.",
+true
+);
+
+return;
+
+}
+
+
+const data = [];
+
+
+filtered.forEach(row=>{
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+people.forEach(person=>{
+
+data.push({
+
+"Household ID":
+row.id,
+
+"Province":
+row.province || "",
+
+"District":
+row.district || "",
+
+"Village":
+row.village || "",
+
+"Household Members":
+row.members || 0,
+
+"Male":
+row.male || 0,
+
+"Female":
+row.female || 0,
+
+"Name":
+person.name || "",
+
+"Father Name":
+person.father_name || "",
+
+"Gender":
+person.gender || "",
+
+"Age":
+person.age || "",
+
+"Marital Status":
+person.marital_status || "",
+
+"Relation":
+person.relation || "",
+
+"Education":
+person.education || "",
+
+"Work Status":
+person.work_status || "",
+
+"Occupation":
+person.occupation || "",
+
+"Created At":
+row.created_at || ""
+
+});
+
+});
+
+});
+
+
+const worksheet =
+XLSX.utils.json_to_sheet(data);
+
+
+const csv =
+XLSX.utils.sheet_to_csv(
+worksheet
+);
+
+
+const blob =
+new Blob(
+["\ufeff" + csv],
+{
+type:
+"text/csv;charset=utf-8;"
+}
+);
+
+
+const url =
+URL.createObjectURL(blob);
+
+
+const link =
+document.createElement("a");
+
+
+link.href = url;
+
+link.download =
+"Afghanistan-Population.csv";
+
+
+link.click();
+
+
+URL.revokeObjectURL(url);
+
+
+showMessage(
+"CSV فایل جوړ شو."
+);
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+await db.auth.signOut();
+
+location.reload();
+
+}
+
+
+/* MESSAGE */
+
+function showMessage(
+text,
+error=false
+){
+
+const box =
+document.getElementById(
+"message"
+);
+
+box.className =
+error
+? "message error"
+: "message success";
+
+box.textContent =
+text;
+
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* EXISTING SESSION */
+
+async function checkSession(){
+
+const result =
+await db.auth.getSession();
+
+
+if(result.data.session){
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+
+document
+.getElementById("exportPanel")
+.classList.remove("hidden");
+
+
+await loadData();
+
+}
+
+}
+
+
+checkSession();
+
+</script>
+
+</body>
+
+</html>
