@@ -52,7 +52,8 @@ h1,h2{
 margin-top:0;
 }
 
-input,select{
+input,
+select{
 width:100%;
 padding:13px;
 margin:7px 0 15px;
@@ -147,7 +148,7 @@ grid-template-columns:1fr;
 <div class="header">
 
 <h1>
-د معلوماتو Export
+🔐 د معلوماتو Export
 </h1>
 
 <p>
@@ -164,7 +165,8 @@ grid-template-columns:1fr;
 <input
 id="email"
 type="email"
-placeholder="Admin Email">
+placeholder="Admin Email"
+autocomplete="off">
 
 
 <label>
@@ -174,7 +176,8 @@ placeholder="Admin Email">
 <input
 id="password"
 type="password"
-placeholder="Password">
+placeholder="Password"
+autocomplete="off">
 
 
 <button
@@ -216,7 +219,7 @@ class="hidden">
 class="logout"
 onclick="logout()">
 
-وتل
+🚪 وتل
 
 </button>
 
@@ -271,7 +274,6 @@ onchange="filterData()">
 
 </div>
 
-
 </div>
 
 
@@ -281,7 +283,7 @@ onchange="filterData()">
 
 <input
 id="search"
-placeholder="Search..."
+placeholder="نوم یا د پلار نوم..."
 oninput="filterData()">
 
 
@@ -302,7 +304,6 @@ oninput="filterData()">
 </strong>
 
 </div>
-
 
 </div>
 
@@ -351,7 +352,9 @@ class="message">
 <script>
 
 
-/* SUPABASE */
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://lswxkfkqpkzncbpiqqyz.supabase.co";
@@ -366,15 +369,18 @@ SUPABASE_KEY
 );
 
 
-/* DATA */
+/* =========================
+   DATA
+========================= */
 
 let rows = [];
 
 let filtered = [];
 
 
-
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
 async function login(){
 
@@ -408,6 +414,9 @@ return;
 }
 
 
+message.className =
+"message";
+
 message.textContent =
 "Login کېږي...";
 
@@ -436,10 +445,14 @@ return;
 }
 
 
+/*
+   Login کامیاب شو.
+   اوس معلومات اخلو.
+*/
+
 document
 .getElementById("loginBox")
 .classList.add("hidden");
-
 
 document
 .getElementById("exportPanel")
@@ -451,7 +464,9 @@ await loadData();
 }
 
 
-/* LOAD */
+/* =========================
+   LOAD DATA
+========================= */
 
 async function loadData(){
 
@@ -491,7 +506,9 @@ renderInfo();
 }
 
 
-/* PROVINCES */
+/* =========================
+   PROVINCES
+========================= */
 
 function fillProvinces(){
 
@@ -536,7 +553,9 @@ fillDistricts();
 }
 
 
-/* DISTRICTS */
+/* =========================
+   DISTRICTS
+========================= */
 
 function provinceChanged(){
 
@@ -606,7 +625,9 @@ ${escapeHTML(district)}
 }
 
 
-/* FILTER */
+/* =========================
+   FILTER
+========================= */
 
 function filterData(){
 
@@ -631,6 +652,9 @@ document
 filtered =
 rows.filter(row=>{
 
+
+/* Province */
+
 if(
 province &&
 row.province !== province
@@ -641,6 +665,8 @@ return false;
 }
 
 
+/* District */
+
 if(
 district &&
 row.district !== district
@@ -650,6 +676,8 @@ return false;
 
 }
 
+
+/* Search */
 
 if(search){
 
@@ -702,7 +730,9 @@ renderInfo();
 }
 
 
-/* INFO */
+/* =========================
+   INFO
+========================= */
 
 function renderInfo(){
 
@@ -731,7 +761,9 @@ population;
 }
 
 
-/* EXCEL */
+/* =========================
+   EXCEL
+========================= */
 
 function exportExcel(){
 
@@ -848,7 +880,9 @@ showMessage(
 }
 
 
-/* CSV */
+/* =========================
+   CSV
+========================= */
 
 function exportCSV(){
 
@@ -971,7 +1005,11 @@ link.download =
 "Afghanistan-Population.csv";
 
 
+document.body.appendChild(link);
+
 link.click();
+
+document.body.removeChild(link);
 
 
 URL.revokeObjectURL(url);
@@ -984,18 +1022,44 @@ showMessage(
 }
 
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 
 async function logout(){
 
 await db.auth.signOut();
 
-location.reload();
+rows = [];
+
+filtered = [];
+
+document
+.getElementById("exportPanel")
+.classList.add("hidden");
+
+document
+.getElementById("loginBox")
+.classList.remove("hidden");
+
+document
+.getElementById("email")
+.value = "";
+
+document
+.getElementById("password")
+.value = "";
+
+document
+.getElementById("loginMessage")
+textContent = "";
 
 }
 
 
-/* MESSAGE */
+/* =========================
+   MESSAGE
+========================= */
 
 function showMessage(
 text,
@@ -1018,7 +1082,9 @@ text;
 }
 
 
-/* ESCAPE */
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function escapeHTML(value){
 
@@ -1032,32 +1098,34 @@ return String(value ?? "")
 }
 
 
-/* EXISTING SESSION */
+/* =========================
+   FORCE LOGIN
+========================= */
 
 async function checkSession(){
 
-const result =
-await db.auth.getSession();
+/*
+   مهم:
+   پخوانی Supabase Session ختموو
+   ترڅو هر ځل Login وغواړي.
+*/
 
+await db.auth.signOut();
 
-if(result.data.session){
 
 document
 .getElementById("loginBox")
-.classList.add("hidden");
+.classList.remove("hidden");
 
 
 document
 .getElementById("exportPanel")
-.classList.remove("hidden");
-
-
-await loadData();
+.classList.add("hidden");
 
 }
 
-}
 
+/* START */
 
 checkSession();
 
