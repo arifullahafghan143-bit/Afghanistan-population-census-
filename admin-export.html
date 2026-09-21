@@ -216,15 +216,6 @@ background:#e0f2fe;
 color:#075985;
 }
 
-.member{
-background:#f8fafc;
-border:1px solid #e2e8f0;
-border-radius:9px;
-padding:10px;
-margin-bottom:7px;
-line-height:1.8;
-}
-
 .empty{
 text-align:center;
 padding:30px;
@@ -260,12 +251,9 @@ padding:20px;
 
 </head>
 
-
 <body>
 
-
 <div class="container">
-
 
 <!-- =========================
 LOGIN
@@ -284,7 +272,6 @@ class="card login-box">
 
 </div>
 
-
 <label>
 ایمیل
 </label>
@@ -294,7 +281,6 @@ id="email"
 type="email"
 placeholder="Admin Email"
 autocomplete="username">
-
 
 <label>
 پاسورډ
@@ -306,7 +292,6 @@ type="password"
 placeholder="Password"
 autocomplete="current-password">
 
-
 <button
 id="loginButton"
 class="primary"
@@ -315,7 +300,6 @@ onclick="login()">
 🔐 Login
 
 </button>
-
 
 <div
 id="loginMessage"
@@ -328,14 +312,12 @@ class="message info">
 </div>
 
 
-
 <!-- =========================
 EXPORT PANEL
 ========================= -->
 
 <div id="exportPanel"
 class="hidden">
-
 
 <div class="header">
 
@@ -369,7 +351,6 @@ onclick="logout()">
 </div>
 
 
-
 <!-- STATUS -->
 
 <div
@@ -379,7 +360,6 @@ class="message info">
 سیستم چمتو دی.
 
 </div>
-
 
 
 <!-- STATS -->
@@ -398,7 +378,6 @@ class="message info">
 
 </div>
 
-
 <div class="stat">
 
 <span>
@@ -410,7 +389,6 @@ class="message info">
 </strong>
 
 </div>
-
 
 <div class="stat">
 
@@ -427,7 +405,6 @@ class="message info">
 </div>
 
 
-
 <!-- FILTER -->
 
 <div class="card">
@@ -436,9 +413,7 @@ class="message info">
 🔎 د معلوماتو لټون
 </h2>
 
-
 <div class="filters">
-
 
 <div>
 
@@ -458,7 +433,6 @@ onchange="provinceChanged()">
 
 </div>
 
-
 <div>
 
 <label>
@@ -477,9 +451,7 @@ onchange="filterData()">
 
 </div>
 
-
 </div>
-
 
 <label>
 د شخص نوم یا د پلار نوم
@@ -491,7 +463,6 @@ type="text"
 placeholder="نوم یا د پلار نوم ولیکئ..."
 oninput="filterData()">
 
-
 <div
 id="filterMessage"
 class="message info">
@@ -501,7 +472,6 @@ class="message info">
 </div>
 
 </div>
-
 
 
 <!-- EXPORT -->
@@ -519,7 +489,6 @@ CSV هم د همدې معلوماتو پر اساس جوړېږي.
 
 </p>
 
-
 <button
 class="excel"
 onclick="exportExcel()">
@@ -528,7 +497,6 @@ onclick="exportExcel()">
 
 </button>
 
-
 <button
 class="csv"
 onclick="exportCSV()">
@@ -536,7 +504,6 @@ onclick="exportCSV()">
 📄 CSV
 
 </button>
-
 
 <div
 id="exportMessage"
@@ -547,7 +514,6 @@ class="message">
 </div>
 
 
-
 <!-- DATA PREVIEW -->
 
 <div class="card">
@@ -555,7 +521,6 @@ class="message">
 <h2>
 📋 د معلوماتو کتنه
 </h2>
-
 
 <div class="table-wrap">
 
@@ -565,46 +530,27 @@ class="message">
 
 <tr>
 
-<th>
-ID
-</th>
+<th>ID</th>
 
-<th>
-ولایت
-</th>
+<th>ولایت</th>
 
-<th>
-ولسوالي
-</th>
+<th>ولسوالي</th>
 
-<th>
-کلی / سیمه
-</th>
+<th>کلی / سیمه</th>
 
-<th>
-کورنۍ
-</th>
+<th>کورنۍ</th>
 
-<th>
-نارینه
-</th>
+<th>نارینه</th>
 
-<th>
-ښځینه
-</th>
+<th>ښځینه</th>
 
-<th>
-د کورنۍ غړي
-</th>
+<th>د کورنۍ غړي</th>
 
-<th>
-د ثبت نېټه
-</th>
+<th>د ثبت نېټه</th>
 
 </tr>
 
 </thead>
-
 
 <tbody id="dataBody">
 
@@ -628,16 +574,12 @@ class="empty">
 
 </div>
 
-
 </div>
 
-
 </div>
-
 
 
 <script>
-
 
 /* =====================================================
 SUPABASE
@@ -691,7 +633,7 @@ return String(value ?? "")
 
 
 /* =====================================================
-MESSAGE
+MESSAGES
 ===================================================== */
 
 function setLoginMessage(
@@ -752,38 +694,6 @@ text;
 
 
 /* =====================================================
-TIMEOUT
-===================================================== */
-
-function withTimeout(
-promise,
-milliseconds
-){
-
-return Promise.race([
-
-promise,
-
-new Promise(
-(_,reject)=>{
-
-setTimeout(
-()=>reject(
-new Error(
-"د Supabase ځواب تر ټاکلي وخت پورې رانغی. Internet یا Supabase اتصال وګورئ."
-)
-),
-milliseconds
-);
-
-})
-
-]);
-
-}
-
-
-/* =====================================================
 LOGIN
 ===================================================== */
 
@@ -817,27 +727,50 @@ return;
 }
 
 
-button.disabled=true;
+button.disabled = true;
 
 button.textContent =
 "⏳ Login...";
 
 
 setLoginMessage(
-"⏳ له Supabase سره Login کېږي...",
+"⏳ د Supabase Login روان دی...",
 "info"
 );
 
 
 try{
 
+/*
+د Supabase Auth مستقیم Login
+*/
 
-/* AUTH */
+const controller =
+new AbortController();
 
-const result =
-await withTimeout(
 
-db.auth.signInWithPassword({
+const timer =
+setTimeout(
+()=>controller.abort(),
+15000
+);
+
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/auth/v1/token?grant_type=password",
+
+{
+method:"POST",
+
+headers:{
+"apikey":SUPABASE_KEY,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
 
 email:email,
 
@@ -845,29 +778,88 @@ password:password
 
 }),
 
-15000
+signal:controller.signal
+
+}
 
 );
 
 
-if(result.error){
-
-throw result.error;
-
-}
+clearTimeout(timer);
 
 
-if(!result.data ||
-!result.data.session){
+let result;
+
+
+try{
+
+result =
+await response.json();
+
+}catch(e){
 
 throw new Error(
-"Login وشو خو Session جوړ نه شو."
+"د Supabase ځواب سم JSON نه و."
 );
 
 }
 
 
-/* SUCCESS */
+if(!response.ok){
+
+throw new Error(
+
+result.error_description ||
+
+result.msg ||
+
+result.message ||
+
+"Email یا Password ناسم دی."
+
+);
+
+}
+
+
+if(
+!result.access_token ||
+!result.refresh_token
+){
+
+throw new Error(
+"Login وشو، خو Session معلومات ترلاسه نه شول."
+);
+
+}
+
+
+/*
+Session جوړول
+*/
+
+const sessionResult =
+await db.auth.setSession({
+
+access_token:
+result.access_token,
+
+refresh_token:
+result.refresh_token
+
+});
+
+
+if(sessionResult.error){
+
+throw sessionResult.error;
+
+}
+
+
+/*
+Login بریالی
+*/
 
 setLoginMessage(
 "✅ Login بریالی شو. معلومات لوډ کېږي...",
@@ -898,19 +890,29 @@ error
 );
 
 
-setLoginMessage(
-
-"❌ Login ستونزه: " +
-(
+let message =
 error.message ||
-String(error)
-),
+String(error);
 
+
+if(
+error.name === "AbortError"
+){
+
+message =
+"Supabase ته د Login غوښتنه 15 ثانیې کې ځواب نه کړه. Internet یا Supabase اتصال وګورئ.";
+
+}
+
+
+setLoginMessage(
+"❌ Login ستونزه: " +
+message,
 "error"
-
 );
 
-button.disabled=false;
+
+button.disabled = false;
 
 button.textContent =
 "🔐 Login";
@@ -929,13 +931,7 @@ async function checkSession(){
 try{
 
 const result =
-await withTimeout(
-
-db.auth.getSession(),
-
-8000
-
-);
+await db.auth.getSession();
 
 
 if(
@@ -985,16 +981,9 @@ setSystemMessage(
 
 try{
 
-
 const result =
-await withTimeout(
-
-db.rpc(
+await db.rpc(
 "admin_get_households"
-),
-
-20000
-
 );
 
 
@@ -1007,8 +996,8 @@ throw result.error;
 
 rows =
 Array.isArray(result.data)
-?result.data
-:[];
+? result.data
+: [];
 
 
 filtered =
@@ -1082,7 +1071,7 @@ const provinces =
 rows
 
 .map(
-row=>row.province
+row => row.province
 )
 
 .filter(Boolean)
@@ -1102,7 +1091,7 @@ select.innerHTML =
 
 
 provinces.forEach(
-province=>{
+province => {
 
 const option =
 document.createElement(
@@ -1158,7 +1147,7 @@ if(province){
 
 data =
 rows.filter(
-row=>
+row =>
 String(
 row.province || ""
 ) === province
@@ -1175,7 +1164,7 @@ const districts =
 data
 
 .map(
-row=>row.district
+row => row.district
 )
 
 .filter(Boolean)
@@ -1201,7 +1190,7 @@ select.innerHTML =
 
 
 districts.forEach(
-district=>{
+district => {
 
 const option =
 document.createElement(
@@ -1257,7 +1246,7 @@ document
 
 filtered =
 rows.filter(
-row=>{
+row => {
 
 
 if(
@@ -1290,13 +1279,13 @@ const people =
 Array.isArray(
 row.people
 )
-?row.people
-:[];
+? row.people
+: [];
 
 
 const found =
 people.some(
-person=>{
+person => {
 
 const name =
 String(
@@ -1350,13 +1339,13 @@ INFO
 
 function renderInfo(){
 
-let population=0;
+let population = 0;
 
-let peopleCount=0;
+let peopleCount = 0;
 
 
 filtered.forEach(
-row=>{
+row => {
 
 population +=
 Number(
@@ -1368,8 +1357,8 @@ const people =
 Array.isArray(
 row.people
 )
-?row.people
-:[];
+? row.people
+: [];
 
 
 peopleCount +=
@@ -1429,7 +1418,7 @@ document.getElementById(
 );
 
 
-body.innerHTML="";
+body.innerHTML = "";
 
 
 if(!filtered.length){
@@ -1438,6 +1427,7 @@ body.innerHTML =
 
 `
 <tr>
+
 <td
 colspan="9"
 class="empty">
@@ -1445,6 +1435,7 @@ class="empty">
 هیڅ معلومات ونه موندل شول.
 
 </td>
+
 </tr>
 `;
 
@@ -1453,10 +1444,8 @@ return;
 }
 
 
-/* فقط د کورنیو Summary */
-
 filtered.forEach(
-row=>{
+row => {
 
 const tr =
 document.createElement(
@@ -1472,7 +1461,7 @@ row.created_at
 ).toLocaleString(
 "ps-AF"
 )
-:"";
+: "";
 
 
 tr.innerHTML =
@@ -1507,9 +1496,13 @@ ${Number(row.female || 0)}
 </td>
 
 <td>
-${Array.isArray(row.people)
-?row.people.length
-:0}
+${
+Array.isArray(row.people)
+?
+row.people.length
+:
+0
+}
 </td>
 
 <td>
@@ -1533,18 +1526,18 @@ MAKE EXPORT DATA
 
 function makeExportData(){
 
-const data=[];
+const data = [];
 
 
 filtered.forEach(
-row=>{
+row => {
 
 const people =
 Array.isArray(
 row.people
 )
-?row.people
-:[];
+? row.people
+: [];
 
 
 if(!people.length){
@@ -1572,15 +1565,32 @@ row.male || 0,
 "Female":
 row.female || 0,
 
-"Name":"",
-"Father Name":"",
-"Gender":"",
-"Age":"",
-"Marital Status":"",
-"Relation":"",
-"Education":"",
-"Work Status":"",
-"Occupation":"",
+"Name":
+"",
+
+"Father Name":
+"",
+
+"Gender":
+"",
+
+"Age":
+"",
+
+"Marital Status":
+"",
+
+"Relation":
+"",
+
+"Education":
+"",
+
+"Work Status":
+"",
+
+"Occupation":
+"",
 
 "Created At":
 row.created_at || ""
@@ -1593,7 +1603,7 @@ return;
 
 
 people.forEach(
-person=>{
+person => {
 
 data.push({
 
@@ -1694,7 +1704,7 @@ data
 );
 
 
-worksheet["!cols"]=[
+worksheet["!cols"] = [
 
 {wch:25},
 {wch:15},
@@ -1722,13 +1732,9 @@ XLSX.utils.book_new();
 
 
 XLSX.utils.book_append_sheet(
-
 workbook,
-
 worksheet,
-
 "Population"
-
 );
 
 
@@ -1759,6 +1765,7 @@ data.length +
 }catch(error){
 
 console.error(error);
+
 
 setExportMessage(
 
@@ -1864,7 +1871,8 @@ link.remove();
 
 
 setTimeout(
-()=>URL.revokeObjectURL(url),
+() =>
+URL.revokeObjectURL(url),
 1000
 );
 
@@ -1883,6 +1891,7 @@ data.length +
 }catch(error){
 
 console.error(error);
+
 
 setExportMessage(
 
