@@ -5,671 +5,481 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Admin - د نفوس سیستم</title>
+<title>د نفوس Admin سیستم</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script src="districts.js"></script>
 
 <style>
-
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-margin:0;
-font-family:Arial,Tahoma,sans-serif;
-background:#f1f5f9;
-color:#0f172a;
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:#f4f7fb;
+  color:#172033;
 }
 
 .container{
-width:100%;
-max-width:1400px;
-margin:auto;
-padding:20px;
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
 }
 
-.login-box{
-width:100%;
-max-width:420px;
-margin:60px auto;
-background:white;
-padding:30px;
-border-radius:18px;
-box-shadow:0 8px 30px rgba(0,0,0,.12);
+header{
+  background:#123c69;
+  color:white;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
 }
 
-h1{
-text-align:center;
-margin-top:0;
-font-size:25px;
+header h1{
+  margin:0 0 8px;
+  font-size:25px;
 }
 
-.subtitle{
-text-align:center;
-color:#64748b;
-margin-bottom:25px;
+header p{
+  margin:0;
+  opacity:.9;
 }
 
-label{
-display:block;
-margin-bottom:7px;
-font-weight:bold;
+.status{
+  padding:12px;
+  border-radius:10px;
+  margin:15px 0;
+  background:#fff3cd;
+  color:#664d03;
+}
+
+.status.ok{
+  background:#d1e7dd;
+  color:#0f5132;
+}
+
+.status.bad{
+  background:#f8d7da;
+  color:#842029;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
 }
 
 input,
 select{
-width:100%;
-padding:12px;
-border:1px solid #cbd5e1;
-border-radius:9px;
-font-size:16px;
-margin-bottom:12px;
-background:white;
+  width:100%;
+  padding:12px;
+  border:1px solid #ccd4df;
+  border-radius:8px;
+  font-size:15px;
+  margin-top:6px;
+  background:white;
 }
 
-input{
-direction:rtl;
+label{
+  font-weight:bold;
+  display:block;
+  margin-bottom:14px;
 }
 
 button{
-padding:11px 18px;
-border:none;
-border-radius:9px;
-background:#2563eb;
-color:white;
-font-size:15px;
-font-weight:bold;
-cursor:pointer;
+  border:0;
+  border-radius:8px;
+  padding:11px 18px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:bold;
 }
 
-button:hover{
-opacity:.9;
+.btn-primary{
+  background:#123c69;
+  color:white;
 }
 
-button:disabled{
-opacity:.6;
-cursor:not-allowed;
+.btn-success{
+  background:#198754;
+  color:white;
 }
 
-.actions{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+.btn-danger{
+  background:#dc3545;
+  color:white;
 }
 
-.actions button{
-width:auto;
+.btn-secondary{
+  background:#6c757d;
+  color:white;
 }
 
-.logout{
-background:#dc2626;
+.btn-light{
+  background:#e9ecef;
+  color:#222;
 }
 
-.refresh{
-background:#16a34a;
-}
-
-.edit-btn{
-background:#f59e0b;
-color:#111827;
-margin:3px;
-}
-
-.delete-btn{
-background:#dc2626;
-margin:3px;
-}
-
-.cancel-btn{
-background:#64748b;
-}
-
-.save-btn{
-background:#16a34a;
-}
-
-.message{
-margin-top:15px;
-padding:12px;
-border-radius:10px;
-text-align:center;
-display:none;
-line-height:1.8;
-}
-
-.error{
-background:#fee2e2;
-color:#991b1b;
-}
-
-.success{
-background:#dcfce7;
-color:#166534;
-}
-
-.info{
-background:#dbeafe;
-color:#1e40af;
-}
-
-.admin-header{
-background:white;
-padding:20px;
-border-radius:16px;
-margin-bottom:20px;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-}
-
-.header-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-flex-wrap:wrap;
-}
-
-.header-row h1{
-margin:0;
+.login{
+  max-width:450px;
+  margin:40px auto;
 }
 
 .stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-margin-bottom:20px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
 }
 
-.card{
-background:white;
-padding:20px;
-border-radius:16px;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-text-align:center;
+.stat{
+  background:#fff;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
 
-.card-title{
-color:#64748b;
-font-size:15px;
-margin-bottom:8px;
-}
-
-.card-number{
-font-size:30px;
-font-weight:bold;
-color:#2563eb;
+.stat strong{
+  display:block;
+  font-size:30px;
+  margin-top:8px;
+  color:#123c69;
 }
 
 .filters{
-background:white;
-padding:20px;
-border-radius:16px;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-margin-bottom:20px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
 }
 
-.filters-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-gap:12px;
-}
-
-.filter-title{
-font-size:20px;
-font-weight:bold;
-margin-top:0;
-}
-
-.clear-filter{
-background:#64748b;
-margin-top:5px;
-}
-
-.table-box{
-background:white;
-border-radius:16px;
-padding:20px;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-overflow-x:auto;
+.table-wrap{
+  overflow-x:auto;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
-min-width:1250px;
+  width:100%;
+  border-collapse:collapse;
+  min-width:900px;
 }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #e2e8f0;
-text-align:right;
-vertical-align:top;
+th,
+td{
+  border-bottom:1px solid #e1e5ea;
+  padding:12px 8px;
+  text-align:right;
+  vertical-align:top;
 }
 
 th{
-background:#f8fafc;
-font-weight:bold;
+  background:#eef3f8;
 }
 
 .member{
-background:#f8fafc;
-border-radius:10px;
-padding:10px;
-margin-bottom:8px;
-line-height:1.8;
-border:1px solid #e2e8f0;
+  background:#f7f9fc;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
 }
 
 .member:last-child{
-margin-bottom:0;
+  margin-bottom:0;
 }
 
-.empty,
-.loading{
-text-align:center;
-padding:40px;
-color:#64748b;
-font-size:18px;
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
 }
 
-#adminPanel{
-display:none;
+.hidden{
+  display:none !important;
 }
-
-.small{
-font-size:13px;
-color:#64748b;
-margin-top:5px;
-}
-
-.status{
-margin-top:15px;
-padding:10px;
-border-radius:8px;
-text-align:center;
-font-size:13px;
-}
-
-.status.ok{
-background:#dcfce7;
-color:#166534;
-}
-
-.status.bad{
-background:#fee2e2;
-color:#991b1b;
-}
-
-
-/* EDIT MODAL */
 
 .modal{
-display:none;
-position:fixed;
-z-index:9999;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.55);
-overflow-y:auto;
-padding:20px;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+  z-index:1000;
 }
 
-.modal-content{
-background:white;
-max-width:1000px;
-margin:30px auto;
-padding:25px;
-border-radius:18px;
-box-shadow:0 10px 40px rgba(0,0,0,.25);
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:850px;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:15px;
+  padding:20px;
 }
 
-.modal-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-margin-bottom:20px;
+.member-edit{
+  border:1px solid #dce2e8;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:15px;
 }
 
-.modal-header h2{
-margin:0;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
 
-.close-btn{
-background:#64748b;
-width:auto;
-padding:8px 14px;
+.footer-actions{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
 }
 
-.edit-family-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:12px;
+@media(max-width:800px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .filters{
+    grid-template-columns:1fr;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
 }
 
-.edit-person{
-border:1px solid #cbd5e1;
-border-radius:12px;
-padding:15px;
-margin-top:15px;
-background:#f8fafc;
-}
+@media(max-width:500px){
+  .container{
+    padding:10px;
+  }
 
-.edit-person h3{
-margin-top:0;
-color:#075e54;
-}
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
 
-.edit-actions{
-display:flex;
-gap:10px;
-justify-content:flex-start;
-margin-top:20px;
-flex-wrap:wrap;
-}
+  .stat{
+    padding:14px 8px;
+  }
 
-.edit-actions button{
-width:auto;
+  .stat strong{
+    font-size:24px;
+  }
 }
-
 </style>
 </head>
 
 <body>
 
+<div class="container">
 
-<!-- LOGIN -->
-
-<div id="loginPanel" class="login-box">
-
-<h1>🔐 د Admin سیستم</h1>
-
-<div class="subtitle">
-د افغانستان د نفوس آنلاین شمېرنه
-</div>
-
-<label for="email">Email</label>
-
-<input
-type="email"
-id="email"
-placeholder="admin@example.com"
-autocomplete="email"
->
-
-<label for="password">Password</label>
-
-<input
-type="password"
-id="password"
-placeholder="Password"
-autocomplete="current-password"
->
-
-<button id="loginButton" type="button">
-ننوتل
-</button>
-
-<div id="message" class="message"></div>
+<header>
+  <h1>د نفوس Admin سیستم</h1>
+  <p>یوازې د مجاز Admin لپاره</p>
+</header>
 
 <div id="connectionStatus" class="status">
-سیستم چک کېږي...
+  سیستم چک کېږي...
 </div>
 
-<a
-href="index.html"
-style="display:block;text-align:center;margin-top:20px;color:#2563eb;text-decoration:none;"
->
-← اصلي فورم ته ستنېدل
-</a>
+<!-- LOGIN -->
+<div id="loginBox" class="card login hidden">
+
+  <h2>Admin Login</h2>
+
+  <label>
+    Email
+    <input id="email" type="email" placeholder="Email">
+  </label>
+
+  <label>
+    Password
+    <input id="password" type="password" placeholder="Password">
+  </label>
+
+  <button class="btn-primary" onclick="login()">
+    Login
+  </button>
+
+  <div id="loginMessage" class="status hidden"></div>
 
 </div>
-
-
 
 <!-- ADMIN PANEL -->
+<div id="adminPanel" class="hidden">
 
-<div id="adminPanel" class="container">
+  <div class="card">
+    <div class="actions">
 
+      <button class="btn-primary" onclick="loadData()">
+        🔄 معلومات تازه کول
+      </button>
 
-<div class="admin-header">
+      <button class="btn-secondary" onclick="logout()">
+        🚪 وتل
+      </button>
 
-<div class="header-row">
+    </div>
+  </div>
 
-<h1>📊 د نفوس Admin سیستم</h1>
+  <!-- STATS -->
+  <div class="stats">
 
-<div class="actions">
+    <div class="stat">
+      ټولې کورنۍ
+      <strong id="totalHouseholds">0</strong>
+    </div>
 
-<button
-class="refresh"
-id="refreshButton"
-type="button"
->
-🔄 معلومات تازه کول
-</button>
+    <div class="stat">
+      ټول نفوس
+      <strong id="totalPopulation">0</strong>
+    </div>
 
-<button
-class="logout"
-id="logoutButton"
-type="button"
->
-🚪 وتل
-</button>
+    <div class="stat">
+      نارینه
+      <strong id="totalMale">0</strong>
+    </div>
 
-</div>
+    <div class="stat">
+      ښځینه
+      <strong id="totalFemale">0</strong>
+    </div>
 
-</div>
+  </div>
 
-<div class="small">
-یوازې د مجاز Admin لپاره
-</div>
+  <!-- FILTERS -->
+  <div class="card">
 
-</div>
+    <h2>🔎 د معلوماتو لټون او Filter</h2>
 
+    <div class="filters">
 
+      <label>
+        ولایت
+        <select id="provinceFilter" onchange="provinceChanged()">
+          <option value="">ټول ولایتونه</option>
+        </select>
+      </label>
 
-<!-- FILTERS -->
+      <label>
+        ولسوالۍ
+        <select id="districtFilter" onchange="applyFilters()">
+          <option value="">ټولې ولسوالۍ</option>
+        </select>
+      </label>
 
-<div class="filters">
+      <label>
+        د شخص نوم
+        <input
+          id="nameSearch"
+          type="text"
+          placeholder="د شخص یا پلار نوم ولیکئ..."
+          oninput="applyFilters()"
+        >
+      </label>
 
-<h2 class="filter-title">
-🔎 د معلوماتو لټون او فلټر
-</h2>
+    </div>
 
-<div class="filters-grid">
+  </div>
 
-<div>
+  <!-- TABLE -->
+  <div class="card">
 
-<label for="provinceFilter">
-ولایت
-</label>
+    <h2>📋 د ثبت شوو کورنیو تاریخ</h2>
 
-<select id="provinceFilter">
-<option value="">
-ټول ولایتونه
-</option>
-</select>
+    <div id="dataMessage" class="status hidden"></div>
 
-</div>
+    <div class="table-wrap">
 
+      <table>
 
-<div>
+        <thead>
 
-<label for="districtFilter">
-ولسوالي
-</label>
+          <tr>
+            <th>نېټه</th>
+            <th>ولایت</th>
+            <th>ولسوالي</th>
+            <th>سیمه / کلی</th>
+            <th>کورنۍ</th>
+            <th>نارینه</th>
+            <th>ښځینه</th>
+            <th>د کورنۍ غړي</th>
+            <th>عملیات</th>
+          </tr>
 
-<select id="districtFilter">
-<option value="">
-ټولې ولسوالۍ
-</option>
-</select>
+        </thead>
 
-</div>
+        <tbody id="dataBody"></tbody>
 
+      </table>
 
-<div>
+    </div>
 
-<label for="nameSearch">
-د نوم له مخې لټون
-</label>
-
-<input
-id="nameSearch"
-type="search"
-placeholder="د شخص نوم ولیکئ..."
->
-</div>
-
-</div>
-
-<button
-class="clear-filter"
-id="clearFilter"
-type="button"
->
-پاکول
-</button>
-
-</div>
-
-
-
-<!-- STATS -->
-
-<div class="stats">
-
-<div class="card">
-
-<div class="card-title">
-ټولې کورنۍ
-</div>
-
-<div
-id="totalHouseholds"
-class="card-number"
->
-0
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-title">
-ټول نفوس
-</div>
-
-<div
-id="totalPopulation"
-class="card-number"
->
-0
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-title">
-نارینه
-</div>
-
-<div
-id="totalMale"
-class="card-number"
->
-0
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-title">
-ښځینه
-</div>
-
-<div
-id="totalFemale"
-class="card-number"
->
-0
-</div>
+  </div>
 
 </div>
 
 </div>
-
-
-
-<!-- TABLE -->
-
-<div class="table-box">
-
-<h2>
-📋 د ثبت شوو کورنیو تاریخ
-</h2>
-
-<div id="tableContainer">
-
-<div class="loading">
-معلومات لوډ کېږي...
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 
 
 <!-- EDIT MODAL -->
+<div id="editModal" class="modal hidden">
 
-<div
-id="editModal"
-class="modal"
->
+  <div class="modal-box">
 
-<div class="modal-content">
+    <h2>✏️ د کورنۍ معلومات بدلول</h2>
 
-<div class="modal-header">
+    <div class="grid">
 
-<h2>
-✏️ د کورنۍ معلومات Edit
-</h2>
+      <label>
+        ولایت
+        <select id="editProvince"></select>
+      </label>
 
-<button
-class="close-btn"
-onclick="closeEditModal()"
-type="button"
->
-✕ بندول
-</button>
+      <label>
+        ولسوالۍ
+        <select id="editDistrict"></select>
+      </label>
+
+      <label>
+        سیمه / کلی
+        <input id="editVillage" type="text">
+      </label>
+
+    </div>
+
+    <h3>د کورنۍ غړي</h3>
+
+    <div id="editMembers"></div>
+
+    <div class="footer-actions">
+
+      <button class="btn-success" onclick="saveEdit()">
+        💾 معلومات ثبتول
+      </button>
+
+      <button class="btn-light" onclick="closeEdit()">
+        لغوه
+      </button>
+
+    </div>
+
+    <div id="editMessage" class="status hidden"></div>
+
+  </div>
 
 </div>
-
-<div id="editForm"></div>
-
-</div>
-
-</div>
-
 
 
 <script>
 
-
-/* ======================================
+/* =========================
    SUPABASE
-====================================== */
+========================= */
 
 const SUPABASE_URL =
 "https://lswxkfkqpkzncbpiqqyz.supabase.co";
@@ -681,1277 +491,857 @@ let supabaseClient = null;
 
 let allRows = [];
 
+let filteredRows = [];
+
 let editingId = null;
 
 
-
-/* ======================================
+/* =========================
    PROVINCES
-====================================== */
+========================= */
 
-const provinceKeys = [
+const provinceNames = {
 
-"Kabul",
-"Nangarhar",
-"Paktia",
-"Kandahar",
-"Herat",
-"Balkh",
-"Kunduz",
-"Takhar",
-"Badakhshan",
-"Laghman",
-"Kunar",
-"Khost",
-"Paktika",
-"Logar",
-"Ghazni",
-"Zabul",
-"Helmand",
-"Farah",
-"Nimroz",
-"Ghor",
-"Badghis",
-"Faryab",
-"Jawzjan",
-"Sar-e-Pul",
-"Samangan",
-"Bamyan",
-"Daykundi",
-"Uruzgan",
-"Maidan Wardak",
-"Parwan",
-"Kapisa",
-"Panjshir",
-"Nuristan",
-"Baghlan"
+  "Badakhshan":"بدخشان",
+  "Badghis":"بادغیس",
+  "Baghlan":"بغلان",
+  "Balkh":"بلخ",
+  "Bamyan":"بامیان",
+  "Daykundi":"دایکندي",
+  "Farah":"فراه",
+  "Faryab":"فاریاب",
+  "Ghazni":"غزني",
+  "Ghor":"غور",
+  "Helmand":"هلمند",
+  "Herat":"هرات",
+  "Jowzjan":"جوزجان",
+  "Kabul":"کابل",
+  "Kandahar":"کندهار",
+  "Kapisa":"کاپیسا",
+  "Khost":"خوست",
+  "Kunar":"کونړ",
+  "Kunduz":"کندز",
+  "Laghman":"لغمان",
+  "Logar":"لوګر",
+  "Nangarhar":"ننګرهار",
+  "Nimroz":"نیمروز",
+  "Nuristan":"نورستان",
+  "Paktia":"پکتیا",
+  "Paktika":"پکتیکا",
+  "Panjshir":"پنجشیر",
+  "Parwan":"پروان",
+  "Samangan":"سمنګان",
+  "Sar-e Pol":"سرپل",
+  "Takhar":"تخار",
+  "Uruzgan":"اروزګان",
+  "Wardak":"وردګ",
+  "Zabul":"زابل"
 
-];
+};
 
-
-const provinceNames = [
-
-"کابل",
-"ننګرهار",
-"پکتیا",
-"کندهار",
-"هرات",
-"بلخ",
-"کندز",
-"تخار",
-"بدخشان",
-"لغمان",
-"کنړ",
-"خوست",
-"پکتیکا",
-"لوګر",
-"غزني",
-"زابل",
-"هلمند",
-"فراه",
-"نیمروز",
-"غور",
-"بادغیس",
-"فاریاب",
-"جوزجان",
-"سرپل",
-"سمنګان",
-"بامیان",
-"دایکندي",
-"ارزګان",
-"میدان وردګ",
-"پروان",
-"کاپیسا",
-"پنجشېر",
-"نورستان",
-"بغلان"
-
-];
+const provinceKeys = Object.keys(provinceNames);
 
 
+/* =========================
+   SAFE START
+========================= */
 
-/* ======================================
-   SUPABASE CHECK
-====================================== */
+function startAdmin(){
 
-function checkSupabase(){
+  const status =
+    document.getElementById("connectionStatus");
 
-const status =
-document.getElementById(
-"connectionStatus"
-);
+  try{
 
-if(
-typeof window.supabase === "undefined"
-){
+    if(
+      !window.supabase ||
+      typeof window.supabase.createClient !== "function"
+    ){
 
-status.textContent =
-"❌ Supabase سیستم لوډ نه شو.";
+      status.textContent =
+      "❌ Supabase سیستم لوډ نه شو.";
 
-status.className =
-"status bad";
+      status.className =
+      "status bad";
 
-return false;
+      showLogin();
 
-}
+      return;
 
+    }
 
-try{
+    supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
-supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+    status.textContent =
+    "✅ Supabase سیستم تیار دی.";
 
-status.textContent =
-"✅ Supabase سیستم تیار دی.";
+    status.className =
+    "status ok";
 
-status.className =
-"status ok";
+    fillProvinceFilters();
 
-return true;
+    showLogin();
 
-}catch(error){
+    checkSession();
 
-console.error(error);
+  }catch(error){
 
-status.textContent =
-"❌ Supabase جوړ نه شو.";
+    console.error(error);
 
-status.className =
-"status bad";
+    status.textContent =
+    "❌ د سیستم د پیل ستونزه: " +
+    (error.message || error);
 
-return false;
+    status.className =
+    "status bad";
 
-}
+    showLogin();
+
+  }
 
 }
 
 
+/* =========================
+   SHOW LOGIN
+========================= */
 
-/* ======================================
-   MESSAGE
-====================================== */
+function showLogin(){
 
-function showMessage(
-text,
-type="error"
-){
-
-const box =
-document.getElementById(
-"message"
-);
-
-box.textContent =
-text;
-
-box.className =
-"message " + type;
-
-box.style.display =
-"block";
+  document
+  .getElementById("loginBox")
+  .classList
+  .remove("hidden");
 
 }
 
 
-
-/* ======================================
-   LOAD PROVINCES FILTER
-====================================== */
-
-function loadProvinceFilter(){
-
-const box =
-document.getElementById(
-"provinceFilter"
-);
-
-box.innerHTML =
-'<option value="">ټول ولایتونه</option>';
-
-provinceKeys.forEach(
-(key,index)=>{
-
-const option =
-document.createElement(
-"option"
-);
-
-option.value =
-key;
-
-option.textContent =
-provinceNames[index];
-
-box.appendChild(option);
-
-});
-
-}
-
-
-
-/* ======================================
-   LOAD DISTRICT FILTER
-====================================== */
-
-function loadDistrictFilter(){
-
-const province =
-document.getElementById(
-"provinceFilter"
-).value;
-
-const box =
-document.getElementById(
-"districtFilter"
-);
-
-box.innerHTML =
-'<option value="">ټولې ولسوالۍ</option>';
-
-if(
-!province ||
-typeof districts === "undefined" ||
-!districts ||
-!districts[province]
-){
-
-return;
-
-}
-
-districts[province].forEach(
-district=>{
-
-const option =
-document.createElement(
-"option"
-);
-
-option.value =
-district;
-
-option.textContent =
-district;
-
-box.appendChild(option);
-
-});
-
-}
-
-
-
-/* ======================================
+/* =========================
    LOGIN
-====================================== */
+========================= */
 
 async function login(){
 
-const email =
-document.getElementById(
-"email"
-).value.trim();
+  const email =
+    document.getElementById("email").value.trim();
 
-const password =
-document.getElementById(
-"password"
-).value;
+  const password =
+    document.getElementById("password").value;
 
-const button =
-document.getElementById(
-"loginButton"
-);
+  const message =
+    document.getElementById("loginMessage");
 
+  if(!email || !password){
 
-if(!email){
+    message.textContent =
+    "Email او Password ولیکئ.";
 
-showMessage(
-"مهرباني وکړئ Email ولیکئ.",
-"error"
-);
+    message.className =
+    "status bad";
 
-return;
+    return;
 
-}
+  }
 
+  message.textContent =
+  "Login کېږي...";
 
-if(!password){
+  message.className =
+  "status";
 
-showMessage(
-"مهرباني وکړئ Password ولیکئ.",
-"error"
-);
+  try{
 
-return;
+    const {data,error} =
+      await supabaseClient.auth.signInWithPassword({
+        email:email,
+        password:password
+      });
 
-}
+    if(error) throw error;
 
+    message.textContent =
+    "✅ Login بریالی شو.";
 
-if(!supabaseClient){
+    message.className =
+    "status ok";
 
-if(!checkSupabase()){
+    setTimeout(function(){
 
-showMessage(
-"Supabase سیستم تیار نه دی.",
-"error"
-);
+      document
+      .getElementById("loginBox")
+      .classList
+      .add("hidden");
 
-return;
+      document
+      .getElementById("adminPanel")
+      .classList
+      .remove("hidden");
 
-}
+      loadData();
 
-}
+    },500);
 
+  }catch(error){
 
-button.disabled =
-true;
+    console.error(error);
 
-button.textContent =
-"ننوتل کېږي...";
+    message.textContent =
+    "❌ Login ستونزه: " +
+    (error.message || error);
 
+    message.className =
+    "status bad";
 
-try{
-
-const {data,error} =
-await supabaseClient.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
-});
-
-
-if(error){
-
-console.error(
-"LOGIN ERROR:",
-error
-);
-
-showMessage(
-"❌ ننوتل ناکام شول: " +
-error.message,
-"error"
-);
-
-button.disabled =
-false;
-
-button.textContent =
-"ننوتل";
-
-return;
+  }
 
 }
 
 
-if(
-!data ||
-!data.user
-){
+/* =========================
+   CHECK SESSION
+========================= */
 
-showMessage(
-"❌ User ونه موندل شو.",
-"error"
-);
+async function checkSession(){
 
-button.disabled =
-false;
+  if(!supabaseClient) return;
 
-button.textContent =
-"ننوتل";
+  try{
 
-return;
+    const {data} =
+      await supabaseClient.auth.getSession();
 
-}
+    if(
+      data &&
+      data.session
+    ){
 
+      document
+      .getElementById("loginBox")
+      .classList
+      .add("hidden");
 
-document.getElementById(
-"loginPanel"
-).style.display =
-"none";
+      document
+      .getElementById("adminPanel")
+      .classList
+      .remove("hidden");
 
-document.getElementById(
-"adminPanel"
-).style.display =
-"block";
+      loadData();
 
+    }
 
-loadProvinceFilter();
+  }catch(error){
 
-await loadData();
+    console.error(error);
 
-
-}catch(error){
-
-console.error(error);
-
-showMessage(
-"❌ یوه تېروتنه رامنځته شوه: " +
-error.message,
-"error"
-);
+  }
 
 }
 
 
-button.disabled =
-false;
+/* =========================
+   LOGOUT
+========================= */
 
-button.textContent =
-"ننوتل";
+async function logout(){
+
+  if(!supabaseClient) return;
+
+  await supabaseClient.auth.signOut();
+
+  location.reload();
 
 }
 
 
+/* =========================
+   PROVINCE FILTER
+========================= */
 
-/* ======================================
+function fillProvinceFilters(){
+
+  const filter =
+    document.getElementById("provinceFilter");
+
+  const edit =
+    document.getElementById("editProvince");
+
+  if(!filter) return;
+
+  filter.innerHTML =
+  '<option value="">ټول ولایتونه</option>';
+
+  if(edit){
+
+    edit.innerHTML =
+    '<option value="">ولایت انتخاب کړئ</option>';
+
+  }
+
+  provinceKeys.forEach(function(key){
+
+    const option =
+      document.createElement("option");
+
+    option.value = key;
+
+    option.textContent =
+      provinceNames[key] || key;
+
+    filter.appendChild(option);
+
+    if(edit){
+
+      const editOption =
+        document.createElement("option");
+
+      editOption.value = key;
+
+      editOption.textContent =
+        provinceNames[key] || key;
+
+      edit.appendChild(editOption);
+
+    }
+
+  });
+
+}
+
+
+/* =========================
+   DISTRICTS
+========================= */
+
+function getDistrictList(province){
+
+  try{
+
+    if(
+      typeof districts !== "undefined" &&
+      districts
+    ){
+
+      if(Array.isArray(districts)){
+
+        return districts
+        .filter(function(item){
+
+          return (
+            item.province === province ||
+            item.Province === province
+          );
+
+        })
+        .map(function(item){
+
+          return (
+            item.district ||
+            item.District ||
+            item.name ||
+            item.Name
+          );
+
+        })
+        .filter(Boolean);
+
+      }
+
+      if(
+        typeof districts === "object" &&
+        Array.isArray(districts[province])
+      ){
+
+        return districts[province];
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "districts.js error:",
+      error
+    );
+
+  }
+
+  return [];
+
+}
+
+
+/* =========================
+   PROVINCE CHANGED
+========================= */
+
+function provinceChanged(){
+
+  const province =
+    document.getElementById(
+      "provinceFilter"
+    ).value;
+
+  const district =
+    document.getElementById(
+      "districtFilter"
+    );
+
+  district.innerHTML =
+  '<option value="">ټولې ولسوالۍ</option>';
+
+  if(province){
+
+    const list =
+      getDistrictList(province);
+
+    list.forEach(function(name){
+
+      const option =
+        document.createElement("option");
+
+      option.value = name;
+
+      option.textContent = name;
+
+      district.appendChild(option);
+
+    });
+
+  }
+
+  applyFilters();
+
+}
+
+
+/* =========================
    LOAD DATA
-====================================== */
+========================= */
 
 async function loadData(){
 
-const container =
-document.getElementById(
-"tableContainer"
-);
+  if(!supabaseClient) return;
 
-container.innerHTML =
-'<div class="loading">معلومات لوډ کېږي...</div>';
+  const message =
+    document.getElementById("dataMessage");
 
+  message.classList.remove("hidden");
 
-try{
+  message.textContent =
+    "معلومات لوډ کېږي...";
 
-const {data,error} =
-await supabaseClient.rpc(
-"admin_get_households"
-);
+  message.className =
+    "status";
 
+  try{
 
-if(error){
+    const {data,error} =
+      await supabaseClient.rpc(
+        "admin_get_households"
+      );
 
-console.error(
-"RPC ERROR:",
-error
-);
+    if(error) throw error;
 
-container.innerHTML =
-'<div class="empty">❌ معلومات ترلاسه نه شول.<br>' +
-escapeHtml(error.message) +
-'</div>';
+    allRows =
+      Array.isArray(data)
+      ? data
+      : [];
 
-return;
+    applyFilters();
 
-}
+    message.classList.add("hidden");
 
+  }catch(error){
 
-let rows =
-data || [];
+    console.error(error);
 
+    message.textContent =
+    "❌ معلومات ونه لوډ شول: " +
+    (error.message || error);
 
-if(typeof rows === "string"){
+    message.className =
+    "status bad";
 
-try{
-
-rows =
-JSON.parse(rows);
-
-}catch(e){
-
-rows =
-[];
-
-}
+  }
 
 }
 
 
-if(!Array.isArray(rows)){
-
-rows =
-[];
-
-}
-
-
-allRows =
-rows;
-
-
-applyFilters();
-
-
-}catch(error){
-
-console.error(error);
-
-container.innerHTML =
-'<div class="empty">❌ تېروتنه: ' +
-escapeHtml(error.message) +
-'</div>';
-
-}
-
-}
-
-
-
-/* ======================================
+/* =========================
    FILTER
-====================================== */
+========================= */
 
 function applyFilters(){
 
-const province =
-document.getElementById(
-"provinceFilter"
-).value.trim();
+  const province =
+    document
+    .getElementById("provinceFilter")
+    .value
+    .toLowerCase();
 
-const district =
-document.getElementById(
-"districtFilter"
-).value.trim();
+  const district =
+    document
+    .getElementById("districtFilter")
+    .value
+    .toLowerCase();
 
-const search =
-document.getElementById(
-"nameSearch"
-).value.trim().toLowerCase();
+  const search =
+    document
+    .getElementById("nameSearch")
+    .value
+    .trim()
+    .toLowerCase();
 
+  filteredRows =
+    allRows.filter(function(row){
 
-let rows =
-allRows.filter(
-row=>{
+      if(
+        province &&
+        String(row.province || "")
+        .toLowerCase() !== province
+      ){
 
-if(
-province &&
-row.province !== province
-){
+        return false;
 
-return false;
+      }
 
-}
+      if(
+        district &&
+        String(row.district || "")
+        .toLowerCase() !== district
+      ){
 
+        return false;
 
-if(
-district &&
-row.district !== district
-){
+      }
 
-return false;
+      if(search){
 
-}
+        const people =
+          Array.isArray(row.people)
+          ? row.people
+          : [];
 
+        const found =
+          people.some(function(person){
 
-if(search){
+            const name =
+              String(
+                person.name || ""
+              ).toLowerCase();
 
-let people =
-parsePeople(
-row.people
-);
+            const father =
+              String(
+                person.father_name || ""
+              ).toLowerCase();
 
-const found =
-people.some(
-person=>{
+            return (
+              name.includes(search) ||
+              father.includes(search)
+            );
 
-const name =
-String(
-person.name || ""
-).toLowerCase();
+          });
 
-const father =
-String(
-person.father_name || ""
-).toLowerCase();
+        if(!found) return false;
 
-return(
-name.includes(search) ||
-father.includes(search)
-);
+      }
 
-});
+      return true;
 
-if(!found){
+    });
 
-return false;
+  renderStats();
 
-}
-
-}
-
-
-return true;
-
-});
-
-
-renderStats(rows);
-
-renderTable(rows);
+  renderTable();
 
 }
 
 
-
-/* ======================================
+/* =========================
    STATS
-====================================== */
+========================= */
 
-function renderStats(rows){
+function renderStats(){
 
-let households =
-rows.length;
+  let households =
+    filteredRows.length;
 
-let population =
-0;
+  let population = 0;
 
-let male =
-0;
+  let male = 0;
 
-let female =
-0;
+  let female = 0;
 
+  filteredRows.forEach(function(row){
 
-rows.forEach(
-row=>{
+    population +=
+      Number(row.members || 0);
 
-population +=
-Number(
-row.members || 0
-);
+    male +=
+      Number(row.male || 0);
 
-male +=
-Number(
-row.male || 0
-);
+    female +=
+      Number(row.female || 0);
 
-female +=
-Number(
-row.female || 0
-);
+  });
 
-});
+  document
+  .getElementById("totalHouseholds")
+  .textContent = households;
 
+  document
+  .getElementById("totalPopulation")
+  .textContent = population;
 
-document.getElementById(
-"totalHouseholds"
-).textContent =
-households.toLocaleString(
-"en-US"
-);
+  document
+  .getElementById("totalMale")
+  .textContent = male;
 
-document.getElementById(
-"totalPopulation"
-).textContent =
-population.toLocaleString(
-"en-US"
-);
-
-document.getElementById(
-"totalMale"
-).textContent =
-male.toLocaleString(
-"en-US"
-);
-
-document.getElementById(
-"totalFemale"
-).textContent =
-female.toLocaleString(
-"en-US"
-);
+  document
+  .getElementById("totalFemale")
+  .textContent = female;
 
 }
 
 
+/* =========================
+   MEMBER DETAILS
+========================= */
 
-/* ======================================
-   PARSE PEOPLE
-====================================== */
+function memberHTML(person){
 
-function parsePeople(people){
+  const relation =
+    person.relation ||
+    person.relationship ||
+    "";
 
-if(!people){
+  const work =
+    person.work_status ||
+    person.employment ||
+    "";
 
-return [];
+  return `
+    <div class="member">
+
+      <b>نوم:</b>
+      ${escapeHTML(person.name || "")}
+      <br>
+
+      <b>د پلار نوم:</b>
+      ${escapeHTML(person.father_name || "")}
+      <br>
+
+      <b>جنس:</b>
+      ${escapeHTML(person.gender || "")}
+      <br>
+
+      <b>عمر:</b>
+      ${escapeHTML(String(person.age || ""))}
+      <br>
+
+      <b>مدني حالت:</b>
+      ${escapeHTML(person.marital_status || "")}
+      <br>
+
+      <b>د کورنۍ اړیکه:</b>
+      ${escapeHTML(relation)}
+      <br>
+
+      <b>زده کړه:</b>
+      ${escapeHTML(person.education || "")}
+      <br>
+
+      <b>د کار حالت:</b>
+      ${escapeHTML(work)}
+      <br>
+
+      <b>دنده:</b>
+      ${escapeHTML(person.occupation || "")}
+
+    </div>
+  `;
 
 }
 
 
-if(typeof people === "string"){
+/* =========================
+   TABLE
+========================= */
 
-try{
+function renderTable(){
 
-people =
-JSON.parse(people);
+  const body =
+    document.getElementById("dataBody");
 
-}catch(e){
+  body.innerHTML = "";
 
-return [];
+  if(filteredRows.length === 0){
 
-}
+    body.innerHTML = `
+      <tr>
+        <td colspan="9">
+          تر اوسه هېڅ معلومات ونه موندل شول.
+        </td>
+      </tr>
+    `;
 
-}
+    return;
 
+  }
 
-return Array.isArray(people)
-? people
-: [];
+  filteredRows.forEach(function(row){
 
-}
+    const tr =
+      document.createElement("tr");
 
+    const people =
+      Array.isArray(row.people)
+      ? row.people
+      : [];
 
+    const membersHTML =
+      people
+      .map(memberHTML)
+      .join("");
 
-/* ======================================
-   RENDER TABLE
-====================================== */
+    const date =
+      row.created_at
+      ? new Date(row.created_at)
+        .toLocaleString("ps-AF")
+      : "";
 
-function renderTable(rows){
+    tr.innerHTML = `
 
-const container =
-document.getElementById(
-"tableContainer"
-);
+      <td>
+        ${escapeHTML(date)}
+      </td>
 
+      <td>
+        ${escapeHTML(
+          provinceNames[row.province] ||
+          row.province ||
+          ""
+        )}
+      </td>
 
-if(rows.length === 0){
+      <td>
+        ${escapeHTML(row.district || "")}
+      </td>
 
-container.innerHTML =
-'<div class="empty">د ټاکل شوو شرایطو مطابق معلومات ونه موندل شول.</div>';
+      <td>
+        ${escapeHTML(row.village || "")}
+      </td>
 
-return;
+      <td>
+        ${Number(row.members || 0)}
+      </td>
 
-}
+      <td>
+        ${Number(row.male || 0)}
+      </td>
 
+      <td>
+        ${Number(row.female || 0)}
+      </td>
 
-let html = `
+      <td>
+        ${membersHTML}
+      </td>
 
-<table>
+      <td>
 
-<thead>
+        <div class="actions">
 
-<tr>
+          <button
+            class="btn-primary"
+            onclick="openEdit('${String(row.id)}')"
+          >
+            ✏️ Edit
+          </button>
 
-<th>نېټه</th>
+          <button
+            class="btn-danger"
+            onclick="deleteRow('${String(row.id)}')"
+          >
+            🗑️ Delete
+          </button>
 
-<th>ولایت</th>
+        </div>
 
-<th>ولسوالي</th>
+      </td>
 
-<th>سیمه / کلی</th>
+    `;
 
-<th>غړي</th>
+    body.appendChild(tr);
 
-<th>نارینه</th>
-
-<th>ښځینه</th>
-
-<th>د غړو معلومات</th>
-
-<th>عملیات</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-`;
-
-
-rows.forEach(
-row=>{
-
-let people =
-parsePeople(
-row.people
-);
-
-let membersHtml =
-"";
-
-
-people.forEach(
-(person,index)=>{
-
-const relation =
-person.relation ||
-person.relationship ||
-"-";
-
-const work =
-person.work_status ||
-person.employment ||
-"-";
-
-
-membersHtml += `
-
-<div class="member">
-
-<b>شخص ${index+1}</b><br>
-
-نوم:
-${escapeHtml(person.name || "-")}
-<br>
-
-د پلار نوم:
-${escapeHtml(person.father_name || "-")}
-<br>
-
-جنس:
-${escapeHtml(person.gender || "-")}
-<br>
-
-عمر:
-${escapeHtml(person.age ?? "-")}
-<br>
-
-مدني حالت:
-${escapeHtml(person.marital_status || "-")}
-<br>
-
-د کورنۍ اړیکه:
-${escapeHtml(relation)}
-<br>
-
-زده کړې:
-${escapeHtml(person.education || "-")}
-<br>
-
-د کار حالت:
-${escapeHtml(work)}
-<br>
-
-دنده:
-${escapeHtml(person.occupation || "-")}
-
-</div>
-
-`;
-
-});
-
-
-const date =
-row.created_at
-?
-new Date(
-row.created_at
-).toLocaleString(
-"ps-AF"
-)
-:
-"-";
-
-
-html += `
-
-<tr>
-
-<td>
-${escapeHtml(date)}
-</td>
-
-<td>
-${escapeHtml(row.province || "-")}
-</td>
-
-<td>
-${escapeHtml(row.district || "-")}
-</td>
-
-<td>
-${escapeHtml(row.village || "-")}
-</td>
-
-<td>
-${escapeHtml(row.members || 0)}
-</td>
-
-<td>
-${escapeHtml(row.male || 0)}
-</td>
-
-<td>
-${escapeHtml(row.female || 0)}
-</td>
-
-<td>
-${membersHtml || "-"}
-</td>
-
-<td>
-
-<button
-class="edit-btn"
-onclick="openEdit(${Number(row.id)})"
-type="button"
->
-✏️ Edit
-</button>
-
-<button
-class="delete-btn"
-onclick="deleteFamily(${Number(row.id)})"
-type="button"
->
-🗑️ Delete
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
-
-html += `
-
-</tbody>
-
-</table>
-
-`;
-
-container.innerHTML =
-html;
+  });
 
 }
 
 
-
-/* ======================================
-   OPEN EDIT
-====================================== */
+/* =========================
+   EDIT
+========================= */
 
 function openEdit(id){
 
-const row =
-allRows.find(
-item =>
-Number(item.id) === Number(id)
-);
+  const row =
+    allRows.find(function(item){
 
+      return String(item.id) === String(id);
 
-if(!row){
+    });
 
-alert(
-"معلومات ونه موندل شول."
-);
+  if(!row) return;
 
-return;
+  editingId = id;
 
-}
+  document
+  .getElementById("editProvince")
+  .value =
+    row.province || "";
 
+  fillEditDistricts(
+    row.province || "",
+    row.district || ""
+  );
 
-editingId =
-id;
+  document
+  .getElementById("editVillage")
+  .value =
+    row.village || "";
 
+  const box =
+    document.getElementById(
+      "editMembers"
+    );
 
-let people =
-parsePeople(
-row.people
-);
+  box.innerHTML = "";
 
+  const people =
+    Array.isArray(row.people)
+    ? row.people
+    : [];
 
-let peopleHtml =
-"";
+  people.forEach(function(person,index){
 
+    const relation =
+      person.relation ||
+      person.relationship ||
+      "";
 
-people.forEach(
-(person,index)=>{
+    const work =
+      person.work_status ||
+      person.employment ||
+      "";
 
-const relation =
-person.relation ||
-person.relationship ||
-"";
+    box.innerHTML += `
 
-const work =
-person.work_status ||
-person.employment ||
-"";
+      <div class="member-edit">
 
-
-peopleHtml += `
-
-<div class="edit-person">
-
-<h3>
-👤 د کورنۍ غړی ${index+1}
-</h3>
-
-<div class="edit-family-grid">
-
-<div>
-
-<label>
-نوم
-</label>
-
-<input
-class="edit-name"
-value="${escapeAttr(person.name || "")}"
->
-
-</div>
-
-
-<div>
-
-<label>
-د پلار نوم
-</label>
-
-<input
-class="edit-father"
-value="${escapeAttr(person.father_name || "")}"
->
-
-</div>
-
-
-<div>
-
-<label>
-جنسیت
-</label>
-
-<select class="edit-gender">
-
-<option
-value="male"
-${person.gender === "male" ? "selected" : ""}
->
-نارینه
-</option>
-
-<option
-value="female"
-${person.gender === "female" ? "selected" : ""}
->
-ښځینه
-</option>
-
-</select>
-
-</div>
-
-
-<div>
-
-<label>
-عمر
-</label>
-
-<input
-type="number"
-min="0"
-max="120"
-class="edit-age"
-value="${escapeAttr(person.age ?? "")}"
->
-
-</div>
-
-
-<div>
-
-<label>
-مدني حالت
-</label>
-
-<select class="edit-marital">
-
-<option
-value="single"
-${person.marital_status === "single" ? "selected" : ""}
->
-مجرد
-</option>
-
-<option
-value="married"
-${person.marital_status === "married" ? "selected" : ""}
->
-واده شوی
-</option>
-
-<option
-value="widowed"
-${person.marital_status === "widowed" ? "selected" : ""}
->
-کونډ/کونډه
-</option>
-
-<option
-value="divorced"
-${person.marital_status === "divorced" ? "selected" : ""}
->
-طلاق شوی
-</option>
-
-</select>
-
-</div>
-
-
-<div>
-
-<label>
-د کورنۍ له مشر سره اړیکه
-</label>
-
-<input
-class="edit-relation"
-value="${escapeAttr(relation)}"
->
-
-</div>
-
-
-<div>
-
-<label>
-زده کړې
-</label>
-
-<input
-class="edit-education"
-value="${escapeAttr(person.education || "")}"
->
-
-</div>
-
-
-<div>
-
-<label>
-د کار حالت
-</label>
-
-<input
-class="edit-work"
-value="${escapeAttr(work)}"
->
-
-</div>
-
-
-<div>
-
-<label>
-مسلک
-</label>
-
-<input
-class="edit-job"
-value="${escapeAttr(person.occupation || "")}"
->
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-const form = `
-
-<div class="edit-family-grid">
-
-<div>
-
-<label>
-ولایت
-</label>
-
-<select id="editProvince">
-
-${provinceKeys.map(
-(key,index)=>`
-
-<option
-value="${escapeAttr(key)}"
-${row.province === key ? "selected" : ""}
->
-${escapeHtml(provinceNames[index])}
-</option>
-
-`).join("")}
-
-</select>
-
-</div>
-
-
-<div>
-
-<label>
-ولسوالي
-</label>
-
-<select id="editDistrict">
-</select>
-
-</div>
-
-
-<div>
-
-<label>
-سیمه / کلی
-</label>
-
-<input
-id="editVillage"
-value="${escapeAttr(row.village || "")}"
->
-
-</div>
-
-</div>
-
-
-<div id="editPeople">
-
-${peopleHtml}
-
-</div>
-
-
-<div class="edit-actions">
-
-<button
-class="save-btn"
-onclick="saveEdit()"
-type="button"
->
-💾 معلومات خوندي کول
-</button>
-
-<button
-class="cancel-btn"
-onclick="closeEditModal()"
-type="button"
->
-لغوه
-</button>
-
-</div>
-
-`;
-
-
-document.getElementById(
-"edit
+       
