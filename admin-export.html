@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Admin Export</title>
+<title>Admin Export - د نفوس سیستم</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 
@@ -30,15 +30,15 @@ color:#172033;
 .container{
 max-width:1200px;
 margin:auto;
-padding:20px;
+padding:15px;
 }
 
 .card{
 background:white;
 border-radius:18px;
-padding:25px;
-margin-top:25px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
+padding:22px;
+margin-bottom:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.07);
 }
 
 .header{
@@ -46,20 +46,34 @@ background:linear-gradient(135deg,#075985,#0f766e);
 color:white;
 padding:25px;
 border-radius:18px;
+margin-bottom:18px;
 }
 
-h1,h2,h3{
-margin-top:0;
+.header h1{
+margin:0 0 8px;
+}
+
+.header p{
+margin:0;
+opacity:.9;
 }
 
 input,
 select{
 width:100%;
 padding:13px;
-margin:7px 0 15px;
+margin-top:7px;
+margin-bottom:15px;
 border:1px solid #cbd5e1;
 border-radius:9px;
+font-family:inherit;
 font-size:15px;
+background:white;
+}
+
+label{
+display:block;
+font-weight:bold;
 }
 
 button{
@@ -68,12 +82,13 @@ border-radius:9px;
 padding:12px 18px;
 font-family:inherit;
 font-size:15px;
+font-weight:bold;
 cursor:pointer;
-margin:5px;
+margin:4px;
 }
 
 button:disabled{
-opacity:.5;
+opacity:.6;
 cursor:not-allowed;
 }
 
@@ -97,21 +112,46 @@ background:#dc2626;
 color:white;
 }
 
+.refresh{
+background:#075985;
+color:white;
+}
+
 .hidden{
 display:none!important;
 }
 
 .message{
-margin-top:15px;
+padding:12px;
+border-radius:9px;
+margin-top:12px;
 font-weight:bold;
+line-height:1.7;
 }
 
-.error{
-color:#b91c1c;
+.info{
+background:#e0f2fe;
+color:#075985;
 }
 
 .success{
-color:#15803d;
+background:#dcfce7;
+color:#166534;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+}
+
+.warning{
+background:#fef3c7;
+color:#92400e;
+}
+
+.login-box{
+max-width:500px;
+margin:40px auto;
 }
 
 .filters{
@@ -122,62 +162,67 @@ gap:15px;
 
 .stats{
 display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-margin-top:20px;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
 }
 
 .stat{
 background:#f8fafc;
-border:1px solid #e2e8f0;
 border-radius:12px;
-padding:20px;
+padding:18px;
 text-align:center;
+border:1px solid #e2e8f0;
+}
+
+.stat span{
+display:block;
+font-size:14px;
+color:#64748b;
 }
 
 .stat strong{
 display:block;
 font-size:28px;
-margin-top:8px;
 color:#075985;
+margin-top:6px;
 }
 
-.household{
-border:1px solid #cbd5e1;
-border-radius:15px;
-margin-top:18px;
-overflow:hidden;
-background:white;
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:5px;
 }
 
-.householdHeader{
-background:#f0fdfa;
-padding:15px;
-border-bottom:1px solid #cbd5e1;
-font-weight:bold;
-line-height:2;
-}
-
-.people{
-padding:10px;
+.table-wrap{
 overflow-x:auto;
 }
 
-.people table{
+table{
 width:100%;
 border-collapse:collapse;
-min-width:950px;
+min-width:1100px;
 }
 
-.people th,
-.people td{
-border:1px solid #e2e8f0;
-padding:9px;
+th,
+td{
+border-bottom:1px solid #e2e8f0;
+padding:11px 8px;
 text-align:right;
+vertical-align:top;
 }
 
-.people th{
+th{
+background:#e0f2fe;
+color:#075985;
+}
+
+.member{
 background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:9px;
+padding:10px;
+margin-bottom:7px;
+line-height:1.8;
 }
 
 .empty{
@@ -186,29 +231,27 @@ padding:30px;
 color:#64748b;
 }
 
-.loading{
-text-align:center;
-padding:20px;
-color:#075985;
-font-weight:bold;
+.small{
+font-size:13px;
+color:#64748b;
 }
 
-@media(max-width:600px){
-
-.container{
-padding:10px;
-}
-
-.card{
-padding:15px;
-}
+@media(max-width:700px){
 
 .filters{
 grid-template-columns:1fr;
 }
 
 .stats{
-grid-template-columns:1fr;
+grid-template-columns:1fr 1fr;
+}
+
+.container{
+padding:10px;
+}
+
+.header{
+padding:20px;
 }
 
 }
@@ -217,25 +260,30 @@ grid-template-columns:1fr;
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
-<!-- ================= LOGIN ================= -->
 
-<div id="loginBox" class="card">
+<!-- =========================
+LOGIN
+========================= -->
+
+<div id="loginBox"
+class="card login-box">
 
 <div class="header">
 
-<h1>
-🔐 د معلوماتو Export
-</h1>
+<h1>🔐 د معلوماتو Export</h1>
 
 <p>
-یوازې د Admin لپاره
+یوازې د مجاز Admin لپاره
 </p>
 
 </div>
+
 
 <label>
 ایمیل
@@ -245,7 +293,8 @@ grid-template-columns:1fr;
 id="email"
 type="email"
 placeholder="Admin Email"
-autocomplete="off">
+autocomplete="username">
+
 
 <label>
 پاسورډ
@@ -255,43 +304,57 @@ autocomplete="off">
 id="password"
 type="password"
 placeholder="Password"
-autocomplete="off">
+autocomplete="current-password">
+
 
 <button
 id="loginButton"
 class="primary"
 onclick="login()">
 
-Login
+🔐 Login
 
 </button>
 
+
 <div
 id="loginMessage"
-class="message">
+class="message info">
 
-خپل Admin Email او Password ولیکئ.
-
-</div>
+د Login لپاره خپل Admin Email او Password ولیکئ.
 
 </div>
 
+</div>
 
-<!-- ================= ADMIN PANEL ================= -->
 
-<div
-id="exportPanel"
+
+<!-- =========================
+EXPORT PANEL
+========================= -->
+
+<div id="exportPanel"
 class="hidden">
+
 
 <div class="header">
 
-<h1>
-📊 د افغانستان د نفوس معلومات
-</h1>
+<h1>📥 د نفوس معلومات Export</h1>
 
 <p>
-د کورنیو او ټولو غړو معلومات
+د کورنیو او د کورنۍ د ټولو غړو معلومات
+Excel یا CSV ته وباسئ.
 </p>
+
+<div class="actions">
+
+<button
+class="refresh"
+onclick="loadData()">
+
+🔄 معلومات تازه کول
+
+</button>
 
 <button
 class="logout"
@@ -303,6 +366,21 @@ onclick="logout()">
 
 </div>
 
+</div>
+
+
+
+<!-- STATUS -->
+
+<div
+id="systemMessage"
+class="message info">
+
+سیستم چمتو دی.
+
+</div>
+
+
 
 <!-- STATS -->
 
@@ -310,7 +388,9 @@ onclick="logout()">
 
 <div class="stat">
 
-د کورنیو شمېر
+<span>
+ټولې کورنۍ
+</span>
 
 <strong id="count">
 0
@@ -318,9 +398,12 @@ onclick="logout()">
 
 </div>
 
+
 <div class="stat">
 
+<span>
 ټول نفوس
+</span>
 
 <strong id="population">
 0
@@ -328,7 +411,21 @@ onclick="logout()">
 
 </div>
 
+
+<div class="stat">
+
+<span>
+ټول غړي Export کېږي
+</span>
+
+<strong id="peopleCount">
+0
+</strong>
+
 </div>
+
+</div>
+
 
 
 <!-- FILTER -->
@@ -339,7 +436,9 @@ onclick="logout()">
 🔎 د معلوماتو لټون
 </h2>
 
+
 <div class="filters">
+
 
 <div>
 
@@ -359,6 +458,7 @@ onchange="provinceChanged()">
 
 </div>
 
+
 <div>
 
 <label>
@@ -377,7 +477,9 @@ onchange="filterData()">
 
 </div>
 
+
 </div>
+
 
 <label>
 د شخص نوم یا د پلار نوم
@@ -385,10 +487,21 @@ onchange="filterData()">
 
 <input
 id="search"
-placeholder="نوم یا د پلار نوم..."
+type="text"
+placeholder="نوم یا د پلار نوم ولیکئ..."
 oninput="filterData()">
 
+
+<div
+id="filterMessage"
+class="message info">
+
+معلومات چمتو دي.
+
 </div>
+
+</div>
+
 
 
 <!-- EXPORT -->
@@ -399,6 +512,14 @@ oninput="filterData()">
 📥 Export
 </h2>
 
+<p class="small">
+
+Excel فایل کې د هر شخص جلا معلومات شاملېږي.
+CSV هم د همدې معلوماتو پر اساس جوړېږي.
+
+</p>
+
+
 <button
 class="excel"
 onclick="exportExcel()">
@@ -406,6 +527,7 @@ onclick="exportExcel()">
 📊 Excel (.xlsx)
 
 </button>
+
 
 <button
 class="csv"
@@ -415,41 +537,110 @@ onclick="exportCSV()">
 
 </button>
 
+
 <div
-id="message"
+id="exportMessage"
 class="message">
-</div>
 
 </div>
 
+</div>
 
-<!-- HOUSEHOLDS -->
+
+
+<!-- DATA PREVIEW -->
 
 <div class="card">
 
 <h2>
-🏠 کورنۍ او د کورنۍ غړي
+📋 د معلوماتو کتنه
 </h2>
 
-<div id="households">
 
-<div class="empty">
-معلومات لا نه دي لوستل شوي.
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+ID
+</th>
+
+<th>
+ولایت
+</th>
+
+<th>
+ولسوالي
+</th>
+
+<th>
+کلی / سیمه
+</th>
+
+<th>
+کورنۍ
+</th>
+
+<th>
+نارینه
+</th>
+
+<th>
+ښځینه
+</th>
+
+<th>
+د کورنۍ غړي
+</th>
+
+<th>
+د ثبت نېټه
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="dataBody">
+
+<tr>
+
+<td
+colspan="9"
+class="empty">
+
+تر اوسه معلومات نه دي لوډ شوي.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
 </div>
 
 </div>
 
-</div>
 
 </div>
 
+
 </div>
+
 
 
 <script>
 
+
 /* =====================================================
-   SUPABASE
+SUPABASE
 ===================================================== */
 
 const SUPABASE_URL =
@@ -458,15 +649,23 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
 
+
 const db =
 window.supabase.createClient(
 SUPABASE_URL,
-SUPABASE_KEY
+SUPABASE_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
 );
 
 
 /* =====================================================
-   DATA
+DATA
 ===================================================== */
 
 let rows = [];
@@ -475,42 +674,117 @@ let filtered = [];
 
 
 /* =====================================================
-   INITIALIZE
+UTILITY
 ===================================================== */
 
-function initialize(){
+function escapeHTML(value){
 
-const email =
-document.getElementById("email");
+return String(value ?? "")
 
-const password =
-document.getElementById("password");
-
-const button =
-document.getElementById("loginButton");
-
-const message =
-document.getElementById("loginMessage");
-
-
-email.disabled = false;
-
-password.disabled = false;
-
-button.disabled = false;
-
-button.textContent = "Login";
-
-message.className = "message";
-
-message.textContent =
-"خپل Admin Email او Password ولیکئ.";
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
 
 /* =====================================================
-   LOGIN
+MESSAGE
+===================================================== */
+
+function setLoginMessage(
+text,
+type="info"
+){
+
+const box =
+document.getElementById(
+"loginMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+function setSystemMessage(
+text,
+type="info"
+){
+
+const box =
+document.getElementById(
+"systemMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+function setExportMessage(
+text,
+type="success"
+){
+
+const box =
+document.getElementById(
+"exportMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+/* =====================================================
+TIMEOUT
+===================================================== */
+
+function withTimeout(
+promise,
+milliseconds
+){
+
+return Promise.race([
+
+promise,
+
+new Promise(
+(_,reject)=>{
+
+setTimeout(
+()=>reject(
+new Error(
+"د Supabase ځواب تر ټاکلي وخت پورې رانغی. Internet یا Supabase اتصال وګورئ."
+)
+),
+milliseconds
+);
+
+})
+
+]);
+
+}
+
+
+/* =====================================================
+LOGIN
 ===================================================== */
 
 async function login(){
@@ -526,139 +800,92 @@ document
 .getElementById("password")
 .value;
 
-const message =
-document.getElementById("loginMessage");
-
 const button =
-document.getElementById("loginButton");
+document
+.getElementById("loginButton");
 
 
-if(!email){
+if(!email || !password){
 
-message.className =
-"message error";
-
-message.textContent =
-"مهرباني وکړئ Email ولیکئ.";
-
-return;
-
-}
-
-
-if(!password){
-
-message.className =
-"message error";
-
-message.textContent =
-"مهرباني وکړئ Password ولیکئ.";
+setLoginMessage(
+"❌ Email او Password دواړه ولیکئ.",
+"error"
+);
 
 return;
 
 }
 
 
-button.disabled = true;
+button.disabled=true;
 
 button.textContent =
 "⏳ Login...";
 
-message.className =
-"message";
 
-message.textContent =
-"⏳ Login کېږي...";
+setLoginMessage(
+"⏳ له Supabase سره Login کېږي...",
+"info"
+);
 
 
 try{
 
+
+/* AUTH */
+
 const result =
-await db.auth.signInWithPassword({
+await withTimeout(
+
+db.auth.signInWithPassword({
 
 email:email,
 
 password:password
 
-});
+}),
+
+15000
+
+);
 
 
 if(result.error){
 
-console.error(
-"LOGIN ERROR:",
-result.error
+throw result.error;
+
+}
+
+
+if(!result.data ||
+!result.data.session){
+
+throw new Error(
+"Login وشو خو Session جوړ نه شو."
 );
 
-button.disabled = false;
-
-button.textContent =
-"Login";
-
-message.className =
-"message error";
-
-message.textContent =
-"❌ Login ناکام شو: " +
-result.error.message;
-
-return;
-
 }
 
 
-/* Session */
+/* SUCCESS */
 
-const sessionResult =
-await db.auth.getSession();
+setLoginMessage(
+"✅ Login بریالی شو. معلومات لوډ کېږي...",
+"success"
+);
 
-
-const session =
-sessionResult.data.session;
-
-
-if(!session){
-
-button.disabled = false;
-
-button.textContent =
-"Login";
-
-message.className =
-"message error";
-
-message.textContent =
-"❌ Session جوړ نه شو.";
-
-return;
-
-}
-
-
-/* Login successful */
-
-message.className =
-"message success";
-
-message.textContent =
-"✅ Login کامیاب شو.";
-
-
-/* Login box hide */
 
 document
 .getElementById("loginBox")
-.classList.add("hidden");
+.classList
+.add("hidden");
 
-
-/* Admin panel show */
 
 document
 .getElementById("exportPanel")
-.classList.remove("hidden");
+.classList
+.remove("hidden");
 
-
-/* Load data */
 
 await loadData();
 
@@ -666,21 +893,27 @@ await loadData();
 }catch(error){
 
 console.error(
-"LOGIN EXCEPTION:",
+"LOGIN ERROR:",
 error
 );
 
-button.disabled = false;
+
+setLoginMessage(
+
+"❌ Login ستونزه: " +
+(
+error.message ||
+String(error)
+),
+
+"error"
+
+);
+
+button.disabled=false;
 
 button.textContent =
-"Login";
-
-message.className =
-"message error";
-
-message.textContent =
-"❌ یوه ستونزه رامنځته شوه: " +
-error.message;
+"🔐 Login";
 
 }
 
@@ -688,169 +921,141 @@ error.message;
 
 
 /* =====================================================
-   LOAD DATA
+SESSION CHECK
 ===================================================== */
 
-async function loadData(){
-
-const box =
-document.getElementById(
-"households"
-);
-
-
-box.innerHTML =
-`
-<div class="loading">
-⏳ د کورنیو معلومات لوستل کېږي...
-</div>
-`;
-
+async function checkSession(){
 
 try{
 
 const result =
-await db.rpc(
-"admin_get_households"
+await withTimeout(
+
+db.auth.getSession(),
+
+8000
+
 );
 
 
-console.log(
-"RPC RESULT:",
-result
+if(
+result.data &&
+result.data.session
+){
+
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
+
+
+document
+.getElementById("exportPanel")
+.classList
+.remove("hidden");
+
+
+await loadData();
+
+}
+
+}catch(error){
+
+console.warn(
+"SESSION CHECK:",
+error
+);
+
+}
+
+}
+
+
+/* =====================================================
+LOAD DATA
+===================================================== */
+
+async function loadData(){
+
+setSystemMessage(
+"⏳ د نفوس معلومات لوډ کېږي...",
+"info"
+);
+
+
+try{
+
+
+const result =
+await withTimeout(
+
+db.rpc(
+"admin_get_households"
+),
+
+20000
+
 );
 
 
 if(result.error){
 
-console.error(
-"RPC ERROR:",
-result.error
-);
-
-box.innerHTML =
-`
-<div class="empty">
-
-❌ معلومات ونه لوستل شول.
-
-<br><br>
-
-${escapeHTML(
-result.error.message
-)}
-
-</div>
-`;
-
-showMessage(
-"معلومات ونه لوستل شول: " +
-result.error.message,
-true
-);
-
-return;
-
-}
-
-
-let data =
-result.data;
-
-
-/* JSON string */
-
-if(typeof data === "string"){
-
-try{
-
-data =
-JSON.parse(data);
-
-}catch(error){
-
-console.error(
-"JSON ERROR:",
-error
-);
-
-data = [];
-
-}
+throw result.error;
 
 }
 
 
 rows =
-Array.isArray(data)
-? data
-: [];
+Array.isArray(result.data)
+?result.data
+:[];
 
 
 filtered =
 [...rows];
 
 
-console.log(
-"Households:",
-rows
-);
-
-
-/* Provinces */
-
 fillProvinces();
-
-
-/* Statistics */
 
 renderInfo();
 
-
-/* Display */
-
-renderHouseholds();
+renderTable();
 
 
-if(rows.length === 0){
+setSystemMessage(
 
-showMessage(
-"⚠️ په Database کې هېڅ کورنۍ معلومات ونه موندل شول.",
-true
+"✅ معلومات په بریالیتوب سره لوډ شول. ټولې کورنۍ: " +
+rows.length,
+
+"success"
+
 );
-
-}else{
-
-showMessage(
-"✅ " +
-rows.length +
-" کورنۍ معلومات ترلاسه شول."
-);
-
-}
 
 
 }catch(error){
 
 console.error(
-"LOAD ERROR:",
+"LOAD DATA ERROR:",
 error
 );
 
-box.innerHTML =
-`
-<div class="empty">
 
-❌ د معلوماتو په لوستلو کې ستونزه.
+setSystemMessage(
 
-<br><br>
+"❌ معلومات ونه لوډ شول: " +
+(
+error.message ||
+String(error)
+),
 
-${escapeHTML(
-error.message
-)}
+"error"
 
-</div>
-`;
+);
+
+
+renderInfo();
+
+renderTable();
 
 }
 
@@ -858,7 +1063,7 @@ error.message
 
 
 /* =====================================================
-   PROVINCES
+PROVINCES
 ===================================================== */
 
 function fillProvinces(){
@@ -871,17 +1076,24 @@ document.getElementById(
 
 const provinces =
 [
+
 ...new Set(
+
 rows
+
 .map(
-x => x.province
+row=>row.province
 )
+
 .filter(Boolean)
+
 )
+
 ].sort();
 
 
 select.innerHTML =
+
 `
 <option value="">
 ټول ولایتونه
@@ -890,7 +1102,7 @@ select.innerHTML =
 
 
 provinces.forEach(
-province => {
+province=>{
 
 const option =
 document.createElement(
@@ -916,7 +1128,7 @@ fillDistricts();
 
 
 /* =====================================================
-   DISTRICTS
+DISTRICTS
 ===================================================== */
 
 function provinceChanged(){
@@ -946,8 +1158,10 @@ if(province){
 
 data =
 rows.filter(
-x =>
-x.province === province
+row=>
+String(
+row.province || ""
+) === province
 );
 
 }
@@ -955,13 +1169,19 @@ x.province === province
 
 const districts =
 [
+
 ...new Set(
+
 data
+
 .map(
-x => x.district
+row=>row.district
 )
+
 .filter(Boolean)
+
 )
+
 ].sort();
 
 
@@ -972,6 +1192,7 @@ document.getElementById(
 
 
 select.innerHTML =
+
 `
 <option value="">
 ټولې ولسوالۍ
@@ -980,7 +1201,7 @@ select.innerHTML =
 
 
 districts.forEach(
-district => {
+district=>{
 
 const option =
 document.createElement(
@@ -1003,20 +1224,10 @@ option
 
 
 /* =====================================================
-   FILTER
+FILTER
 ===================================================== */
 
 function filterData(){
-
-const search =
-document
-.getElementById(
-"search"
-)
-.value
-.trim()
-.toLowerCase();
-
 
 const province =
 document
@@ -1034,13 +1245,26 @@ document
 .value;
 
 
+const search =
+document
+.getElementById(
+"search"
+)
+.value
+.trim()
+.toLowerCase();
+
+
 filtered =
 rows.filter(
-row => {
+row=>{
+
 
 if(
 province &&
-row.province !== province
+String(
+row.province || ""
+) !== province
 ){
 
 return false;
@@ -1050,7 +1274,9 @@ return false;
 
 if(
 district &&
-row.district !== district
+String(
+row.district || ""
+) !== district
 ){
 
 return false;
@@ -1061,14 +1287,16 @@ return false;
 if(search){
 
 const people =
-Array.isArray(row.people)
-? row.people
-: [];
+Array.isArray(
+row.people
+)
+?row.people
+:[];
 
 
 const found =
 people.some(
-person => {
+person=>{
 
 const name =
 String(
@@ -1084,9 +1312,12 @@ person.father_name || ""
 .toLowerCase();
 
 
-return(
+return (
+
 name.includes(search) ||
+
 father.includes(search)
+
 );
 
 });
@@ -1108,27 +1339,41 @@ return true;
 
 renderInfo();
 
-renderHouseholds();
+renderTable();
 
 }
 
 
 /* =====================================================
-   STATISTICS
+INFO
 ===================================================== */
 
 function renderInfo(){
 
-let population = 0;
+let population=0;
+
+let peopleCount=0;
 
 
 filtered.forEach(
-row => {
+row=>{
 
 population +=
 Number(
 row.members || 0
 );
+
+
+const people =
+Array.isArray(
+row.people
+)
+?row.people
+:[];
+
+
+peopleCount +=
+people.length;
 
 });
 
@@ -1148,30 +1393,59 @@ document
 .textContent =
 population;
 
+
+document
+.getElementById(
+"peopleCount"
+)
+.textContent =
+peopleCount;
+
+
+document
+.getElementById(
+"filterMessage"
+)
+.textContent =
+
+"Export لپاره " +
+filtered.length +
+" کورنۍ او " +
+peopleCount +
+" غړي چمتو دي.";
+
 }
 
 
 /* =====================================================
-   DISPLAY HOUSEHOLDS
+TABLE
 ===================================================== */
 
-function renderHouseholds(){
+function renderTable(){
 
-const box =
+const body =
 document.getElementById(
-"households"
+"dataBody"
 );
+
+
+body.innerHTML="";
 
 
 if(!filtered.length){
 
-box.innerHTML =
+body.innerHTML =
+
 `
-<div class="empty">
+<tr>
+<td
+colspan="9"
+class="empty">
 
-🏠 هېڅ کورنۍ ونه موندل شوه.
+هیڅ معلومات ونه موندل شول.
 
-</div>
+</td>
+</tr>
 `;
 
 return;
@@ -1179,228 +1453,152 @@ return;
 }
 
 
-let html = "";
-
+/* فقط د کورنیو Summary */
 
 filtered.forEach(
-(row,index) => {
+row=>{
+
+const tr =
+document.createElement(
+"tr"
+);
 
 
-const people =
-Array.isArray(row.people)
-? row.people
-: [];
+const date =
+row.created_at
+?
+new Date(
+row.created_at
+).toLocaleString(
+"ps-AF"
+)
+:"";
 
 
-html +=
+tr.innerHTML =
+
 `
-<div class="household">
+<td>
+${escapeHTML(row.id || "")}
+</td>
 
-<div class="householdHeader">
+<td>
+${escapeHTML(row.province || "")}
+</td>
 
-🏠 کورنۍ #${index + 1}
+<td>
+${escapeHTML(row.district || "")}
+</td>
 
-<br>
+<td>
+${escapeHTML(row.village || "")}
+</td>
 
-🆔 ID:
-${escapeHTML(row.id)}
+<td>
+${Number(row.members || 0)}
+</td>
 
-<br>
+<td>
+${Number(row.male || 0)}
+</td>
 
-📍 ولایت:
-${escapeHTML(
-row.province || ""
-)}
+<td>
+${Number(row.female || 0)}
+</td>
 
-<br>
+<td>
+${Array.isArray(row.people)
+?row.people.length
+:0}
+</td>
 
-📍 ولسوالي:
-${escapeHTML(
-row.district || ""
-)}
-
-<br>
-
-🏘️ سیمه / کلی:
-${escapeHTML(
-row.village || ""
-)}
-
-<br>
-
-👨‍👩‍👧‍👦 د کورنۍ غړي:
-${escapeHTML(
-row.members || 0
-)}
-
-&nbsp;&nbsp;
-
-👨 نارینه:
-${escapeHTML(
-row.male || 0
-)}
-
-&nbsp;&nbsp;
-
-👩 ښځینه:
-${escapeHTML(
-row.female || 0
-)}
-
-</div>
-
-<div class="people">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>#</th>
-
-<th>نوم</th>
-
-<th>د پلار نوم</th>
-
-<th>جنس</th>
-
-<th>عمر</th>
-
-<th>مدني حالت</th>
-
-<th>اړیکه</th>
-
-<th>زده کړه</th>
-
-<th>د کار حالت</th>
-
-<th>مسلک</th>
-
-</tr>
-
-</thead>
-
-<tbody>
+<td>
+${escapeHTML(date)}
+</td>
 `;
 
 
-people.forEach(
-(person,personIndex) => {
-
-html +=
-`
-<tr>
-
-<td>
-${personIndex + 1}
-</td>
-
-<td>
-${escapeHTML(
-person.name || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.father_name || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.gender || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.age || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.marital_status || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.relation || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.education || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.work_status || ""
-)}
-</td>
-
-<td>
-${escapeHTML(
-person.occupation || ""
-)}
-</td>
-
-</tr>
-`;
+body.appendChild(
+tr
+);
 
 });
-
-
-html +=
-`
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-`;
-
-});
-
-
-box.innerHTML =
-html;
 
 }
 
 
 /* =====================================================
-   BUILD EXPORT DATA
+MAKE EXPORT DATA
 ===================================================== */
 
-function buildExportData(){
+function makeExportData(){
 
-const data = [];
+const data=[];
 
 
 filtered.forEach(
-row => {
+row=>{
 
 const people =
-Array.isArray(row.people)
-? row.people
-: [];
+Array.isArray(
+row.people
+)
+?row.people
+:[];
 
 
-people.forEach(
-person => {
+if(!people.length){
 
 data.push({
 
 "Household ID":
-row.id,
+row.id || "",
+
+"Province":
+row.province || "",
+
+"District":
+row.district || "",
+
+"Village":
+row.village || "",
+
+"Household Members":
+row.members || 0,
+
+"Male":
+row.male || 0,
+
+"Female":
+row.female || 0,
+
+"Name":"",
+"Father Name":"",
+"Gender":"",
+"Age":"",
+"Marital Status":"",
+"Relation":"",
+"Education":"",
+"Work Status":"",
+"Occupation":"",
+
+"Created At":
+row.created_at || ""
+
+});
+
+return;
+
+}
+
+
+people.forEach(
+person=>{
+
+data.push({
+
+"Household ID":
+row.id || "",
 
 "Province":
 row.province || "",
@@ -1430,19 +1628,23 @@ person.father_name || "",
 person.gender || "",
 
 "Age":
-person.age || "",
+person.age ?? "",
 
 "Marital Status":
 person.marital_status || "",
 
 "Relation":
-person.relation || "",
+person.relation ||
+person.relationship ||
+"",
 
 "Education":
 person.education || "",
 
 "Work Status":
-person.work_status || "",
+person.work_status ||
+person.employment ||
+"",
 
 "Occupation":
 person.occupation || "",
@@ -1463,25 +1665,27 @@ return data;
 
 
 /* =====================================================
-   EXCEL
+EXCEL
 ===================================================== */
 
 function exportExcel(){
 
-const data =
-buildExportData();
+if(!filtered.length){
 
-
-if(!data.length){
-
-showMessage(
-"د Export لپاره معلومات نشته.",
-true
+setExportMessage(
+"❌ د Export لپاره معلومات نشته.",
+"error"
 );
 
 return;
 
 }
+
+
+try{
+
+const data =
+makeExportData();
 
 
 const worksheet =
@@ -1490,50 +1694,108 @@ data
 );
 
 
+worksheet["!cols"]=[
+
+{wch:25},
+{wch:15},
+{wch:18},
+{wch:20},
+{wch:18},
+{wch:12},
+{wch:12},
+{wch:25},
+{wch:25},
+{wch:12},
+{wch:10},
+{wch:18},
+{wch:18},
+{wch:20},
+{wch:18},
+{wch:20},
+{wch:25}
+
+];
+
+
 const workbook =
 XLSX.utils.book_new();
 
 
 XLSX.utils.book_append_sheet(
+
 workbook,
+
 worksheet,
+
 "Population"
+
 );
 
 
 XLSX.writeFile(
+
 workbook,
-"Afghanistan-Population.xlsx"
+
+"Afghanistan-Population-" +
+new Date()
+.toISOString()
+.slice(0,10) +
+".xlsx"
+
 );
 
 
-showMessage(
-"✅ Excel فایل جوړ شو."
+setExportMessage(
+
+"✅ Excel فایل په بریالیتوب سره جوړ شو. " +
+data.length +
+" د غړو ریکارډونه شامل دي.",
+
+"success"
+
 );
+
+
+}catch(error){
+
+console.error(error);
+
+setExportMessage(
+
+"❌ Excel جوړ نه شو: " +
+error.message,
+
+"error"
+
+);
+
+}
 
 }
 
 
 /* =====================================================
-   CSV
+CSV
 ===================================================== */
 
 function exportCSV(){
 
-const data =
-buildExportData();
+if(!filtered.length){
 
-
-if(!data.length){
-
-showMessage(
-"د Export لپاره معلومات نشته.",
-true
+setExportMessage(
+"❌ د Export لپاره معلومات نشته.",
+"error"
 );
 
 return;
 
 }
+
+
+try{
+
+const data =
+makeExportData();
 
 
 const worksheet =
@@ -1550,13 +1812,17 @@ worksheet
 
 const blob =
 new Blob(
+
 [
-"\ufeff" + csv
+"\ufeff",
+csv
 ],
+
 {
 type:
 "text/csv;charset=utf-8;"
 }
+
 );
 
 
@@ -1577,34 +1843,63 @@ url;
 
 
 link.download =
-"Afghanistan-Population.csv";
+"Afghanistan-Population-" +
+new Date()
+.toISOString()
+.slice(0,10) +
+".csv";
 
 
-document.body.appendChild(
+document
+.body
+.appendChild(
 link
 );
+
 
 link.click();
 
-document.body.removeChild(
-link
+
+link.remove();
+
+
+setTimeout(
+()=>URL.revokeObjectURL(url),
+1000
 );
 
 
-URL.revokeObjectURL(
-url
+setExportMessage(
+
+"✅ CSV فایل په بریالیتوب سره جوړ شو. " +
+data.length +
+" د غړو ریکارډونه شامل دي.",
+
+"success"
+
 );
 
 
-showMessage(
-"✅ CSV فایل جوړ شو."
+}catch(error){
+
+console.error(error);
+
+setExportMessage(
+
+"❌ CSV جوړ نه شو: " +
+error.message,
+
+"error"
+
 );
+
+}
 
 }
 
 
 /* =====================================================
-   LOGOUT
+LOGOUT
 ===================================================== */
 
 async function logout(){
@@ -1615,152 +1910,39 @@ await db.auth.signOut();
 
 }catch(error){
 
-console.error(
-"LOGOUT ERROR:",
-error
-);
+console.error(error);
 
 }
 
-
-rows = [];
-
-filtered = [];
-
-
-document
-.getElementById(
-"exportPanel"
-)
-.classList.add(
-"hidden"
-);
-
-
-document
-.getElementById(
-"loginBox"
-)
-.classList.remove(
-"hidden"
-);
-
-
-document
-.getElementById(
-"email"
-)
-.value =
-"";
-
-
-document
-.getElementById(
-"password"
-)
-.value =
-"";
-
-
-document
-.getElementById(
-"loginButton"
-)
-.disabled =
-false;
-
-
-document
-.getElementById(
-"loginButton"
-)
-.textContent =
-"Login";
-
-
-document
-.getElementById(
-"loginMessage"
-)
-.className =
-"message";
-
-
-document
-.getElementById(
-"loginMessage"
-)
-.textContent =
-"بیا Login وکړئ.";
+location.reload();
 
 }
 
 
 /* =====================================================
-   MESSAGE
+ENTER KEY LOGIN
 ===================================================== */
 
-function showMessage(
-text,
-error = false
-){
+document
+.getElementById("password")
+.addEventListener(
+"keydown",
+function(event){
 
-const box =
-document.getElementById(
-"message"
-);
+if(event.key === "Enter"){
 
-
-box.className =
-error
-? "message error"
-: "message success";
-
-
-box.textContent =
-text;
+login();
 
 }
 
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(value){
-
-return String(
-value ?? ""
-)
-.replace(
-/&/g,
-"&amp;"
-)
-.replace(
-/</g,
-"&lt;"
-)
-.replace(
-/>/g,
-"&gt;"
-)
-.replace(
-/"/g,
-"&quot;"
-)
-.replace(
-/'/g,
-"&#039;"
-);
-
-}
+});
 
 
 /* =====================================================
-   START
+START
 ===================================================== */
 
-initialize();
+checkSession();
 
 </script>
 
