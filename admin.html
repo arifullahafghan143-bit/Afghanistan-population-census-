@@ -7,10 +7,11 @@
 
 <title>Admin - د نفوس سیستم</title>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+<script src="districts.js"></script>
 
 <style>
+
 *{
 box-sizing:border-box;
 }
@@ -24,7 +25,7 @@ color:#0f172a;
 
 .container{
 width:100%;
-max-width:1250px;
+max-width:1400px;
 margin:auto;
 padding:20px;
 }
@@ -57,30 +58,34 @@ margin-bottom:7px;
 font-weight:bold;
 }
 
-input{
+input,
+select{
 width:100%;
-padding:13px;
+padding:12px;
 border:1px solid #cbd5e1;
-border-radius:10px;
+border-radius:9px;
 font-size:16px;
-margin-bottom:16px;
-direction:ltr;
+margin-bottom:12px;
+background:white;
+}
+
+input{
+direction:rtl;
 }
 
 button{
-width:100%;
-padding:12px 18px;
+padding:11px 18px;
 border:none;
-border-radius:10px;
+border-radius:9px;
 background:#2563eb;
 color:white;
-font-size:16px;
+font-size:15px;
 font-weight:bold;
 cursor:pointer;
 }
 
 button:hover{
-background:#1d4ed8;
+opacity:.9;
 }
 
 button:disabled{
@@ -102,16 +107,27 @@ width:auto;
 background:#dc2626;
 }
 
-.logout:hover{
-background:#b91c1c;
-}
-
 .refresh{
 background:#16a34a;
 }
 
-.refresh:hover{
-background:#15803d;
+.edit-btn{
+background:#f59e0b;
+color:#111827;
+margin:3px;
+}
+
+.delete-btn{
+background:#dc2626;
+margin:3px;
+}
+
+.cancel-btn{
+background:#64748b;
+}
+
+.save-btn{
+background:#16a34a;
 }
 
 .message{
@@ -185,6 +201,31 @@ font-weight:bold;
 color:#2563eb;
 }
 
+.filters{
+background:white;
+padding:20px;
+border-radius:16px;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+margin-bottom:20px;
+}
+
+.filters-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:12px;
+}
+
+.filter-title{
+font-size:20px;
+font-weight:bold;
+margin-top:0;
+}
+
+.clear-filter{
+background:#64748b;
+margin-top:5px;
+}
+
 .table-box{
 background:white;
 border-radius:16px;
@@ -196,7 +237,7 @@ overflow-x:auto;
 table{
 width:100%;
 border-collapse:collapse;
-min-width:1100px;
+min-width:1250px;
 }
 
 th,td{
@@ -259,12 +300,89 @@ color:#166534;
 background:#fee2e2;
 color:#991b1b;
 }
+
+
+/* EDIT MODAL */
+
+.modal{
+display:none;
+position:fixed;
+z-index:9999;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.55);
+overflow-y:auto;
+padding:20px;
+}
+
+.modal-content{
+background:white;
+max-width:1000px;
+margin:30px auto;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:20px;
+}
+
+.modal-header h2{
+margin:0;
+}
+
+.close-btn{
+background:#64748b;
+width:auto;
+padding:8px 14px;
+}
+
+.edit-family-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px;
+}
+
+.edit-person{
+border:1px solid #cbd5e1;
+border-radius:12px;
+padding:15px;
+margin-top:15px;
+background:#f8fafc;
+}
+
+.edit-person h3{
+margin-top:0;
+color:#075e54;
+}
+
+.edit-actions{
+display:flex;
+gap:10px;
+justify-content:flex-start;
+margin-top:20px;
+flex-wrap:wrap;
+}
+
+.edit-actions button{
+width:auto;
+}
+
 </style>
 </head>
 
 <body>
 
+
 <!-- LOGIN -->
+
 <div id="loginPanel" class="login-box">
 
 <h1>🔐 د Admin سیستم</h1>
@@ -311,8 +429,11 @@ style="display:block;text-align:center;margin-top:20px;color:#2563eb;text-decora
 </div>
 
 
+
 <!-- ADMIN PANEL -->
+
 <div id="adminPanel" class="container">
+
 
 <div class="admin-header">
 
@@ -349,49 +470,206 @@ type="button"
 </div>
 
 
+
+<!-- FILTERS -->
+
+<div class="filters">
+
+<h2 class="filter-title">
+🔎 د معلوماتو لټون او فلټر
+</h2>
+
+<div class="filters-grid">
+
+<div>
+
+<label for="provinceFilter">
+ولایت
+</label>
+
+<select id="provinceFilter">
+<option value="">
+ټول ولایتونه
+</option>
+</select>
+
+</div>
+
+
+<div>
+
+<label for="districtFilter">
+ولسوالي
+</label>
+
+<select id="districtFilter">
+<option value="">
+ټولې ولسوالۍ
+</option>
+</select>
+
+</div>
+
+
+<div>
+
+<label for="nameSearch">
+د نوم له مخې لټون
+</label>
+
+<input
+id="nameSearch"
+type="search"
+placeholder="د شخص نوم ولیکئ..."
+>
+</div>
+
+</div>
+
+<button
+class="clear-filter"
+id="clearFilter"
+type="button"
+>
+پاکول
+</button>
+
+</div>
+
+
+
 <!-- STATS -->
+
 <div class="stats">
 
 <div class="card">
-<div class="card-title">ټولې کورنۍ</div>
-<div id="totalHouseholds" class="card-number">0</div>
+
+<div class="card-title">
+ټولې کورنۍ
 </div>
+
+<div
+id="totalHouseholds"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
 
 <div class="card">
-<div class="card-title">ټول نفوس</div>
-<div id="totalPopulation" class="card-number">0</div>
+
+<div class="card-title">
+ټول نفوس
 </div>
+
+<div
+id="totalPopulation"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
 
 <div class="card">
-<div class="card-title">نارینه</div>
-<div id="totalMale" class="card-number">0</div>
+
+<div class="card-title">
+نارینه
 </div>
+
+<div
+id="totalMale"
+class="card-number"
+>
+0
+</div>
+
+</div>
+
 
 <div class="card">
-<div class="card-title">ښځینه</div>
-<div id="totalFemale" class="card-number">0</div>
+
+<div class="card-title">
+ښځینه
+</div>
+
+<div
+id="totalFemale"
+class="card-number"
+>
+0
 </div>
 
 </div>
+
+</div>
+
 
 
 <!-- TABLE -->
+
 <div class="table-box">
 
-<h2>📋 د ثبت شوو کورنیو تاریخ</h2>
+<h2>
+📋 د ثبت شوو کورنیو تاریخ
+</h2>
 
 <div id="tableContainer">
+
 <div class="loading">
 معلومات لوډ کېږي...
 </div>
-</div>
 
 </div>
 
 </div>
+
+</div>
+
+
+
+<!-- EDIT MODAL -->
+
+<div
+id="editModal"
+class="modal"
+>
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h2>
+✏️ د کورنۍ معلومات Edit
+</h2>
+
+<button
+class="close-btn"
+onclick="closeEditModal()"
+type="button"
+>
+✕ بندول
+</button>
+
+</div>
+
+<div id="editForm"></div>
+
+</div>
+
+</div>
+
 
 
 <script>
+
+
+/* ======================================
+   SUPABASE
+====================================== */
 
 const SUPABASE_URL =
 "https://lswxkfkqpkzncbpiqqyz.supabase.co";
@@ -399,50 +677,124 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
 
-
 let supabaseClient = null;
 
+let allRows = [];
 
-/* =========================
-   MESSAGE
-========================= */
-
-function showMessage(text,type="error"){
-
-const box =
-document.getElementById("message");
-
-box.textContent = text;
-
-box.className =
-"message " + type;
-
-box.style.display = "block";
-
-}
+let editingId = null;
 
 
-/* =========================
-   CHECK SUPABASE
-========================= */
+
+/* ======================================
+   PROVINCES
+====================================== */
+
+const provinceKeys = [
+
+"Kabul",
+"Nangarhar",
+"Paktia",
+"Kandahar",
+"Herat",
+"Balkh",
+"Kunduz",
+"Takhar",
+"Badakhshan",
+"Laghman",
+"Kunar",
+"Khost",
+"Paktika",
+"Logar",
+"Ghazni",
+"Zabul",
+"Helmand",
+"Farah",
+"Nimroz",
+"Ghor",
+"Badghis",
+"Faryab",
+"Jawzjan",
+"Sar-e-Pul",
+"Samangan",
+"Bamyan",
+"Daykundi",
+"Uruzgan",
+"Maidan Wardak",
+"Parwan",
+"Kapisa",
+"Panjshir",
+"Nuristan",
+"Baghlan"
+
+];
+
+
+const provinceNames = [
+
+"کابل",
+"ننګرهار",
+"پکتیا",
+"کندهار",
+"هرات",
+"بلخ",
+"کندز",
+"تخار",
+"بدخشان",
+"لغمان",
+"کنړ",
+"خوست",
+"پکتیکا",
+"لوګر",
+"غزني",
+"زابل",
+"هلمند",
+"فراه",
+"نیمروز",
+"غور",
+"بادغیس",
+"فاریاب",
+"جوزجان",
+"سرپل",
+"سمنګان",
+"بامیان",
+"دایکندي",
+"ارزګان",
+"میدان وردګ",
+"پروان",
+"کاپیسا",
+"پنجشېر",
+"نورستان",
+"بغلان"
+
+];
+
+
+
+/* ======================================
+   SUPABASE CHECK
+====================================== */
 
 function checkSupabase(){
 
 const status =
-document.getElementById("connectionStatus");
+document.getElementById(
+"connectionStatus"
+);
 
 if(
 typeof window.supabase === "undefined"
 ){
 
 status.textContent =
-"❌ Supabase سیستم لوډ نه شو. انټرنېټ یا CDN وګورئ.";
+"❌ Supabase سیستم لوډ نه شو.";
 
 status.className =
 "status bad";
 
 return false;
+
 }
+
 
 try{
 
@@ -462,34 +814,157 @@ return true;
 
 }catch(error){
 
+console.error(error);
+
 status.textContent =
 "❌ Supabase جوړ نه شو.";
 
 status.className =
 "status bad";
 
-console.error(error);
-
 return false;
-}
 
 }
 
+}
 
-/* =========================
+
+
+/* ======================================
+   MESSAGE
+====================================== */
+
+function showMessage(
+text,
+type="error"
+){
+
+const box =
+document.getElementById(
+"message"
+);
+
+box.textContent =
+text;
+
+box.className =
+"message " + type;
+
+box.style.display =
+"block";
+
+}
+
+
+
+/* ======================================
+   LOAD PROVINCES FILTER
+====================================== */
+
+function loadProvinceFilter(){
+
+const box =
+document.getElementById(
+"provinceFilter"
+);
+
+box.innerHTML =
+'<option value="">ټول ولایتونه</option>';
+
+provinceKeys.forEach(
+(key,index)=>{
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+key;
+
+option.textContent =
+provinceNames[index];
+
+box.appendChild(option);
+
+});
+
+}
+
+
+
+/* ======================================
+   LOAD DISTRICT FILTER
+====================================== */
+
+function loadDistrictFilter(){
+
+const province =
+document.getElementById(
+"provinceFilter"
+).value;
+
+const box =
+document.getElementById(
+"districtFilter"
+);
+
+box.innerHTML =
+'<option value="">ټولې ولسوالۍ</option>';
+
+if(
+!province ||
+typeof districts === "undefined" ||
+!districts ||
+!districts[province]
+){
+
+return;
+
+}
+
+districts[province].forEach(
+district=>{
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+district;
+
+option.textContent =
+district;
+
+box.appendChild(option);
+
+});
+
+}
+
+
+
+/* ======================================
    LOGIN
-========================= */
+====================================== */
 
 async function login(){
 
 const email =
-document.getElementById("email").value.trim();
+document.getElementById(
+"email"
+).value.trim();
 
 const password =
-document.getElementById("password").value;
+document.getElementById(
+"password"
+).value;
 
 const button =
-document.getElementById("loginButton");
+document.getElementById(
+"loginButton"
+);
 
 
 if(!email){
@@ -500,6 +975,7 @@ showMessage(
 );
 
 return;
+
 }
 
 
@@ -511,15 +987,13 @@ showMessage(
 );
 
 return;
+
 }
 
 
 if(!supabaseClient){
 
-const ready =
-checkSupabase();
-
-if(!ready){
+if(!checkSupabase()){
 
 showMessage(
 "Supabase سیستم تیار نه دی.",
@@ -527,20 +1001,17 @@ showMessage(
 );
 
 return;
-}
 
 }
 
+}
 
-button.disabled = true;
+
+button.disabled =
+true;
 
 button.textContent =
 "ننوتل کېږي...";
-
-showMessage(
-"مهرباني وکړئ انتظار وکړئ...",
-"info"
-);
 
 
 try{
@@ -568,56 +1039,57 @@ error.message,
 "error"
 );
 
-button.disabled = false;
+button.disabled =
+false;
 
 button.textContent =
 "ننوتل";
 
 return;
+
 }
 
 
-if(!data || !data.user){
+if(
+!data ||
+!data.user
+){
 
 showMessage(
 "❌ User ونه موندل شو.",
 "error"
 );
 
-button.disabled = false;
+button.disabled =
+false;
 
 button.textContent =
 "ننوتل";
 
 return;
+
 }
-
-
-showMessage(
-"✅ ننوتل بریالي شول.",
-"success"
-);
 
 
 document.getElementById(
 "loginPanel"
-).style.display = "none";
-
+).style.display =
+"none";
 
 document.getElementById(
 "adminPanel"
-).style.display = "block";
+).style.display =
+"block";
 
+
+loadProvinceFilter();
 
 await loadData();
 
 
 }catch(error){
 
-console.error(
-"UNEXPECTED LOGIN ERROR:",
-error
-);
+console.error(error);
 
 showMessage(
 "❌ یوه تېروتنه رامنځته شوه: " +
@@ -628,7 +1100,8 @@ error.message,
 }
 
 
-button.disabled = false;
+button.disabled =
+false;
 
 button.textContent =
 "ننوتل";
@@ -636,22 +1109,12 @@ button.textContent =
 }
 
 
-/* =========================
-   LOAD ADMIN DATA
-========================= */
+
+/* ======================================
+   LOAD DATA
+====================================== */
 
 async function loadData(){
-
-if(!supabaseClient){
-
-showMessage(
-"Supabase سیستم تیار نه دی.",
-"error"
-);
-
-return;
-}
-
 
 const container =
 document.getElementById(
@@ -679,25 +1142,29 @@ error
 
 container.innerHTML =
 '<div class="empty">❌ معلومات ترلاسه نه شول.<br>' +
-error.message +
+escapeHtml(error.message) +
 '</div>';
 
 return;
+
 }
 
 
-let rows = data || [];
+let rows =
+data || [];
 
 
 if(typeof rows === "string"){
 
 try{
 
-rows = JSON.parse(rows);
+rows =
+JSON.parse(rows);
 
 }catch(e){
 
-rows = [];
+rows =
+[];
 
 }
 
@@ -706,33 +1173,166 @@ rows = [];
 
 if(!Array.isArray(rows)){
 
-rows = [];
+rows =
+[];
 
 }
 
 
-/* STATS */
+allRows =
+rows;
 
-let totalHouseholds =
+
+applyFilters();
+
+
+}catch(error){
+
+console.error(error);
+
+container.innerHTML =
+'<div class="empty">❌ تېروتنه: ' +
+escapeHtml(error.message) +
+'</div>';
+
+}
+
+}
+
+
+
+/* ======================================
+   FILTER
+====================================== */
+
+function applyFilters(){
+
+const province =
+document.getElementById(
+"provinceFilter"
+).value.trim();
+
+const district =
+document.getElementById(
+"districtFilter"
+).value.trim();
+
+const search =
+document.getElementById(
+"nameSearch"
+).value.trim().toLowerCase();
+
+
+let rows =
+allRows.filter(
+row=>{
+
+if(
+province &&
+row.province !== province
+){
+
+return false;
+
+}
+
+
+if(
+district &&
+row.district !== district
+){
+
+return false;
+
+}
+
+
+if(search){
+
+let people =
+parsePeople(
+row.people
+);
+
+const found =
+people.some(
+person=>{
+
+const name =
+String(
+person.name || ""
+).toLowerCase();
+
+const father =
+String(
+person.father_name || ""
+).toLowerCase();
+
+return(
+name.includes(search) ||
+father.includes(search)
+);
+
+});
+
+if(!found){
+
+return false;
+
+}
+
+}
+
+
+return true;
+
+});
+
+
+renderStats(rows);
+
+renderTable(rows);
+
+}
+
+
+
+/* ======================================
+   STATS
+====================================== */
+
+function renderStats(rows){
+
+let households =
 rows.length;
 
-let totalPopulation = 0;
+let population =
+0;
 
-let totalMale = 0;
+let male =
+0;
 
-let totalFemale = 0;
+let female =
+0;
 
 
-rows.forEach(row => {
+rows.forEach(
+row=>{
 
-totalPopulation +=
-Number(row.members || 0);
+population +=
+Number(
+row.members || 0
+);
 
-totalMale +=
-Number(row.male || 0);
+male +=
+Number(
+row.male || 0
+);
 
-totalFemale +=
-Number(row.female || 0);
+female +=
+Number(
+row.female || 0
+);
 
 });
 
@@ -740,39 +1340,93 @@ Number(row.female || 0);
 document.getElementById(
 "totalHouseholds"
 ).textContent =
-totalHouseholds.toLocaleString("en-US");
-
+households.toLocaleString(
+"en-US"
+);
 
 document.getElementById(
 "totalPopulation"
 ).textContent =
-totalPopulation.toLocaleString("en-US");
-
+population.toLocaleString(
+"en-US"
+);
 
 document.getElementById(
 "totalMale"
 ).textContent =
-totalMale.toLocaleString("en-US");
-
+male.toLocaleString(
+"en-US"
+);
 
 document.getElementById(
 "totalFemale"
 ).textContent =
-totalFemale.toLocaleString("en-US");
+female.toLocaleString(
+"en-US"
+);
+
+}
 
 
-/* EMPTY */
+
+/* ======================================
+   PARSE PEOPLE
+====================================== */
+
+function parsePeople(people){
+
+if(!people){
+
+return [];
+
+}
+
+
+if(typeof people === "string"){
+
+try{
+
+people =
+JSON.parse(people);
+
+}catch(e){
+
+return [];
+
+}
+
+}
+
+
+return Array.isArray(people)
+? people
+: [];
+
+}
+
+
+
+/* ======================================
+   RENDER TABLE
+====================================== */
+
+function renderTable(rows){
+
+const container =
+document.getElementById(
+"tableContainer"
+);
+
 
 if(rows.length === 0){
 
 container.innerHTML =
-'<div class="empty">تر اوسه هېڅ کورنۍ ثبت شوې نه ده.</div>';
+'<div class="empty">د ټاکل شوو شرایطو مطابق معلومات ونه موندل شول.</div>';
 
 return;
+
 }
 
-
-/* TABLE */
 
 let html = `
 
@@ -790,61 +1444,56 @@ let html = `
 
 <th>سیمه / کلی</th>
 
-<th>د کورنۍ غړي</th>
+<th>غړي</th>
 
 <th>نارینه</th>
 
 <th>ښځینه</th>
 
-<th>د کورنۍ د غړو معلومات</th>
+<th>د غړو معلومات</th>
+
+<th>عملیات</th>
 
 </tr>
 
 </thead>
 
 <tbody>
+
 `;
 
 
-rows.forEach(row => {
+rows.forEach(
+row=>{
+
+let people =
+parsePeople(
+row.people
+);
+
+let membersHtml =
+"";
 
 
-let membersHtml = "";
+people.forEach(
+(person,index)=>{
 
+const relation =
+person.relation ||
+person.relationship ||
+"-";
 
-let people = row.people || [];
+const work =
+person.work_status ||
+person.employment ||
+"-";
 
-
-if(typeof people === "string"){
-
-try{
-
-people =
-JSON.parse(people);
-
-}catch(e){
-
-people = [];
-
-}
-
-}
-
-
-if(!Array.isArray(people)){
-
-people = [];
-
-}
-
-
-people.forEach((person,index) => {
 
 membersHtml += `
 
 <div class="member">
 
-<b>شخص ${index + 1}</b><br>
+<b>شخص ${index+1}</b><br>
 
 نوم:
 ${escapeHtml(person.name || "-")}
@@ -859,7 +1508,7 @@ ${escapeHtml(person.gender || "-")}
 <br>
 
 عمر:
-${escapeHtml(person.age || "-")}
+${escapeHtml(person.age ?? "-")}
 <br>
 
 مدني حالت:
@@ -867,7 +1516,7 @@ ${escapeHtml(person.marital_status || "-")}
 <br>
 
 د کورنۍ اړیکه:
-${escapeHtml(person.relationship || "-")}
+${escapeHtml(relation)}
 <br>
 
 زده کړې:
@@ -875,7 +1524,7 @@ ${escapeHtml(person.education || "-")}
 <br>
 
 د کار حالت:
-${escapeHtml(person.employment || "-")}
+${escapeHtml(work)}
 <br>
 
 دنده:
@@ -894,7 +1543,7 @@ row.created_at
 new Date(
 row.created_at
 ).toLocaleString(
-"en-GB"
+"ps-AF"
 )
 :
 "-";
@@ -904,21 +1553,57 @@ html += `
 
 <tr>
 
-<td>${date}</td>
+<td>
+${escapeHtml(date)}
+</td>
 
-<td>${escapeHtml(row.province || "-")}</td>
+<td>
+${escapeHtml(row.province || "-")}
+</td>
 
-<td>${escapeHtml(row.district || "-")}</td>
+<td>
+${escapeHtml(row.district || "-")}
+</td>
 
-<td>${escapeHtml(row.village || "-")}</td>
+<td>
+${escapeHtml(row.village || "-")}
+</td>
 
-<td>${row.members || 0}</td>
+<td>
+${escapeHtml(row.members || 0)}
+</td>
 
-<td>${row.male || 0}</td>
+<td>
+${escapeHtml(row.male || 0)}
+</td>
 
-<td>${row.female || 0}</td>
+<td>
+${escapeHtml(row.female || 0)}
+</td>
 
-<td>${membersHtml || "-"}</td>
+<td>
+${membersHtml || "-"}
+</td>
+
+<td>
+
+<button
+class="edit-btn"
+onclick="openEdit(${Number(row.id)})"
+type="button"
+>
+✏️ Edit
+</button>
+
+<button
+class="delete-btn"
+onclick="deleteFamily(${Number(row.id)})"
+type="button"
+>
+🗑️ Delete
+</button>
+
+</td>
 
 </tr>
 
@@ -935,140 +1620,338 @@ html += `
 
 `;
 
-
-container.innerHTML = html;
-
-
-}catch(error){
-
-console.error(
-"LOAD ERROR:",
-error
-);
-
 container.innerHTML =
-'<div class="empty">❌ تېروتنه: ' +
-escapeHtml(error.message) +
-'</div>';
-
-}
+html;
 
 }
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
 
-function escapeHtml(value){
+/* ======================================
+   OPEN EDIT
+====================================== */
 
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+function openEdit(id){
 
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-if(supabaseClient){
-
-await supabaseClient.auth.signOut();
-
-}
-
-
-document.getElementById(
-"adminPanel"
-).style.display = "none";
-
-
-document.getElementById(
-"loginPanel"
-).style.display = "block";
-
-
-document.getElementById(
-"password"
-).value = "";
-
-
-showMessage(
-"له سیستم څخه ووتل.",
-"success"
-);
-
-}
-
-
-/* =========================
-   BUTTON EVENTS
-========================= */
-
-document
-.getElementById("loginButton")
-.addEventListener(
-"click",
-login
+const row =
+allRows.find(
+item =>
+Number(item.id) === Number(id)
 );
 
 
-document
-.getElementById("refreshButton")
-.addEventListener(
-"click",
-loadData
+if(!row){
+
+alert(
+"معلومات ونه موندل شول."
 );
 
-
-document
-.getElementById("logoutButton")
-.addEventListener(
-"click",
-logout
-);
-
-
-/* =========================
-   ENTER KEY
-========================= */
-
-document
-.getElementById("password")
-.addEventListener(
-"keydown",
-function(event){
-
-if(event.key === "Enter"){
-
-login();
+return;
 
 }
+
+
+editingId =
+id;
+
+
+let people =
+parsePeople(
+row.people
+);
+
+
+let peopleHtml =
+"";
+
+
+people.forEach(
+(person,index)=>{
+
+const relation =
+person.relation ||
+person.relationship ||
+"";
+
+const work =
+person.work_status ||
+person.employment ||
+"";
+
+
+peopleHtml += `
+
+<div class="edit-person">
+
+<h3>
+👤 د کورنۍ غړی ${index+1}
+</h3>
+
+<div class="edit-family-grid">
+
+<div>
+
+<label>
+نوم
+</label>
+
+<input
+class="edit-name"
+value="${escapeAttr(person.name || "")}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+د پلار نوم
+</label>
+
+<input
+class="edit-father"
+value="${escapeAttr(person.father_name || "")}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+جنسیت
+</label>
+
+<select class="edit-gender">
+
+<option
+value="male"
+${person.gender === "male" ? "selected" : ""}
+>
+نارینه
+</option>
+
+<option
+value="female"
+${person.gender === "female" ? "selected" : ""}
+>
+ښځینه
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+عمر
+</label>
+
+<input
+type="number"
+min="0"
+max="120"
+class="edit-age"
+value="${escapeAttr(person.age ?? "")}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+مدني حالت
+</label>
+
+<select class="edit-marital">
+
+<option
+value="single"
+${person.marital_status === "single" ? "selected" : ""}
+>
+مجرد
+</option>
+
+<option
+value="married"
+${person.marital_status === "married" ? "selected" : ""}
+>
+واده شوی
+</option>
+
+<option
+value="widowed"
+${person.marital_status === "widowed" ? "selected" : ""}
+>
+کونډ/کونډه
+</option>
+
+<option
+value="divorced"
+${person.marital_status === "divorced" ? "selected" : ""}
+>
+طلاق شوی
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+د کورنۍ له مشر سره اړیکه
+</label>
+
+<input
+class="edit-relation"
+value="${escapeAttr(relation)}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+زده کړې
+</label>
+
+<input
+class="edit-education"
+value="${escapeAttr(person.education || "")}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+د کار حالت
+</label>
+
+<input
+class="edit-work"
+value="${escapeAttr(work)}"
+>
+
+</div>
+
+
+<div>
+
+<label>
+مسلک
+</label>
+
+<input
+class="edit-job"
+value="${escapeAttr(person.occupation || "")}"
+>
+
+</div>
+
+</div>
+
+</div>
+
+`;
 
 });
 
 
-/* =========================
-   START
-========================= */
+const form = `
 
-window.addEventListener(
-"load",
-function(){
+<div class="edit-family-grid">
 
-checkSupabase();
+<div>
 
-}
-);
+<label>
+ولایت
+</label>
 
-</script>
+<select id="editProvince">
 
-</body>
-</html>
+${provinceKeys.map(
+(key,index)=>`
+
+<option
+value="${escapeAttr(key)}"
+${row.province === key ? "selected" : ""}
+>
+${escapeHtml(provinceNames[index])}
+</option>
+
+`).join("")}
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+ولسوالي
+</label>
+
+<select id="editDistrict">
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+سیمه / کلی
+</label>
+
+<input
+id="editVillage"
+value="${escapeAttr(row.village || "")}"
+>
+
+</div>
+
+</div>
+
+
+<div id="editPeople">
+
+${peopleHtml}
+
+</div>
+
+
+<div class="edit-actions">
+
+<button
+class="save-btn"
+onclick="saveEdit()"
+type="button"
+>
+💾 معلومات خوندي کول
+</button>
+
+<button
+class="cancel-btn"
+onclick="closeEditModal()"
+type="button"
+>
+لغوه
+</button>
+
+</div>
+
+`;
+
+
+document.getElementById(
+"edit
