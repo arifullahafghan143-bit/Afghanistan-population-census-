@@ -72,6 +72,11 @@ cursor:pointer;
 margin:5px;
 }
 
+button:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
 .primary{
 background:#0f766e;
 color:white;
@@ -115,15 +120,6 @@ grid-template-columns:1fr 1fr;
 gap:15px;
 }
 
-.info{
-background:#f0fdfa;
-border:1px solid #99f6e4;
-padding:15px;
-border-radius:10px;
-margin-top:15px;
-line-height:2;
-}
-
 .stats{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -151,7 +147,7 @@ border:1px solid #cbd5e1;
 border-radius:15px;
 margin-top:18px;
 overflow:hidden;
-background:#fff;
+background:white;
 }
 
 .householdHeader{
@@ -159,7 +155,7 @@ background:#f0fdfa;
 padding:15px;
 border-bottom:1px solid #cbd5e1;
 font-weight:bold;
-line-height:1.9;
+line-height:2;
 }
 
 .people{
@@ -170,7 +166,7 @@ overflow-x:auto;
 .people table{
 width:100%;
 border-collapse:collapse;
-min-width:900px;
+min-width:950px;
 }
 
 .people th,
@@ -188,6 +184,13 @@ background:#f8fafc;
 text-align:center;
 padding:30px;
 color:#64748b;
+}
+
+.loading{
+text-align:center;
+padding:20px;
+color:#075985;
+font-weight:bold;
 }
 
 @media(max-width:600px){
@@ -235,6 +238,7 @@ grid-template-columns:1fr;
 
 </div>
 
+
 <label>
 ایمیل
 </label>
@@ -243,7 +247,9 @@ grid-template-columns:1fr;
 id="email"
 type="email"
 placeholder="Admin Email"
-autocomplete="off">
+autocomplete="off"
+disabled>
+
 
 <label>
 پاسورډ
@@ -253,19 +259,27 @@ autocomplete="off">
 id="password"
 type="password"
 placeholder="Password"
-autocomplete="off">
+autocomplete="off"
+disabled>
+
 
 <button
+id="loginButton"
 class="primary"
-onclick="login()">
+onclick="login()"
+disabled>
 
-Login
+⏳ چمتو کېږي...
 
 </button>
+
 
 <div
 id="loginMessage"
 class="message">
+
+⏳ د Login سیستم چمتو کېږي...
+
 </div>
 
 </div>
@@ -299,7 +313,7 @@ onclick="logout()">
 </div>
 
 
-<!-- ================= STATS ================= -->
+<!-- STATS -->
 
 <div class="stats">
 
@@ -312,6 +326,7 @@ onclick="logout()">
 </strong>
 
 </div>
+
 
 <div class="stat">
 
@@ -326,13 +341,14 @@ onclick="logout()">
 </div>
 
 
-<!-- ================= FILTER ================= -->
+<!-- FILTER -->
 
 <div class="card">
 
 <h2>
 🔎 د معلوماتو لټون
 </h2>
+
 
 <div class="filters">
 
@@ -388,13 +404,14 @@ oninput="filterData()">
 </div>
 
 
-<!-- ================= EXPORT ================= -->
+<!-- EXPORT -->
 
 <div class="card">
 
 <h2>
 📥 Export
 </h2>
+
 
 <button
 class="excel"
@@ -404,6 +421,7 @@ onclick="exportExcel()">
 
 </button>
 
+
 <button
 class="csv"
 onclick="exportCSV()">
@@ -411,6 +429,7 @@ onclick="exportCSV()">
 📄 CSV
 
 </button>
+
 
 <div
 id="message"
@@ -420,7 +439,7 @@ class="message">
 </div>
 
 
-<!-- ================= HOUSEHOLDS ================= -->
+<!-- HOUSEHOLDS -->
 
 <div class="card">
 
@@ -428,10 +447,11 @@ class="message">
 🏠 کورنۍ او د کورنۍ غړي
 </h2>
 
+
 <div id="households">
 
 <div class="empty">
-معلومات لوستل کېږي...
+معلومات لا نه دي لوستل شوي.
 </div>
 
 </div>
@@ -447,9 +467,9 @@ class="message">
 <script>
 
 
-/* =================================================
+/* =====================================================
    SUPABASE
-================================================= */
+===================================================== */
 
 const SUPABASE_URL =
 "https://lswxkfkqpkzncbpiqqyz.supabase.co";
@@ -464,18 +484,91 @@ SUPABASE_KEY
 );
 
 
-/* =================================================
+/* =====================================================
    DATA
-================================================= */
+===================================================== */
 
 let rows = [];
 
 let filtered = [];
 
 
-/* =================================================
+/* =====================================================
+   INITIALIZATION
+===================================================== */
+
+async function initialize(){
+
+const loginMessage =
+document.getElementById(
+"loginMessage"
+);
+
+const email =
+document.getElementById(
+"email"
+);
+
+const password =
+document.getElementById(
+"password"
+);
+
+const loginButton =
+document.getElementById(
+"loginButton"
+);
+
+
+/*
+   لومړی پخوانی Session ختموو.
+   تر هغې پورې Login تڼۍ بندې وي.
+*/
+
+loginMessage.className =
+"message";
+
+loginMessage.textContent =
+"⏳ پخوانی Login Session پاکېږي...";
+
+
+try{
+
+await db.auth.signOut();
+
+}catch(error){
+
+console.log(
+"Sign out:",
+error
+);
+
+}
+
+
+/*
+   اوس Login فعالوو.
+*/
+
+email.disabled = false;
+
+password.disabled = false;
+
+loginButton.disabled = false;
+
+loginButton.textContent =
+"Login";
+
+
+loginMessage.textContent =
+"اوس خپل Admin Email او Password ولیکئ.";
+
+}
+
+
+/* =====================================================
    LOGIN
-================================================= */
+===================================================== */
 
 async function login(){
 
@@ -494,6 +587,10 @@ const message =
 document
 .getElementById("loginMessage");
 
+const button =
+document
+.getElementById("loginButton");
+
 
 if(!email || !password){
 
@@ -508,11 +605,17 @@ return;
 }
 
 
+button.disabled = true;
+
+button.textContent =
+"⏳ Login...";
+
+
 message.className =
 "message";
 
 message.textContent =
-"Login کېږي...";
+"⏳ Login کېږي...";
 
 
 const result =
@@ -527,6 +630,11 @@ password:password
 
 if(result.error){
 
+button.disabled = false;
+
+button.textContent =
+"Login";
+
 message.className =
 "message error";
 
@@ -540,14 +648,8 @@ return;
 
 
 /*
-د Login وروسته تازه Session اخلو.
+   د Login وروسته Session مستقیم اخلو.
 */
-
-await new Promise(
-resolve =>
-setTimeout(resolve,500)
-);
-
 
 const sessionResult =
 await db.auth.getSession();
@@ -557,6 +659,11 @@ if(
 !sessionResult.data ||
 !sessionResult.data.session
 ){
+
+button.disabled = false;
+
+button.textContent =
+"Login";
 
 message.className =
 "message error";
@@ -570,12 +677,20 @@ return;
 
 
 /*
-Login کامیاب شو.
+   Login کامیاب شو.
 */
+
+message.className =
+"message success";
+
+message.textContent =
+"✅ Login کامیاب شو. معلومات لوستل کېږي...";
+
 
 document
 .getElementById("loginBox")
 .classList.add("hidden");
+
 
 document
 .getElementById("exportPanel")
@@ -587,9 +702,9 @@ await loadData();
 }
 
 
-/* =================================================
-   LOAD ALL HOUSEHOLDS
-================================================= */
+/* =====================================================
+   LOAD DATA
+===================================================== */
 
 async function loadData(){
 
@@ -598,10 +713,11 @@ document.getElementById(
 "households"
 );
 
+
 box.innerHTML =
 `
-<div class="empty">
-⏳ معلومات لوستل کېږي...
+<div class="loading">
+⏳ د کورنیو معلومات لوستل کېږي...
 </div>
 `;
 
@@ -614,16 +730,29 @@ await db.rpc(
 
 if(result.error){
 
+console.error(
+"RPC ERROR:",
+result.error
+);
+
 box.innerHTML =
 `
 <div class="empty">
-❌ معلومات ونه لوستل شول.<br>
-${escapeHTML(result.error.message)}
+
+❌ معلومات ونه لوستل شول.
+
+<br><br>
+
+${escapeHTML(
+result.error.message
+)}
+
 </div>
 `;
 
 showMessage(
-"معلومات ونه لوستل شول.",
+"معلومات ونه لوستل شول: " +
+result.error.message,
 true
 );
 
@@ -633,10 +762,11 @@ return;
 
 
 /*
-RPC JSON واپس راکوي.
+   RPC ممکن JSON یا String JSON راکړي.
 */
 
-let data = result.data;
+let data =
+result.data;
 
 
 if(typeof data === "string"){
@@ -646,7 +776,12 @@ try{
 data =
 JSON.parse(data);
 
-}catch(e){
+}catch(error){
+
+console.error(
+"JSON ERROR:",
+error
+);
 
 data = [];
 
@@ -665,6 +800,12 @@ filtered =
 [...rows];
 
 
+console.log(
+"Households:",
+rows
+);
+
+
 fillProvinces();
 
 renderInfo();
@@ -675,13 +816,14 @@ renderHouseholds();
 if(rows.length === 0){
 
 showMessage(
-"اوس مهال هېڅ کورنۍ معلومات نه شته.",
+"⚠️ په Database کې هېڅ کورنۍ معلومات ونه موندل شول.",
 true
 );
 
 }else{
 
 showMessage(
+"✅ " +
 rows.length +
 " کورنۍ معلومات ترلاسه شول."
 );
@@ -691,9 +833,9 @@ rows.length +
 }
 
 
-/* =================================================
+/* =====================================================
    PROVINCES
-================================================= */
+===================================================== */
 
 function fillProvinces(){
 
@@ -702,11 +844,14 @@ document.getElementById(
 "province"
 );
 
+
 const provinces =
 [
 ...new Set(
 rows
-.map(x => x.province)
+.map(
+x => x.province
+)
 .filter(Boolean)
 )
 ].sort();
@@ -746,9 +891,9 @@ fillDistricts();
 }
 
 
-/* =================================================
+/* =====================================================
    DISTRICTS
-================================================= */
+===================================================== */
 
 function provinceChanged(){
 
@@ -763,8 +908,11 @@ function fillDistricts(){
 
 const province =
 document
-.getElementById("province")
+.getElementById(
+"province"
+)
 .value;
+
 
 let data =
 rows;
@@ -785,7 +933,9 @@ const districts =
 [
 ...new Set(
 data
-.map(x => x.district)
+.map(
+x => x.district
+)
 .filter(Boolean)
 )
 ].sort();
@@ -828,32 +978,41 @@ option
 }
 
 
-/* =================================================
+/* =====================================================
    FILTER
-================================================= */
+===================================================== */
 
 function filterData(){
 
 const search =
 document
-.getElementById("search")
+.getElementById(
+"search"
+)
 .value
 .trim()
 .toLowerCase();
 
+
 const province =
 document
-.getElementById("province")
+.getElementById(
+"province"
+)
 .value;
+
 
 const district =
 document
-.getElementById("district")
+.getElementById(
+"district"
+)
 .value;
 
 
 filtered =
-rows.filter(row => {
+rows.filter(
+row => {
 
 
 if(
@@ -885,13 +1044,15 @@ Array.isArray(row.people)
 
 
 const found =
-people.some(person => {
+people.some(
+person => {
 
 const name =
 String(
 person.name || ""
 )
 .toLowerCase();
+
 
 const father =
 String(
@@ -929,16 +1090,17 @@ renderHouseholds();
 }
 
 
-/* =================================================
-   STATS
-================================================= */
+/* =====================================================
+   STATISTICS
+===================================================== */
 
 function renderInfo(){
 
 let population = 0;
 
 
-filtered.forEach(row => {
+filtered.forEach(
+row => {
 
 population +=
 Number(
@@ -949,22 +1111,26 @@ row.members || 0
 
 
 document
-.getElementById("count")
+.getElementById(
+"count"
+)
 .textContent =
 filtered.length;
 
 
 document
-.getElementById("population")
+.getElementById(
+"population"
+)
 .textContent =
 population;
 
 }
 
 
-/* =================================================
-   SHOW HOUSEHOLDS
-================================================= */
+/* =====================================================
+   DISPLAY HOUSEHOLDS
+===================================================== */
 
 function renderHouseholds(){
 
@@ -979,7 +1145,9 @@ if(!filtered.length){
 box.innerHTML =
 `
 <div class="empty">
+
 🏠 هېڅ کورنۍ ونه موندل شوه.
+
 </div>
 `;
 
@@ -1005,46 +1173,60 @@ html +=
 `
 <div class="household">
 
+
 <div class="householdHeader">
 
 🏠 کورنۍ #${index + 1}
 
 <br>
 
-ID:
+🆔 ID:
 ${escapeHTML(row.id)}
 
 <br>
 
 📍 ولایت:
-${escapeHTML(row.province || "")}
-
-&nbsp;&nbsp;
-
-📍 ولسوالۍ:
-${escapeHTML(row.district || "")}
+${escapeHTML(
+row.province || ""
+)}
 
 <br>
 
-🏘️ سیمه/کلی:
-${escapeHTML(row.village || "")}
+📍 ولسوالي:
+${escapeHTML(
+row.district || ""
+)}
+
+<br>
+
+🏘️ سیمه / کلی:
+${escapeHTML(
+row.village || ""
+)}
 
 <br>
 
 👨‍👩‍👧‍👦 د کورنۍ غړي:
-${escapeHTML(row.members || 0)}
+${escapeHTML(
+row.members || 0
+)}
 
 &nbsp;&nbsp;
 
 👨 نارینه:
-${escapeHTML(row.male || 0)}
+${escapeHTML(
+row.male || 0
+)}
 
 &nbsp;&nbsp;
 
 👩 ښځینه:
-${escapeHTML(row.female || 0)}
+${escapeHTML(
+row.female || 0
+)}
 
 </div>
+
 
 <div class="people">
 
@@ -1077,6 +1259,7 @@ ${escapeHTML(row.female || 0)}
 </tr>
 
 </thead>
+
 
 <tbody>
 `;
@@ -1173,16 +1356,17 @@ html;
 }
 
 
-/* =================================================
-   BUILD EXPORT DATA
-================================================= */
+/* =====================================================
+   EXPORT DATA
+===================================================== */
 
 function buildExportData(){
 
 const data = [];
 
 
-filtered.forEach(row => {
+filtered.forEach(
+row => {
 
 const people =
 Array.isArray(row.people)
@@ -1190,7 +1374,8 @@ Array.isArray(row.people)
 : [];
 
 
-people.forEach(person => {
+people.forEach(
+person => {
 
 data.push({
 
@@ -1257,9 +1442,9 @@ return data;
 }
 
 
-/* =================================================
+/* =====================================================
    EXCEL
-================================================= */
+===================================================== */
 
 function exportExcel(){
 
@@ -1303,15 +1488,15 @@ workbook,
 
 
 showMessage(
-"Excel فایل جوړ شو."
+"✅ Excel فایل جوړ شو."
 );
 
 }
 
 
-/* =================================================
+/* =====================================================
    CSV
-================================================= */
+===================================================== */
 
 function exportCSV(){
 
@@ -1370,6 +1555,7 @@ document.createElement(
 link.href =
 url;
 
+
 link.download =
 "Afghanistan-Population.csv";
 
@@ -1391,15 +1577,15 @@ url
 
 
 showMessage(
-"CSV فایل جوړ شو."
+"✅ CSV فایل جوړ شو."
 );
 
 }
 
 
-/* =================================================
+/* =====================================================
    LOGOUT
-================================================= */
+===================================================== */
 
 async function logout(){
 
@@ -1412,44 +1598,53 @@ filtered = [];
 
 
 document
-.getElementById("exportPanel")
-.classList.add("hidden");
+.getElementById(
+"exportPanel"
+)
+.classList.add(
+"hidden"
+);
 
 
 document
-.getElementById("loginBox")
-.classList.remove("hidden");
+.getElementById(
+"loginBox"
+)
+.classList.remove(
+"hidden"
+);
 
 
 document
-.getElementById("email")
+.getElementById(
+"email"
+)
 .value =
 "";
 
 
 document
-.getElementById("password")
+.getElementById(
+"password"
+)
 .value =
 "";
 
 
 document
-.getElementById("loginMessage")
+.getElementById(
+"loginMessage"
+)
 .textContent =
-"";
+"بیا Login وکړئ.";
 
-
-document
-.getElementById("households")
-.innerHTML =
-"";
 
 }
 
 
-/* =================================================
+/* =====================================================
    MESSAGE
-================================================= */
+===================================================== */
 
 function showMessage(
 text,
@@ -1474,9 +1669,9 @@ text;
 }
 
 
-/* =================================================
+/* =====================================================
    ESCAPE HTML
-================================================= */
+===================================================== */
 
 function escapeHTML(value){
 
@@ -1507,37 +1702,11 @@ value ?? ""
 }
 
 
-/* =================================================
-   FORCE LOGIN EVERY TIME
-================================================= */
-
-async function checkSession(){
-
-/*
-هر ځل پخوانی Session ختموو،
-ترڅو Admin Export Login وغواړي.
-*/
-
-await db.auth.signOut();
-
-
-document
-.getElementById("loginBox")
-.classList.remove("hidden");
-
-
-document
-.getElementById("exportPanel")
-.classList.add("hidden");
-
-}
-
-
-/* =================================================
+/* =====================================================
    START
-================================================= */
+===================================================== */
 
-checkSession();
+initialize();
 
 </script>
 
