@@ -5,8 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
@@ -143,7 +142,8 @@ padding:13px;
 margin-top:15px;
 border-radius:8px;
 font-weight:bold;
-line-height:1.8
+line-height:1.8;
+word-break:break-word
 }
 
 .status.success{
@@ -316,42 +316,8 @@ SUPABASE
 const SUPABASE_URL =
 "https://lswxkfkqpkzncbpiqqyz.supabase.co";
 
-
 const SUPABASE_KEY =
 "sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
-
-
-let db = null;
-
-
-try{
-
-db =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY,
-{
-auth:{
-persistSession:false,
-autoRefreshToken:false,
-detectSessionInUrl:false
-}
-}
-);
-
-console.log(
-"Supabase connected:",
-SUPABASE_URL
-);
-
-}catch(error){
-
-console.error(
-"Supabase initialization error:",
-error
-);
-
-}
 
 
 /* ==========================================
@@ -756,9 +722,7 @@ type="info"
 ){
 
 const box =
-document.getElementById(
-"status"
-);
+document.getElementById("status");
 
 box.className =
 "status " + type;
@@ -788,49 +752,32 @@ x === "en"
 const t = T[x];
 
 
-document.getElementById(
-"title"
-).textContent = t.title;
+document.getElementById("title")
+.textContent = t.title;
 
+document.getElementById("subtitle")
+.textContent = t.subtitle;
 
-document.getElementById(
-"subtitle"
-).textContent = t.subtitle;
+document.getElementById("notice")
+.innerHTML = t.notice;
 
+document.getElementById("formTitle")
+.textContent = t.form;
 
-document.getElementById(
-"notice"
-).innerHTML = t.notice;
+document.getElementById("provinceLabel")
+.textContent = t.province;
 
+document.getElementById("districtLabel")
+.textContent = t.district;
 
-document.getElementById(
-"formTitle"
-).textContent = t.form;
+document.getElementById("villageLabel")
+.textContent = t.village;
 
+document.getElementById("membersLabel")
+.textContent = t.members;
 
-document.getElementById(
-"provinceLabel"
-).textContent = t.province;
-
-
-document.getElementById(
-"districtLabel"
-).textContent = t.district;
-
-
-document.getElementById(
-"villageLabel"
-).textContent = t.village;
-
-
-document.getElementById(
-"membersLabel"
-).textContent = t.members;
-
-
-document.getElementById(
-"submitBtn"
-).textContent = t.save;
+document.getElementById("submitBtn")
+.textContent = t.save;
 
 
 loadProvinces();
@@ -847,9 +794,7 @@ LOAD PROVINCES
 function loadProvinces(){
 
 const box =
-document.getElementById(
-"province"
-);
+document.getElementById("province");
 
 box.innerHTML = "";
 
@@ -858,9 +803,7 @@ provinces[lang].forEach(
 (name,index)=>{
 
 const option =
-document.createElement(
-"option"
-);
+document.createElement("option");
 
 option.value =
 provinceKeys[index];
@@ -868,9 +811,7 @@ provinceKeys[index];
 option.textContent =
 name;
 
-box.appendChild(
-option
-);
+box.appendChild(option);
 
 });
 
@@ -887,15 +828,10 @@ LOAD DISTRICTS
 function loadDistricts(){
 
 const province =
-document.getElementById(
-"province"
-).value;
-
+document.getElementById("province").value;
 
 const box =
-document.getElementById(
-"district"
-);
+document.getElementById("district");
 
 box.innerHTML = "";
 
@@ -924,9 +860,7 @@ list = [];
 if(list.length === 0){
 
 const option =
-document.createElement(
-"option"
-);
+document.createElement("option");
 
 option.value = "";
 
@@ -942,9 +876,7 @@ lang === "fa"
 :
 "No districts available";
 
-box.appendChild(
-option
-);
+box.appendChild(option);
 
 return;
 
@@ -955,17 +887,13 @@ list.forEach(
 d=>{
 
 const option =
-document.createElement(
-"option"
-);
+document.createElement("option");
 
 option.value = d;
 
 option.textContent = d;
 
-box.appendChild(
-option
-);
+box.appendChild(option);
 
 });
 
@@ -980,16 +908,12 @@ function makePeople(){
 
 const n =
 Number(
-document.getElementById(
-"members"
-).value || 0
+document.getElementById("members").value || 0
 );
 
 
 const peopleBox =
-document.getElementById(
-"people"
-);
+document.getElementById("people");
 
 peopleBox.innerHTML = "";
 
@@ -1236,41 +1160,8 @@ type="text">
 
 
 /* ==========================================
-TIMEOUT
-========================================== */
-
-function withTimeout(
-promise,
-milliseconds
-){
-
-return Promise.race([
-
-promise,
-
-new Promise(
-(_,reject)=>{
-
-setTimeout(
-()=>reject(
-new Error(
-"د Supabase ځواب رانغی. Internet اتصال وګورئ."
-)
-),
-milliseconds
-);
-
-}
-
-)
-
-]);
-
-}
-
-
-/* ==========================================
 SAVE FAMILY
+DIRECT SUPABASE REST API
 ========================================== */
 
 async function saveFamily(){
@@ -1278,48 +1169,23 @@ async function saveFamily(){
 const t = T[lang];
 
 const submit =
-document.getElementById(
-"submitBtn"
-);
-
-
-if(!db){
-
-showStatus(
-"❌ Database سره اتصال جوړ شوی نه دی.",
-"error"
-);
-
-return;
-
-}
+document.getElementById("submitBtn");
 
 
 /* FAMILY */
 
 const province =
-document.getElementById(
-"province"
-).value.trim();
-
+document.getElementById("province").value.trim();
 
 const district =
-document.getElementById(
-"district"
-).value.trim();
-
+document.getElementById("district").value.trim();
 
 const village =
-document.getElementById(
-"village"
-).value.trim();
-
+document.getElementById("village").value.trim();
 
 const n =
 Number(
-document.getElementById(
-"members"
-).value
+document.getElementById("members").value
 );
 
 
@@ -1360,9 +1226,7 @@ return;
 /* PEOPLE */
 
 const cards =
-document.querySelectorAll(
-".person"
-);
+document.querySelectorAll(".person");
 
 
 if(cards.length !== n){
@@ -1388,63 +1252,44 @@ i++
 
 const card = cards[i];
 
-
 const name =
-card.querySelector(
-".pname"
-).value.trim();
-
+card.querySelector(".pname")
+.value.trim();
 
 const father =
-card.querySelector(
-".father"
-).value.trim();
-
+card.querySelector(".father")
+.value.trim();
 
 const gender =
-card.querySelector(
-".gender"
-).value;
-
+card.querySelector(".gender")
+.value;
 
 const ageText =
-card.querySelector(
-".age"
-).value.trim();
-
+card.querySelector(".age")
+.value.trim();
 
 const age =
 Number(ageText);
 
-
 const marital =
-card.querySelector(
-".marital"
-).value;
-
+card.querySelector(".marital")
+.value;
 
 const relation =
-card.querySelector(
-".relation"
-).value.trim();
-
+card.querySelector(".relation")
+.value.trim();
 
 const education =
-card.querySelector(
-".education"
-).value.trim();
-
+card.querySelector(".education")
+.value.trim();
 
 const work =
-card.querySelector(
-".work"
-).value.trim();
-
+card.querySelector(".work")
+.value.trim();
 
 const job =
-card.querySelector(
-".job"
-).value.trim();
+card.querySelector(".job")
+.value.trim();
 
 
 if(
@@ -1512,7 +1357,6 @@ people.filter(
 p => p.gender === "male"
 ).length;
 
-
 const female =
 people.filter(
 p => p.gender === "female"
@@ -1540,12 +1384,6 @@ people:people
 };
 
 
-console.log(
-"Submitting:",
-householdData
-);
-
-
 /* BUTTON */
 
 submit.disabled = true;
@@ -1560,51 +1398,163 @@ t.saving,
 
 try{
 
+console.log(
+"Sending directly to Supabase..."
+);
 
-/* INSERT */
 
-const result =
-await withTimeout(
+/* ABORT CONTROLLER */
 
-db
-.from("households")
-.insert([
+const controller =
+new AbortController();
+
+
+const timer =
+setTimeout(
+function(){
+
+controller.abort();
+
+},
+15000
+);
+
+
+/* SUPABASE REST REQUEST */
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/rest/v1/households",
+
+{
+
+method:"POST",
+
+headers:{
+
+"apikey":
+SUPABASE_KEY,
+
+"Authorization":
+"Bearer " +
+SUPABASE_KEY,
+
+"Content-Type":
+"application/json",
+
+"Prefer":
+"return=minimal"
+
+},
+
+body:
+JSON.stringify(
 householdData
-]),
+),
 
-20000
+signal:
+controller.signal
+
+}
 
 );
 
+
+/* CLEAR TIMER */
+
+clearTimeout(timer);
+
+
+/* HTTP STATUS */
 
 console.log(
-"Supabase result:",
-result
+"Supabase HTTP status:",
+response.status
 );
+
+
+/* RESPONSE TEXT */
+
+let resultText = "";
+
+try{
+
+resultText =
+await response.text();
+
+}catch(e){
+
+resultText = "";
+
+}
 
 
 /* ERROR */
 
-if(result.error){
+if(!response.ok){
 
 console.error(
-"SUPABASE ERROR:",
-result.error
+"SUPABASE REST ERROR:",
+response.status,
+resultText
 );
+
+
+let message =
+"Supabase Error: " +
+response.status;
+
+
+try{
+
+const errorData =
+JSON.parse(resultText);
+
+
+if(errorData.message){
+
+message =
+errorData.message;
+
+}
+
+
+if(errorData.error){
+
+message =
+errorData.error;
+
+}
+
+
+if(errorData.hint){
+
+message +=
+"<br><small>" +
+errorData.hint +
+"</small>";
+
+}
+
+}catch(e){}
 
 
 showStatus(
 
 "❌ " +
-result.error.message,
+message,
 
 "error"
 
 );
 
+
 submit.disabled = false;
 
-submit.textContent = t.save;
+submit.textContent =
+t.save;
 
 return;
 
@@ -1624,17 +1574,15 @@ t.success,
 );
 
 
-/* CLEAR */
+/* CLEAR FORM */
 
 document.getElementById(
 "village"
 ).value = "";
 
-
 document.getElementById(
 "members"
 ).value = "";
-
 
 document.getElementById(
 "people"
@@ -1645,7 +1593,8 @@ document.getElementById(
 
 submit.disabled = false;
 
-submit.textContent = t.save;
+submit.textContent =
+t.save;
 
 
 }catch(error){
@@ -1656,13 +1605,25 @@ error
 );
 
 
+let message =
+error.message ||
+String(error);
+
+
+if(
+error.name === "AbortError"
+){
+
+message =
+"Supabase ته د اتصال وخت پای ته ورسېد. مهرباني وکړئ Internet اتصال وګورئ.";
+
+}
+
+
 showStatus(
 
 "❌ " +
-(
-error.message ||
-String(error)
-),
+message,
 
 "error"
 
@@ -1671,7 +1632,8 @@ String(error)
 
 submit.disabled = false;
 
-submit.textContent = t.save;
+submit.textContent =
+t.save;
 
 }
 
