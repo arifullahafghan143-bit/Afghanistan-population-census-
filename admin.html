@@ -20,85 +20,166 @@ box-sizing:border-box;
 
 body{
 margin:0;
-font-family:Arial,Tahoma,sans-serif;
-background:#f4f6f8;
-color:#222;
+font-family:Tahoma,Arial,sans-serif;
+background:#f3f6fa;
+color:#172033;
 }
 
 .container{
-max-width:1100px;
-margin:30px auto;
-padding:15px;
+max-width:1250px;
+margin:auto;
+padding:18px;
+}
+
+.header{
+background:linear-gradient(135deg,#075985,#0f766e);
+color:white;
+padding:22px;
+border-radius:18px;
+margin-bottom:18px;
+box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.header h1{
+margin:0 0 8px;
+font-size:25px;
+}
+
+.header p{
+margin:0;
+opacity:.9;
 }
 
 .card{
 background:white;
-padding:25px;
-border-radius:14px;
-box-shadow:0 3px 15px rgba(0,0,0,.08);
-margin-bottom:20px;
+border-radius:16px;
+padding:20px;
+margin-bottom:18px;
+box-shadow:0 4px 18px rgba(0,0,0,.07);
 }
 
-h1,h2{
-margin-top:0;
+.login-card{
+max-width:500px;
+margin:60px auto;
 }
 
-input,select,button{
+label{
+display:block;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+input,
+select{
 width:100%;
 padding:12px;
-margin-top:8px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px;
+border:1px solid #d5dce5;
+border-radius:9px;
+font-size:15px;
+background:white;
+margin-bottom:13px;
+outline:none;
+}
+
+input:focus,
+select:focus{
+border-color:#0f766e;
 }
 
 button{
-background:#1261a0;
-color:white;
-border:none;
+border:0;
+border-radius:9px;
+padding:11px 16px;
+font-size:14px;
 cursor:pointer;
+font-family:inherit;
+}
+
+.btn-primary{
+background:#0f766e;
+color:white;
+}
+
+.btn-edit{
+background:#2563eb;
+color:white;
+}
+
+.btn-delete{
+background:#dc2626;
+color:white;
+}
+
+.btn-secondary{
+background:#64748b;
+color:white;
+}
+
+.btn-light{
+background:#e8eef5;
+color:#172033;
 }
 
 button:hover{
 opacity:.9;
 }
 
-.logout{
-background:#c62828;
-}
-
 .hidden{
-display:none !important;
+display:none!important;
 }
 
 .error{
-color:#c62828;
-margin-bottom:15px;
+background:#fee2e2;
+color:#991b1b;
+padding:10px;
+border-radius:8px;
+margin-bottom:12px;
 }
 
 .success{
-color:green;
-margin-bottom:15px;
+background:#dcfce7;
+color:#166534;
+padding:10px;
+border-radius:8px;
+margin-bottom:12px;
 }
 
 .stats{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:12px;
+gap:14px;
 }
 
 .stat{
-background:#eef5ff;
-padding:18px;
-border-radius:10px;
+padding:20px;
+border-radius:14px;
+background:#f0fdfa;
+border:1px solid #ccfbf1;
 text-align:center;
 }
 
-.stat strong{
-display:block;
-font-size:28px;
+.stat-title{
+font-size:14px;
+color:#475569;
+}
+
+.stat-number{
+font-size:30px;
+font-weight:bold;
+color:#0f766e;
 margin-top:8px;
+}
+
+.filters{
+display:grid;
+grid-template-columns:1.3fr 1fr 1fr auto;
+gap:12px;
+align-items:end;
+}
+
+.filter-button{
+margin-bottom:13px;
+white-space:nowrap;
 }
 
 .table-wrap{
@@ -108,31 +189,146 @@ overflow-x:auto;
 table{
 width:100%;
 border-collapse:collapse;
-}
-
-th,td{
-padding:10px;
-border-bottom:1px solid #ddd;
-text-align:right;
-white-space:nowrap;
+min-width:1100px;
 }
 
 th{
-background:#f0f2f5;
+background:#0f766e;
+color:white;
+padding:12px;
+text-align:right;
 }
 
-#status{
+td{
+padding:11px;
+border-bottom:1px solid #e5e7eb;
+vertical-align:top;
+}
+
+tr:hover td{
+background:#f8fafc;
+}
+
+.member-name{
 font-weight:bold;
+color:#0f766e;
 }
 
-@media(max-width:700px){
+.member-list{
+line-height:1.9;
+}
+
+.actions{
+display:flex;
+gap:6px;
+flex-wrap:wrap;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:15px;
+z-index:1000;
+}
+
+.modal-box{
+background:white;
+width:100%;
+max-width:850px;
+max-height:90vh;
+overflow-y:auto;
+border-radius:18px;
+padding:22px;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.modal-header h2{
+margin:0;
+}
+
+.close{
+background:#e5e7eb;
+color:#111827;
+font-size:20px;
+padding:5px 12px;
+}
+
+.member-card{
+border:1px solid #dbe3ea;
+border-radius:12px;
+padding:15px;
+margin-bottom:15px;
+background:#f8fafc;
+}
+
+.member-card h3{
+margin-top:0;
+color:#0f766e;
+}
+
+.member-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.member-grid input,
+.member-grid select{
+margin-bottom:5px;
+}
+
+.detail-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.detail-item{
+background:#f8fafc;
+padding:12px;
+border-radius:9px;
+}
+
+.status{
+margin-bottom:15px;
+}
+
+.small{
+font-size:13px;
+color:#64748b;
+}
+
+@media(max-width:800px){
 
 .stats{
 grid-template-columns:repeat(2,1fr);
 }
 
+.filters{
+grid-template-columns:1fr;
+}
+
+.member-grid,
+.detail-grid{
+grid-template-columns:1fr;
+}
+
+.header h1{
+font-size:21px;
+}
+
 .container{
-margin:10px auto;
+padding:10px;
 }
 
 }
@@ -141,24 +337,26 @@ margin:10px auto;
 
 </head>
 
+
 <body>
 
+
 <div class="container">
-
-<h1>د نفوس Admin سیستم</h1>
-
-<div id="status">
-سیستم چک کېږي...
-</div>
 
 
 <!-- LOGIN -->
 
-<div id="loginBox" class="card hidden">
+<div id="loginBox" class="card login-card">
 
-<h2>Admin Login</h2>
+<div class="header">
 
-<div id="loginError" class="error"></div>
+<h1>د نفوس Admin سیستم</h1>
+
+<p>یوازې د مجاز Admin لپاره</p>
+
+</div>
+
+<div id="loginError"></div>
 
 <label>
 ایمیل
@@ -167,7 +365,7 @@ margin:10px auto;
 <input
 id="email"
 type="email"
-placeholder="Email">
+placeholder="Admin Email">
 
 <label>
 پاسورډ
@@ -178,8 +376,13 @@ id="password"
 type="password"
 placeholder="Password">
 
-<button onclick="login()">
+<button
+class="btn-primary"
+style="width:100%"
+onclick="login()">
+
 Login
+
 </button>
 
 </div>
@@ -189,53 +392,213 @@ Login
 
 <div id="adminBox" class="hidden">
 
-<div class="card">
 
-<h2>د نفوس معلومات</h2>
+<div class="header">
+
+<h1>د افغانستان د نفوس Admin سیستم</h1>
+
+<p>
+د ثبت شویو کورنیو او افرادو مدیریت
+</p>
+
+<div style="margin-top:15px">
 
 <button
-class="logout"
+class="btn-light"
+onclick="loadData()">
+
+↻ معلومات تازه کول
+
+</button>
+
+<button
+class="btn-delete"
 onclick="logout()">
+
 وتل
+
 </button>
 
 </div>
 
+</div>
+
+
+<div id="pageStatus"
+class="status">
+</div>
+
+
+<!-- STATS -->
 
 <div class="card">
+
+<h2>احصائیه</h2>
 
 <div class="stats">
 
 <div class="stat">
+
+<div class="stat-title">
 ټولې کورنۍ
-<strong id="totalHouseholds">0</strong>
 </div>
 
+<div
+id="totalHouseholds"
+class="stat-number">
+0
+</div>
+
+</div>
+
+
 <div class="stat">
+
+<div class="stat-title">
 ټول نفوس
-<strong id="totalPopulation">0</strong>
 </div>
 
+<div
+id="totalPopulation"
+class="stat-number">
+0
+</div>
+
+</div>
+
+
 <div class="stat">
+
+<div class="stat-title">
 نارینه
-<strong id="totalMale">0</strong>
 </div>
+
+<div
+id="totalMale"
+class="stat-number">
+0
+</div>
+
+</div>
+
 
 <div class="stat">
+
+<div class="stat-title">
 ښځینه
-<strong id="totalFemale">0</strong>
+</div>
+
+<div
+id="totalFemale"
+class="stat-number">
+0
 </div>
 
 </div>
 
 </div>
 
+</div>
+
+
+<!-- FILTER -->
 
 <div class="card">
 
-<h2>ثبت شوې کورنۍ</h2>
+<h2>
+لټون او Filter
+</h2>
 
-<div id="dataStatus"></div>
+<div class="filters">
+
+<div>
+
+<label>
+د شخص نوم
+</label>
+
+<input
+id="searchInput"
+placeholder="د نوم یا د پلار نوم له مخې لټون..."
+oninput="applyFilters()">
+
+</div>
+
+
+<div>
+
+<label>
+ولایت
+</label>
+
+<select
+id="provinceFilter"
+onchange="updateDistrictFilter()">
+
+<option value="">
+ټول ولایتونه
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+ولسوالي
+</label>
+
+<select
+id="districtFilter"
+onchange="applyFilters()">
+
+<option value="">
+ټولې ولسوالۍ
+</option>
+
+</select>
+
+</div>
+
+
+<button
+class="btn-secondary filter-button"
+onclick="clearFilters()">
+
+پاکول
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- TABLE -->
+
+<div class="card">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+">
+
+<h2>
+ثبت شوې کورنۍ
+</h2>
+
+<div class="small">
+ټولې پایلې:
+<span id="resultCount">0</span>
+</div>
+
+</div>
+
 
 <div class="table-wrap">
 
@@ -246,13 +609,24 @@ onclick="logout()">
 <tr>
 
 <th>ID</th>
+
 <th>ولایت</th>
+
 <th>ولسوالي</th>
+
 <th>سیمه</th>
-<th>غړي</th>
+
+<th>د کورنۍ غړي</th>
+
 <th>نارینه</th>
+
 <th>ښځینه</th>
+
+<th>نومونه</th>
+
 <th>نېټه</th>
+
+<th>عملیات</th>
 
 </tr>
 
@@ -268,12 +642,130 @@ onclick="logout()">
 
 </div>
 
+
+</div>
+
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+
+<div
+id="detailsModal"
+class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>
+د کورنۍ د غړو معلومات
+</h2>
+
+<button
+class="close"
+onclick="closeDetails()">
+
+×
+
+</button>
+
+</div>
+
+<div id="detailsContent"></div>
+
+</div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+
+<div
+id="editModal"
+class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>
+د کورنۍ معلومات Edit
+</h2>
+
+<button
+class="close"
+onclick="closeEdit()">
+
+×
+</button>
+
+</div>
+
+
+<div id="editError"></div>
+
+
+<label>
+ولایت
+</label>
+
+<input id="editProvince">
+
+
+<label>
+ولسوالي
+</label>
+
+<input id="editDistrict">
+
+
+<label>
+سیمه / کلی
+</label>
+
+<input id="editVillage">
+
+
+<h3>
+د کورنۍ غړي
+</h3>
+
+<div id="editMembers"></div>
+
+
+<div style="
+display:flex;
+gap:8px;
+margin-top:15px;
+">
+
+<button
+class="btn-primary"
+onclick="saveEdit()">
+
+💾 Save
+
+</button>
+
+<button
+class="btn-secondary"
+onclick="closeEdit()">
+
+لغوه
+
+</button>
+
+</div>
+
 </div>
 
 </div>
 
 
 <script>
+
 
 /* SUPABASE */
 
@@ -290,72 +782,13 @@ SUPABASE_KEY
 );
 
 
-/* START */
+/* GLOBAL DATA */
 
-async function start(){
+let allRows = [];
 
-document.getElementById("status").textContent =
-"سیستم چک کېږي...";
+let filteredRows = [];
 
-try{
-
-const {
-data:{
-session
-}
-} = await db.auth.getSession();
-
-
-if(session){
-
-showAdmin();
-
-}else{
-
-showLogin();
-
-}
-
-}catch(error){
-
-console.error(error);
-
-document.getElementById("status").textContent =
-"د سیستم په چک کولو کې ستونزه راغله.";
-
-showLogin();
-
-}
-
-}
-
-
-/* LOGIN FORM */
-
-function showLogin(){
-
-document.getElementById("status").classList.add("hidden");
-
-document.getElementById("adminBox").classList.add("hidden");
-
-document.getElementById("loginBox").classList.remove("hidden");
-
-}
-
-
-/* ADMIN */
-
-async function showAdmin(){
-
-document.getElementById("status").classList.add("hidden");
-
-document.getElementById("loginBox").classList.add("hidden");
-
-document.getElementById("adminBox").classList.remove("hidden");
-
-await loadData();
-
-}
+let editingId = null;
 
 
 /* LOGIN */
@@ -363,44 +796,44 @@ await loadData();
 async function login(){
 
 const email =
-document.getElementById("email").value.trim();
+document.getElementById("email")
+.value
+.trim();
 
 const password =
-document.getElementById("password").value;
+document.getElementById("password")
+.value;
 
-const errorBox =
+const error =
 document.getElementById("loginError");
 
-errorBox.textContent = "";
+error.innerHTML = "";
 
 if(!email || !password){
 
-errorBox.textContent =
-"ایمیل او پاسورډ ولیکئ.";
+error.innerHTML =
+'<div class="error">ایمیل او پاسورډ ولیکئ.</div>';
 
 return;
 
 }
 
-const {
-data,
-error
-} =
+
+const {data,error:loginError} =
 await db.auth.signInWithPassword({
 
-email:email,
-
-password:password
+email,
+password
 
 });
 
 
-if(error){
+if(loginError){
 
-console.error(error);
-
-errorBox.textContent =
-"Login ناکام شو: " + error.message;
+error.innerHTML =
+'<div class="error">' +
+escapeHTML(loginError.message) +
+'</div>';
 
 return;
 
@@ -422,22 +855,30 @@ location.reload();
 }
 
 
-/* LOAD DATA */
+/* SHOW ADMIN */
+
+function showAdmin(){
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+document
+.getElementById("adminBox")
+.classList.remove("hidden");
+
+loadData();
+
+}
+
+
+/* LOAD */
 
 async function loadData(){
 
-const status =
-document.getElementById("dataStatus");
+setStatus("معلومات راوړل کېږي...");
 
-status.textContent =
-"معلومات راوړل کېږي...";
-
-try{
-
-const {
-data,
-error
-} =
+const {data,error} =
 await db.rpc(
 "admin_get_households"
 );
@@ -446,43 +887,323 @@ if(error){
 
 console.error(error);
 
-status.textContent =
+setStatus(
 "معلومات ونه لوستل شول: " +
-error.message;
+error.message,
+true
+);
 
 return;
 
 }
 
-const rows =
+
+allRows =
 Array.isArray(data)
 ? data
 : [];
 
-renderStats(rows);
 
-renderTable(rows);
+filteredRows =
+[...allRows];
 
-status.textContent =
-"معلومات په بریالیتوب سره راوړل شول.";
 
-}catch(error){
+fillProvinceFilter();
 
-console.error(error);
+render();
 
-status.textContent =
-"تخنیکي ستونزه رامنځته شوه.";
+setStatus(
+"معلومات په بریالیتوب سره تازه شول."
+);
 
 }
+
+
+/* STATUS */
+
+function setStatus(
+message,
+isError=false
+){
+
+const box =
+document.getElementById(
+"pageStatus"
+);
+
+box.className =
+isError
+? "error status"
+: "success status";
+
+box.textContent =
+message;
+
+}
+
+
+/* PROVINCES */
+
+function fillProvinceFilter(){
+
+const select =
+document.getElementById(
+"provinceFilter"
+);
+
+const current =
+select.value;
+
+const provinces =
+[...new Set(
+allRows
+.map(r=>r.province)
+.filter(Boolean)
+)]
+.sort();
+
+
+select.innerHTML =
+'<option value="">ټول ولایتونه</option>';
+
+
+provinces.forEach(
+province=>{
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+province;
+
+option.textContent =
+province;
+
+select.appendChild(
+option
+);
+
+});
+
+
+select.value =
+current;
+
+updateDistrictFilter(false);
+
+}
+
+
+/* DISTRICTS */
+
+function updateDistrictFilter(
+runFilter=true
+){
+
+const province =
+document.getElementById(
+"provinceFilter"
+).value;
+
+const districtSelect =
+document.getElementById(
+"districtFilter"
+);
+
+let rows =
+allRows;
+
+
+if(province){
+
+rows =
+rows.filter(
+r=>r.province === province
+);
+
+}
+
+
+const districts =
+[...new Set(
+rows
+.map(r=>r.district)
+.filter(Boolean)
+)]
+.sort();
+
+
+districtSelect.innerHTML =
+'<option value="">ټولې ولسوالۍ</option>';
+
+
+districts.forEach(
+district=>{
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+district;
+
+option.textContent =
+district;
+
+districtSelect.appendChild(
+option
+);
+
+});
+
+
+if(runFilter){
+
+applyFilters();
+
+}
+
+}
+
+
+/* FILTER */
+
+function applyFilters(){
+
+const search =
+document
+.getElementById("searchInput")
+.value
+.trim()
+.toLowerCase();
+
+const province =
+document
+.getElementById("provinceFilter")
+.value;
+
+const district =
+document
+.getElementById("districtFilter")
+.value;
+
+
+filteredRows =
+allRows.filter(row=>{
+
+if(
+province &&
+row.province !== province
+){
+
+return false;
+
+}
+
+
+if(
+district &&
+row.district !== district
+){
+
+return false;
+
+}
+
+
+if(search){
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+const found =
+people.some(person=>{
+
+const name =
+String(
+person.name || ""
+)
+.toLowerCase();
+
+const father =
+String(
+person.father_name || ""
+)
+.toLowerCase();
+
+return(
+name.includes(search) ||
+father.includes(search)
+);
+
+});
+
+
+if(!found){
+
+return false;
+
+}
+
+}
+
+
+return true;
+
+});
+
+
+render();
+
+}
+
+
+/* CLEAR FILTER */
+
+function clearFilters(){
+
+document.getElementById(
+"searchInput"
+).value = "";
+
+document.getElementById(
+"provinceFilter"
+).value = "";
+
+updateDistrictFilter(false);
+
+document.getElementById(
+"districtFilter"
+).value = "";
+
+applyFilters();
+
+}
+
+
+/* RENDER */
+
+function render(){
+
+renderStats();
+
+renderTable();
 
 }
 
 
 /* STATS */
 
-function renderStats(rows){
+function renderStats(){
 
-let households = rows.length;
+let households =
+filteredRows.length;
 
 let population = 0;
 
@@ -491,7 +1212,8 @@ let male = 0;
 let female = 0;
 
 
-rows.forEach(row=>{
+filteredRows.forEach(
+row=>{
 
 population +=
 Number(row.members || 0);
@@ -528,42 +1250,43 @@ document.getElementById(
 ).textContent =
 female;
 
-}
 
-
-/* ESCAPE */
-
-function escapeHTML(value){
-
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+document.getElementById(
+"resultCount"
+).textContent =
+households;
 
 }
 
 
 /* TABLE */
 
-function renderTable(rows){
+function renderTable(){
 
 const table =
-document.getElementById("dataTable");
+document.getElementById(
+"dataTable"
+);
 
 table.innerHTML = "";
 
 
-if(!rows.length){
+if(!filteredRows.length){
 
 table.innerHTML = `
+
 <tr>
-<td colspan="8"
-style="text-align:center">
-تر اوسه هېڅ کورنۍ ثبت شوې نه ده.
+
+<td
+colspan="10"
+style="text-align:center;padding:30px">
+
+هیڅ معلومات پیدا نه شول.
+
 </td>
+
 </tr>
+
 `;
 
 return;
@@ -571,7 +1294,32 @@ return;
 }
 
 
-rows.forEach(row=>{
+filteredRows.forEach(
+row=>{
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+let names = "";
+
+
+people.forEach(
+person=>{
+
+names +=
+`
+<div class="member-name">
+${escapeHTML(
+person.name || "بې نوم"
+)}
+</div>
+`;
+
+});
+
 
 const tr =
 document.createElement("tr");
@@ -579,24 +1327,74 @@ document.createElement("tr");
 
 tr.innerHTML = `
 
-<td>${escapeHTML(row.id)}</td>
-
-<td>${escapeHTML(row.province)}</td>
-
-<td>${escapeHTML(row.district)}</td>
-
-<td>${escapeHTML(row.village)}</td>
-
-<td>${escapeHTML(row.members)}</td>
-
-<td>${escapeHTML(row.male)}</td>
-
-<td>${escapeHTML(row.female)}</td>
+<td>
+${escapeHTML(row.id)}
+</td>
 
 <td>
-${row.created_at
-? new Date(row.created_at).toLocaleString()
-: ""}
+${escapeHTML(row.province)}
+</td>
+
+<td>
+${escapeHTML(row.district)}
+</td>
+
+<td>
+${escapeHTML(row.village)}
+</td>
+
+<td>
+${escapeHTML(row.members)}
+</td>
+
+<td>
+${escapeHTML(row.male)}
+</td>
+
+<td>
+${escapeHTML(row.female)}
+</td>
+
+<td>
+<div class="member-list">
+${names || "—"}
+</div>
+</td>
+
+<td>
+${formatDate(row.created_at)}
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+class="btn-light"
+onclick="showDetails(${row.id})">
+
+👁 غړي
+
+</button>
+
+<button
+class="btn-edit"
+onclick="openEdit(${row.id})">
+
+✏️ Edit
+
+</button>
+
+<button
+class="btn-delete"
+onclick="deleteRow(${row.id})">
+
+🗑 Delete
+
+</button>
+
+</div>
+
 </td>
 
 `;
@@ -609,39 +1407,621 @@ table.appendChild(tr);
 }
 
 
-/* SESSION */
+/* DETAILS */
 
-db.auth.onAuthStateChange(
-(event,session)=>{
+function showDetails(id){
 
-if(session){
+const row =
+allRows.find(
+r=>Number(r.id) === Number(id)
+);
 
-showAdmin();
+if(!row)return;
 
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+let html = `
+
+<div class="detail-grid">
+
+<div class="detail-item">
+<strong>ولایت:</strong>
+${escapeHTML(row.province)}
+</div>
+
+<div class="detail-item">
+<strong>ولسوالي:</strong>
+${escapeHTML(row.district)}
+</div>
+
+<div class="detail-item">
+<strong>سیمه:</strong>
+${escapeHTML(row.village)}
+</div>
+
+<div class="detail-item">
+<strong>د غړو شمېر:</strong>
+${escapeHTML(row.members)}
+</div>
+
+</div>
+
+<hr>
+
+`;
+
+
+people.forEach(
+(person,index)=>{
+
+html += `
+
+<div class="member-card">
+
+<h3>
+غړی ${index + 1}:
+${escapeHTML(person.name || "بې نوم")}
+</h3>
+
+<div class="detail-grid">
+
+<div class="detail-item">
+<strong>نوم:</strong>
+${escapeHTML(person.name)}
+</div>
+
+<div class="detail-item">
+<strong>د پلار نوم:</strong>
+${escapeHTML(person.father_name)}
+</div>
+
+<div class="detail-item">
+<strong>جنس:</strong>
+${escapeHTML(person.gender)}
+</div>
+
+<div class="detail-item">
+<strong>عمر:</strong>
+${escapeHTML(person.age)}
+</div>
+
+<div class="detail-item">
+<strong>مدني حالت:</strong>
+${escapeHTML(person.marital_status)}
+</div>
+
+<div class="detail-item">
+<strong>خپلوي:</strong>
+${escapeHTML(person.relation)}
+</div>
+
+<div class="detail-item">
+<strong>زده کړه:</strong>
+${escapeHTML(person.education)}
+</div>
+
+<div class="detail-item">
+<strong>د کار حالت:</strong>
+${escapeHTML(person.work_status)}
+</div>
+
+<div class="detail-item">
+<strong>دنده:</strong>
+${escapeHTML(person.occupation)}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+"detailsContent"
+).innerHTML =
+html;
+
+
+document.getElementById(
+"detailsModal"
+).classList.remove(
+"hidden"
+);
+
+}
+
+
+/* CLOSE DETAILS */
+
+function closeDetails(){
+
+document.getElementById(
+"detailsModal"
+).classList.add(
+"hidden"
+);
+
+}
+
+
+/* OPEN EDIT */
+
+function openEdit(id){
+
+const row =
+allRows.find(
+r=>Number(r.id) === Number(id)
+);
+
+if(!row)return;
+
+
+editingId = id;
+
+
+document.getElementById(
+"editProvince"
+).value =
+row.province || "";
+
+
+document.getElementById(
+"editDistrict"
+).value =
+row.district || "";
+
+
+document.getElementById(
+"editVillage"
+).value =
+row.village || "";
+
+
+const people =
+Array.isArray(row.people)
+? row.people
+: [];
+
+
+const box =
+document.getElementById(
+"editMembers"
+);
+
+box.innerHTML = "";
+
+
+people.forEach(
+(person,index)=>{
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"member-card";
+
+
+card.innerHTML = `
+
+<h3>
+غړی ${index + 1}
+</h3>
+
+<div class="member-grid">
+
+<div>
+
+<label>نوم</label>
+
+<input
+class="m-name"
+value="${escapeAttr(person.name)}">
+
+</div>
+
+
+<div>
+
+<label>د پلار نوم</label>
+
+<input
+class="m-father"
+value="${escapeAttr(person.father_name)}">
+
+</div>
+
+
+<div>
+
+<label>جنس</label>
+
+<select class="m-gender">
+
+<option value="male">
+نارینه
+</option>
+
+<option value="female">
+ښځینه
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>عمر</label>
+
+<input
+class="m-age"
+type="number"
+value="${escapeAttr(person.age)}">
+
+</div>
+
+
+<div>
+
+<label>مدني حالت</label>
+
+<input
+class="m-marital"
+value="${escapeAttr(person.marital_status)}">
+
+</div>
+
+
+<div>
+
+<label>خپلوي</label>
+
+<input
+class="m-relation"
+value="${escapeAttr(person.relation)}">
+
+</div>
+
+
+<div>
+
+<label>زده کړه</label>
+
+<input
+class="m-education"
+value="${escapeAttr(person.education)}">
+
+</div>
+
+
+<div>
+
+<label>د کار حالت</label>
+
+<input
+class="m-work"
+value="${escapeAttr(person.work_status)}">
+
+</div>
+
+
+<div>
+
+<label>دنده</label>
+
+<input
+class="m-occupation"
+value="${escapeAttr(person.occupation)}">
+
+</div>
+
+</div>
+
+`;
+
+
+box.appendChild(card);
+
+
+const gender =
+card.querySelector(
+".m-gender"
+);
+
+gender.value =
+person.gender || "";
+
+});
+
+
+document.getElementById(
+"editError"
+).innerHTML = "";
+
+
+document.getElementById(
+"editModal"
+).classList.remove(
+"hidden"
+);
+
+}
+
+
+/* SAVE EDIT */
+
+async function saveEdit(){
+
+if(!editingId)return;
+
+
+const errorBox =
+document.getElementById(
+"editError"
+);
+
+errorBox.innerHTML = "";
+
+
+const province =
+document.getElementById(
+"editProvince"
+).value.trim();
+
+
+const district =
+document.getElementById(
+"editDistrict"
+).value.trim();
+
+
+const village =
+document.getElementById(
+"editVillage"
+).value.trim();
+
+
+const cards =
+document.querySelectorAll(
+"#editMembers .member-card"
+);
+
+
+const people = [];
+
+
+cards.forEach(
+card=>{
+
+people.push({
+
+name:
+card.querySelector(
+".m-name"
+).value.trim(),
+
+father_name:
+card.querySelector(
+".m-father"
+).value.trim(),
+
+gender:
+card.querySelector(
+".m-gender"
+).value,
+
+age:
+Number(
+card.querySelector(
+".m-age"
+).value
+) || 0,
+
+marital_status:
+card.querySelector(
+".m-marital"
+).value.trim(),
+
+relation:
+card.querySelector(
+".m-relation"
+).value.trim(),
+
+education:
+card.querySelector(
+".m-education"
+).value.trim(),
+
+work_status:
+card.querySelector(
+".m-work"
+).value.trim(),
+
+occupation:
+card.querySelector(
+".m-occupation"
+).value.trim()
+
+});
+
+});
+
+
+let male = 0;
+let female = 0;
+
+
+people.forEach(
+person=>{
+
+if(person.gender === "male"){
+male++;
+}
+
+if(person.gender === "female"){
+female++;
 }
 
 });
 
 
-/* START SYSTEM */
+const updateData = {
 
-if(
-document.readyState === "loading"
-){
+province,
 
-document.addEventListener(
-"DOMContentLoaded",
-start
-);
+district,
 
-}else{
+village,
 
-start();
+members:people.length,
+
+male,
+
+female,
+
+people
+
+};
+
+
+const {error} =
+await db
+.from("households")
+.update(updateData)
+.eq("id",editingId);
+
+
+if(error){
+
+console.error(error);
+
+errorBox.innerHTML =
+'<div class="error">' +
+escapeHTML(error.message) +
+'</div>';
+
+return;
 
 }
 
-</script>
 
-</body>
+closeEdit();
 
-</html>
+setStatus(
+"معلومات په بریالیتوب سره Update شول."
+);
+
+await loadData();
+
+}
+
+
+/* CLOSE EDIT */
+
+function closeEdit(){
+
+document.getElementById(
+"editModal"
+).classList.add(
+"hidden"
+);
+
+editingId = null;
+
+}
+
+
+/* DELETE */
+
+async function deleteRow(id){
+
+const row =
+allRows.find(
+r=>Number(r.id) === Number(id)
+);
+
+if(!row)return;
+
+
+const name =
+Array.isArray(row.people) &&
+row.people.length
+? row.people[0].name
+: "دا کورنۍ";
+
+
+const confirmed =
+confirm(
+`ایا غواړئ "${name}" پورې اړوند دا کورنۍ Delete کړئ؟`
+);
+
+
+if(!confirmed)return;
+
+
+const {error} =
+await db
+.from("households")
+.delete()
+.eq("id",id);
+
+
+if(error){
+
+console.error(error);
+
+setStatus(
+"Delete ناکام شو: " +
+error.message,
+true
+);
+
+return;
+
+}
+
+
+setStatus(
+"کورنۍ په بریالیتوب سره Delete شوه."
+);
+
+await loadData();
+
+}
+
+
+/* DATE */
+
+function formatDate(value){
+
+if(!value)return "";
+
+try{
+
+return new Date(value)
+.toLocaleString("ps-AF");
+
+}catch{
+
+return value;
+
+}
+
+}
+
+
+/* ESCAPE */
+
+function escapeHTML(value){
+  
