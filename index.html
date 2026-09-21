@@ -10,10 +10,8 @@ content="width=device-width,initial-scale=1.0">
 
 <title>د افغانستان د نفوس آنلاین شمېرنه</title>
 
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 
-<!-- Districts -->
 <script src="districts.js"></script>
 
 <style>
@@ -24,7 +22,7 @@ box-sizing:border-box
 
 body{
 margin:0;
-font-family:Arial,sans-serif;
+font-family:Arial,Tahoma,sans-serif;
 background:#f4f7f9;
 color:#222
 }
@@ -48,6 +46,10 @@ border-radius:6px;
 cursor:pointer
 }
 
+.dashboard-box{
+text-align:center
+}
+
 .dashboard-link{
 display:inline-block;
 margin:15px auto 5px;
@@ -57,10 +59,6 @@ color:white;
 text-decoration:none;
 border-radius:8px;
 font-size:16px
-}
-
-.dashboard-box{
-text-align:center
 }
 
 .container{
@@ -135,7 +133,35 @@ color:#075e54
 background:#fff3cd;
 padding:12px;
 border-radius:8px;
-margin-top:15px
+margin-top:15px;
+line-height:1.8
+}
+
+.status{
+display:none;
+padding:13px;
+margin-top:15px;
+border-radius:8px;
+font-weight:bold;
+line-height:1.8
+}
+
+.status.success{
+display:block;
+background:#dcfce7;
+color:#166534
+}
+
+.status.error{
+display:block;
+background:#fee2e2;
+color:#991b1b
+}
+
+.status.info{
+display:block;
+background:#e0f2fe;
+color:#075985
 }
 
 </style>
@@ -179,9 +205,10 @@ English
 
 <a
 href="dashboard.html"
-class="dashboard-link"
->
+class="dashboard-link">
+
 📊 ډیشبورډ
+
 </a>
 
 </div>
@@ -193,6 +220,12 @@ class="dashboard-link"
 <div
 class="notice"
 id="notice">
+</div>
+
+
+<div
+id="status"
+class="status">
 </div>
 
 
@@ -211,8 +244,7 @@ id="notice">
 
 <select
 id="province"
-required
->
+required>
 </select>
 
 </div>
@@ -224,8 +256,7 @@ required
 
 <select
 id="district"
-required
->
+required>
 </select>
 
 </div>
@@ -237,8 +268,8 @@ required
 
 <input
 id="village"
-required
->
+type="text"
+required>
 
 </div>
 
@@ -252,11 +283,9 @@ type="number"
 id="members"
 min="1"
 max="50"
-required
->
+required>
 
 </div>
-
 
 </div>
 
@@ -267,8 +296,8 @@ required
 <button
 class="submit"
 id="submitBtn"
-onclick="saveFamily()"
->
+onclick="saveFamily()">
+
 </button>
 
 
@@ -277,26 +306,11 @@ onclick="saveFamily()"
 </div>
 
 
-
 <script>
 
 
 /* ==========================================
-   VERSION
-========================================== */
-
-const APP_VERSION =
-"2026-09-21-FIX-02";
-
-console.log(
-"Afghanistan Population Survey:",
-APP_VERSION
-);
-
-
-
-/* ==========================================
-   CURRENT SUPABASE PROJECT
+SUPABASE
 ========================================== */
 
 const SUPABASE_URL =
@@ -310,65 +324,45 @@ const SUPABASE_KEY =
 let db = null;
 
 
-
-/* ==========================================
-   CREATE SUPABASE CLIENT
-========================================== */
-
 try{
 
-if(
-typeof supabase === "undefined"
-){
-
-throw new Error(
-"Supabase JavaScript library was not loaded."
-);
-
-}
-
-
 db =
-supabase.createClient(
+window.supabase.createClient(
 SUPABASE_URL,
-SUPABASE_KEY
+SUPABASE_KEY,
+{
+auth:{
+persistSession:false,
+autoRefreshToken:false,
+detectSessionInUrl:false
+}
+}
 );
 
-
 console.log(
-"Supabase client created successfully."
-);
-
-console.log(
-"Connected Project:",
+"Supabase connected:",
 SUPABASE_URL
 );
-
 
 }catch(error){
 
 console.error(
-"Supabase client error:",
+"Supabase initialization error:",
 error
-);
-
-
-alert(
-"د Supabase اتصال جوړ نه شو.\n\n" +
-error.message
 );
 
 }
 
 
+/* ==========================================
+LANGUAGE
+========================================== */
 
-let lang =
-"ps";
-
+let lang = "ps";
 
 
 /* ==========================================
-   PROVINCE KEYS
+PROVINCES
 ========================================== */
 
 const provinceKeys = [
@@ -410,11 +404,6 @@ const provinceKeys = [
 
 ];
 
-
-
-/* ==========================================
-   PROVINCES
-========================================== */
 
 const provinces = {
 
@@ -538,13 +527,11 @@ en:[
 };
 
 
-
 /* ==========================================
-   TRANSLATIONS
+TRANSLATIONS
 ========================================== */
 
 const T = {
-
 
 ps:{
 
@@ -616,8 +603,6 @@ error:
 
 },
 
-
-
 fa:{
 
 title:
@@ -687,8 +672,6 @@ error:
 "❌ معلومات ثبت نشد."
 
 },
-
-
 
 en:{
 
@@ -763,20 +746,38 @@ error:
 };
 
 
+/* ==========================================
+MESSAGE
+========================================== */
+
+function showStatus(
+message,
+type="info"
+){
+
+const box =
+document.getElementById(
+"status"
+);
+
+box.className =
+"status " + type;
+
+box.innerHTML =
+message;
+
+}
+
 
 /* ==========================================
-   LANGUAGE
+CHANGE LANGUAGE
 ========================================== */
 
 function changeLang(x){
 
-lang =
-x;
+lang = x;
 
-
-document.documentElement.lang =
-x;
-
+document.documentElement.lang = x;
 
 document.documentElement.dir =
 x === "en"
@@ -784,99 +785,90 @@ x === "en"
 : "rtl";
 
 
-const t =
-T[x];
+const t = T[x];
 
 
-document.getElementById("title")
-.textContent =
-t.title;
+document.getElementById(
+"title"
+).textContent = t.title;
 
 
-document.getElementById("subtitle")
-.textContent =
-t.subtitle;
+document.getElementById(
+"subtitle"
+).textContent = t.subtitle;
 
 
-document.getElementById("notice")
-.innerHTML =
-t.notice;
+document.getElementById(
+"notice"
+).innerHTML = t.notice;
 
 
-document.getElementById("formTitle")
-.textContent =
-t.form;
+document.getElementById(
+"formTitle"
+).textContent = t.form;
 
 
-document.getElementById("provinceLabel")
-.textContent =
-t.province;
+document.getElementById(
+"provinceLabel"
+).textContent = t.province;
 
 
-document.getElementById("districtLabel")
-.textContent =
-t.district;
+document.getElementById(
+"districtLabel"
+).textContent = t.district;
 
 
-document.getElementById("villageLabel")
-.textContent =
-t.village;
+document.getElementById(
+"villageLabel"
+).textContent = t.village;
 
 
-document.getElementById("membersLabel")
-.textContent =
-t.members;
+document.getElementById(
+"membersLabel"
+).textContent = t.members;
 
 
-document.getElementById("submitBtn")
-.textContent =
-t.save;
+document.getElementById(
+"submitBtn"
+).textContent = t.save;
 
 
 loadProvinces();
-
 
 makePeople();
 
 }
 
 
-
 /* ==========================================
-   LOAD PROVINCES
+LOAD PROVINCES
 ========================================== */
 
 function loadProvinces(){
 
-const provinceBox =
+const box =
 document.getElementById(
 "province"
 );
 
-
-provinceBox.innerHTML =
-"";
+box.innerHTML = "";
 
 
 provinces[lang].forEach(
 (name,index)=>{
-
 
 const option =
 document.createElement(
 "option"
 );
 
-
 option.value =
 provinceKeys[index];
-
 
 option.textContent =
 name;
 
-
-provinceBox.appendChild(
+box.appendChild(
 option
 );
 
@@ -888,9 +880,8 @@ loadDistricts();
 }
 
 
-
 /* ==========================================
-   LOAD DISTRICTS
+LOAD DISTRICTS
 ========================================== */
 
 function loadDistricts(){
@@ -901,14 +892,12 @@ document.getElementById(
 ).value;
 
 
-const districtBox =
+const box =
 document.getElementById(
 "district"
 );
 
-
-districtBox.innerHTML =
-"";
+box.innerHTML = "";
 
 
 let list = [];
@@ -920,26 +909,26 @@ districts &&
 districts[province]
 ){
 
-list =
-districts[province];
+list = districts[province];
 
 }
 
 
+if(!Array.isArray(list)){
 
-if(
-list.length === 0
-){
+list = [];
+
+}
+
+
+if(list.length === 0){
 
 const option =
 document.createElement(
 "option"
 );
 
-
-option.value =
-"";
-
+option.value = "";
 
 option.textContent =
 
@@ -953,16 +942,13 @@ lang === "fa"
 :
 "No districts available";
 
-
-districtBox.appendChild(
+box.appendChild(
 option
 );
-
 
 return;
 
 }
-
 
 
 list.forEach(
@@ -973,16 +959,11 @@ document.createElement(
 "option"
 );
 
+option.value = d;
 
-option.value =
-d;
+option.textContent = d;
 
-
-option.textContent =
-d;
-
-
-districtBox.appendChild(
+box.appendChild(
 option
 );
 
@@ -991,9 +972,8 @@ option
 }
 
 
-
 /* ==========================================
-   PEOPLE
+CREATE PEOPLE
 ========================================== */
 
 function makePeople(){
@@ -1011,13 +991,21 @@ document.getElementById(
 "people"
 );
 
-
-peopleBox.innerHTML =
-"";
+peopleBox.innerHTML = "";
 
 
-const t =
-T[lang];
+if(
+!Number.isInteger(n) ||
+n < 1 ||
+n > 50
+){
+
+return;
+
+}
+
+
+const t = T[lang];
 
 
 for(
@@ -1025,7 +1013,6 @@ let i=1;
 i<=n;
 i++
 ){
-
 
 peopleBox.innerHTML += `
 
@@ -1037,7 +1024,6 @@ ${t.person} ${i}
 
 <div class="grid">
 
-
 <div>
 
 <label>
@@ -1046,12 +1032,10 @@ ${t.name}
 
 <input
 class="pname"
-required
->
+type="text"
+required>
 
 </div>
-
-
 
 <div>
 
@@ -1061,12 +1045,10 @@ ${t.father}
 
 <input
 class="father"
-required
->
+type="text"
+required>
 
 </div>
-
-
 
 <div>
 
@@ -1075,8 +1057,7 @@ ${t.gender}
 </label>
 
 <select
-class="gender"
->
+class="gender">
 
 <option value="male">
 
@@ -1091,7 +1072,6 @@ lang === "fa"
 }
 
 </option>
-
 
 <option value="female">
 
@@ -1111,8 +1091,6 @@ lang === "fa"
 
 </div>
 
-
-
 <div>
 
 <label>
@@ -1124,12 +1102,9 @@ type="number"
 class="age"
 min="0"
 max="120"
-required
->
+required>
 
 </div>
-
-
 
 <div>
 
@@ -1138,8 +1113,7 @@ ${t.marital}
 </label>
 
 <select
-class="marital"
->
+class="marital">
 
 <option value="single">
 
@@ -1155,7 +1129,6 @@ lang === "fa"
 
 </option>
 
-
 <option value="married">
 
 ${
@@ -1170,7 +1143,6 @@ lang === "fa"
 
 </option>
 
-
 <option value="widowed">
 
 ${
@@ -1184,7 +1156,6 @@ lang === "fa"
 }
 
 </option>
-
 
 <option value="divorced">
 
@@ -1204,8 +1175,6 @@ lang === "fa"
 
 </div>
 
-
-
 <div>
 
 <label>
@@ -1214,12 +1183,10 @@ ${t.relation}
 
 <input
 class="relation"
-required
->
+type="text"
+required>
 
 </div>
-
-
 
 <div>
 
@@ -1229,11 +1196,9 @@ ${t.education}
 
 <input
 class="education"
->
+type="text">
 
 </div>
-
-
 
 <div>
 
@@ -1243,11 +1208,9 @@ ${t.work}
 
 <input
 class="work"
->
+type="text">
 
 </div>
-
-
 
 <div>
 
@@ -1257,10 +1220,9 @@ ${t.job}
 
 <input
 class="job"
->
+type="text">
 
 </div>
-
 
 </div>
 
@@ -1273,40 +1235,59 @@ class="job"
 }
 
 
+/* ==========================================
+TIMEOUT
+========================================== */
+
+function withTimeout(
+promise,
+milliseconds
+){
+
+return Promise.race([
+
+promise,
+
+new Promise(
+(_,reject)=>{
+
+setTimeout(
+()=>reject(
+new Error(
+"د Supabase ځواب رانغی. Internet اتصال وګورئ."
+)
+),
+milliseconds
+);
+
+}
+
+)
+
+]);
+
+}
+
 
 /* ==========================================
-   SAVE FAMILY
+SAVE FAMILY
 ========================================== */
 
 async function saveFamily(){
 
-console.log(
-"================================="
+const t = T[lang];
+
+const submit =
+document.getElementById(
+"submitBtn"
 );
 
-
-console.log(
-"START SAVE FAMILY"
-);
-
-
-console.log(
-"APP VERSION:",
-APP_VERSION
-);
-
-
-const t =
-T[lang];
-
-
-
-/* DATABASE CHECK */
 
 if(!db){
 
-alert(
-"❌ د معلوماتو د ثبت سیستم له Database سره وصل نه دی."
+showStatus(
+"❌ Database سره اتصال جوړ شوی نه دی.",
+"error"
 );
 
 return;
@@ -1314,8 +1295,7 @@ return;
 }
 
 
-
-/* FAMILY DATA */
+/* FAMILY */
 
 const province =
 document.getElementById(
@@ -1343,59 +1323,38 @@ document.getElementById(
 );
 
 
-
-/* FAMILY VALIDATION */
+/* VALIDATE FAMILY */
 
 if(
-
 !province ||
-
 !district ||
-
 !village ||
-
 !Number.isInteger(n) ||
-
 n < 1 ||
-
 n > 50
-
 ){
 
-alert(
-
-t.error +
-
-"\n\n" +
-
-(
+showStatus(
 
 lang === "ps"
-
 ?
-
-"مهرباني وکړئ د کورنۍ ټول معلومات بشپړ کړئ."
+"❌ مهرباني وکړئ د کورنۍ ټول معلومات په سمه توګه بشپړ کړئ."
 
 :
-
 lang === "fa"
-
 ?
-
-"لطفاً تمام معلومات خانواده را تکمیل کنید."
+"❌ لطفاً تمام معلومات خانواده را تکمیل کنید."
 
 :
+"❌ Please complete all family information.",
 
-"Please complete all family information."
-
-)
+"error"
 
 );
 
 return;
 
 }
-
 
 
 /* PEOPLE */
@@ -1406,39 +1365,11 @@ document.querySelectorAll(
 );
 
 
+if(cards.length !== n){
 
-if(
-cards.length !== n
-){
-
-alert(
-
-t.error +
-
-"\n\n" +
-
-(
-
-lang === "ps"
-
-?
-
-"د کورنۍ د ټولو غړو معلومات بشپړ کړئ."
-
-:
-
-lang === "fa"
-
-?
-
-"معلومات تمام اعضای خانواده را تکمیل کنید."
-
-:
-
-"Please complete all family members."
-
-)
-
+showStatus(
+"❌ د کورنۍ د غړو فورم بشپړ نه دی.",
+"error"
 );
 
 return;
@@ -1446,13 +1377,8 @@ return;
 }
 
 
+let people = [];
 
-let list =
-[];
-
-
-
-/* LOOP MEMBERS */
 
 for(
 let i=0;
@@ -1460,9 +1386,7 @@ i<cards.length;
 i++
 ){
 
-const card =
-cards[i];
-
+const card = cards[i];
 
 
 const name =
@@ -1523,54 +1447,31 @@ card.querySelector(
 ).value.trim();
 
 
-
-/* MEMBER VALIDATION */
-
 if(
-
 !name ||
-
 !father ||
-
 ageText === "" ||
-
 !Number.isFinite(age) ||
-
 age < 0 ||
-
 age > 120 ||
-
 !relation
-
 ){
 
-alert(
-
-t.error +
-
-"\n\n" +
-
-(
+showStatus(
 
 lang === "ps"
-
 ?
-
-`د ${i+1}م غړي معلومات نیمګړي دي.`
+`❌ د ${i+1}م غړي معلومات بشپړ کړئ.`
 
 :
-
 lang === "fa"
-
 ?
-
-`معلومات عضو شماره ${i+1} ناقص است.`
+`❌ معلومات عضو شماره ${i+1} را تکمیل کنید.`
 
 :
+`❌ Complete information for member ${i+1}.`,
 
-`Family member ${i+1} is incomplete.`
-
-)
+"error"
 
 );
 
@@ -1579,10 +1480,7 @@ return;
 }
 
 
-
-/* ADD MEMBER */
-
-list.push({
+people.push({
 
 name:name,
 
@@ -1607,23 +1505,21 @@ occupation:job
 }
 
 
-
-/* GENDER COUNT */
+/* GENDER */
 
 const male =
-list.filter(
+people.filter(
 p => p.gender === "male"
 ).length;
 
 
 const female =
-list.filter(
+people.filter(
 p => p.gender === "female"
 ).length;
 
 
-
-/* HOUSEHOLD DATA */
+/* DATA */
 
 const householdData = {
 
@@ -1639,199 +1535,151 @@ male:male,
 
 female:female,
 
-people:list
+people:people
 
 };
 
 
-
 console.log(
-"DATA TO SUPABASE:",
+"Submitting:",
 householdData
 );
-
 
 
 /* BUTTON */
 
-const submit =
-document.getElementById(
-"submitBtn"
+submit.disabled = true;
+
+submit.textContent = t.saving;
+
+showStatus(
+t.saving,
+"info"
 );
 
-
-submit.disabled =
-true;
-
-
-submit.textContent =
-t.saving;
-
-
-
-/* ==========================================
-   INSERT INTO SUPABASE
-========================================== */
 
 try{
 
 
-console.log(
-"Sending data to Supabase..."
-);
-
-
-
-/*
-IMPORTANT:
-insert([householdData])
-is used here.
-*/
+/* INSERT */
 
 const result =
-await db
+await withTimeout(
+
+db
 .from("households")
 .insert([
 householdData
-]);
+]),
 
+20000
+
+);
 
 
 console.log(
-"Supabase response:",
+"Supabase result:",
 result
 );
 
 
+/* ERROR */
 
-/* DATABASE ERROR */
-
-if(
-result.error
-){
+if(result.error){
 
 console.error(
-"SUPABASE INSERT ERROR:",
+"SUPABASE ERROR:",
 result.error
 );
 
 
-alert(
+showStatus(
 
-t.error +
+"❌ " +
+result.error.message,
 
-"\n\n" +
-
-result.error.message
+"error"
 
 );
 
+submit.disabled = false;
 
-submit.disabled =
-false;
-
-
-submit.textContent =
-t.save;
-
+submit.textContent = t.save;
 
 return;
 
 }
 
 
-
 /* SUCCESS */
 
 console.log(
-"================================="
+"Family successfully inserted."
 );
 
 
-console.log(
-"SUCCESS: DATA INSERTED"
+showStatus(
+t.success,
+"success"
 );
 
 
-console.log(
-"================================="
-);
-
-
-
-alert(
-t.success
-);
-
-
-
-/* CLEAR FORM */
+/* CLEAR */
 
 document.getElementById(
 "village"
-).value =
-"";
+).value = "";
 
 
 document.getElementById(
 "members"
-).value =
-"";
+).value = "";
 
 
 document.getElementById(
 "people"
-).innerHTML =
-"";
+).innerHTML = "";
 
 
+/* BUTTON */
 
-/* RESET BUTTON */
+submit.disabled = false;
 
-submit.disabled =
-false;
-
-
-submit.textContent =
-t.save;
-
+submit.textContent = t.save;
 
 
 }catch(error){
 
-
 console.error(
-"JAVASCRIPT ERROR:",
+"SAVE ERROR:",
 error
 );
 
 
-alert(
+showStatus(
 
-t.error +
+"❌ " +
+(
+error.message ||
+String(error)
+),
 
-"\n\n" +
-
-error.message
+"error"
 
 );
 
 
-submit.disabled =
-false;
+submit.disabled = false;
 
-
-submit.textContent =
-t.save;
+submit.textContent = t.save;
 
 }
 
 }
-
 
 
 /* ==========================================
-   EVENTS
+EVENTS
 ========================================== */
 
 document
@@ -1842,7 +1690,6 @@ loadDistricts
 );
 
 
-
 document
 .getElementById("members")
 .addEventListener(
@@ -1851,14 +1698,11 @@ makePeople
 );
 
 
-
 /* ==========================================
-   START APPLICATION
+START
 ========================================== */
 
 changeLang("ps");
-
-
 
 </script>
 
