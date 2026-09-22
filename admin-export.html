@@ -614,6 +614,17 @@ let rows = [];
 
 let filtered = [];
 
+/*
+FIX: د Supabase-js "setSession" deadlock bug له امله
+(GitHub کې ثبت شوی: supabase-js issues #2013, #2111, #1594)
+موږ نور د client داخلي Session سیسټم نه کاروو.
+پرځای یې token دلته ساتو او مستقیم fetch کاروو.
+*/
+
+let accessToken = null;
+
+let refreshToken = null;
+
 
 /* =====================================================
 UTILITY
@@ -835,26 +846,25 @@ throw new Error(
 
 
 /*
-Session جوړول
+FIX: د db.auth.setSession() پرځای (چې ولاړ پاتې کیده)
+اوس token په مستقیم ډول ساتو.
 */
 
-const sessionResult =
-await db.auth.setSession({
+accessToken =
+result.access_token;
 
-access_token:
-result.access_token,
+refreshToken =
+result.refresh_token;
 
-refresh_token:
-result.refresh_token
+sessionStorage.setItem(
+"access_token",
+accessToken
+);
 
-});
-
-
-if(sessionResult.error){
-
-throw sessionResult.error;
-
-}
+sessionStorage.setItem(
+"refresh_token",
+refreshToken
+);
 
 
 /*
@@ -928,16 +938,33 @@ SESSION CHECK
 
 async function checkSession(){
 
+/*
+FIX: د db.auth.getSession() پرځای
+(چې ولاړ پاتې کیدلی شي) اوس مستقیم
+د sessionStorage نه token اخلو.
+*/
+
 try{
 
-const result =
-await db.auth.getSession();
+const savedAccess =
+sessionStorage.getItem(
+"access_token"
+);
+
+const savedRefresh =
+sessionStorage.getItem(
+"refresh_token"
+);
 
 
-if(
-result.data &&
-result.data.session
-){
+if(savedAccess){
+
+accessToken =
+savedAccess;
+
+refreshToken =
+savedRefresh;
+
 
 document
 .getElementById("loginBox")
@@ -981,22 +1008,55 @@ setSystemMessage(
 
 try{
 
-const result =
-await db.rpc(
-"admin_get_households"
+/*
+FIX: د db.rpc() پرځای (چې د client Session ته اړتیا لري)
+اوس مستقیم fetch کاروو او Authorization header کې
+خپل access_token لیږو.
+*/
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/rest/v1/rpc/admin_get_households",
+
+{
+method:"POST",
+
+headers:{
+"apikey":SUPABASE_KEY,
+"Authorization":"Bearer " + accessToken,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({})
+
+}
+
 );
 
 
-if(result.error){
+const data =
+await response.json();
 
-throw result.error;
+
+if(!response.ok){
+
+throw new Error(
+
+data.message ||
+data.error ||
+data.hint ||
+"معلومات ونه موندل شول (Status: " + response.status + ")"
+
+);
 
 }
 
 
 rows =
-Array.isArray(result.data)
-? result.data
+Array.isArray(data)
+? data
 : [];
 
 
@@ -1913,15 +1973,19 @@ LOGOUT
 
 async function logout(){
 
-try{
+/*
+FIX: د db.auth.signOut() پرځای
+(چې د lock ستونزې سره تړاو لري)
+اوس مستقیم خپل ساتل شوي token پاکوو.
+*/
 
-await db.auth.signOut();
+sessionStorage.removeItem(
+"access_token"
+);
 
-}catch(error){
-
-console.error(error);
-
-}
+sessionStorage.removeItem(
+"refresh_token"
+);
 
 location.reload();
 
@@ -1947,14 +2011,4 @@ login();
 });
 
 
-/* =====================================================
-START
-===================================================== */
-
-checkSession();
-
-</script>
-
-</body>
-
-</html>
+/* ===========================
