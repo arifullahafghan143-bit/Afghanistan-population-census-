@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Admin Export - د نفوس سیستم</title>
+
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#f1f5f9;
+color:#172033;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:15px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:22px;
+margin-bottom:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.07);
+}
+
+.header{
+background:linear-gradient(135deg,#075985,#0f766e);
+color:white;
+padding:25px;
+border-radius:18px;
+margin-bottom:18px;
+}
+
+.header h1{
+margin:0 0 8px;
+}
+
+.header p{
+margin:0;
+opacity:.9;
+}
+
+input,
+select{
+width:100%;
+padding:13px;
+margin-top:7px;
+margin-bottom:15px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+font-family:inherit;
+font-size:15px;
+background:white;
+}
+
+label{
+display:block;
+font-weight:bold;
+}
+
+button{
+border:0;
+border-radius:9px;
+padding:12px 18px;
+font-family:inherit;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+margin:4px;
+}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
+.primary{
+background:#0f766e;
+color:white;
+}
+
+.excel{
+background:#166534;
+color:white;
+}
+
+.csv{
+background:#2563eb;
+color:white;
+}
+
+.logout{
+background:#dc2626;
+color:white;
+}
+
+.refresh{
+background:#075985;
+color:white;
+}
+
+.hidden{
+display:none!important;
+}
+
+.message{
+padding:12px;
+border-radius:9px;
+margin-top:12px;
+font-weight:bold;
+line-height:1.7;
+}
+
+.info{
+background:#e0f2fe;
+color:#075985;
+}
+
+.success{
+background:#dcfce7;
+color:#166534;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+}
+
+.warning{
+background:#fef3c7;
+color:#92400e;
+}
+
+.login-box{
+max-width:500px;
+margin:40px auto;
+}
+
+.filters{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
+
+.stat{
+background:#f8fafc;
+border-radius:12px;
+padding:18px;
+text-align:center;
+border:1px solid #e2e8f0;
+}
+
+.stat span{
+display:block;
+font-size:14px;
+color:#64748b;
+}
+
+.stat strong{
+display:block;
+font-size:28px;
+color:#075985;
+margin-top:6px;
+}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:5px;
+}
+
+.table-wrap{
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:1100px;
+}
+
+th,
+td{
+border-bottom:1px solid #e2e8f0;
+padding:11px 8px;
+text-align:right;
+vertical-align:top;
+}
+
+th{
+background:#e0f2fe;
+color:#075985;
+}
+
+.empty{
+text-align:center;
+padding:30px;
+color:#64748b;
+}
+
+.small{
+font-size:13px;
+color:#64748b;
+}
+
+@media(max-width:700px){
+
+.filters{
+grid-template-columns:1fr;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+.container{
+padding:10px;
+}
+
+.header{
+padding:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- =========================
+LOGIN
+========================= -->
+
+<div id="loginBox"
+class="card login-box">
+
+<div class="header">
+
+<h1>🔐 د معلوماتو Export</h1>
+
+<p>
+یوازې د مجاز Admin لپاره
+</p>
+
+</div>
+
+<label>
+ایمیل
+</label>
+
+<input
+id="email"
+type="email"
+placeholder="Admin Email"
+autocomplete="username">
+
+<label>
+پاسورډ
+</label>
+
+<input
+id="password"
+type="password"
+placeholder="Password"
+autocomplete="current-password">
+
+<button
+id="loginButton"
+class="primary"
+onclick="login()">
+
+🔐 Login
+
+</button>
+
+<div
+id="loginMessage"
+class="message info">
+
+د Login لپاره خپل Admin Email او Password ولیکئ.
+
+</div>
+
+</div>
+
+
+<!-- =========================
+EXPORT PANEL
+========================= -->
+
+<div id="exportPanel"
+class="hidden">
+
+<div class="header">
+
+<h1>📥 د نفوس معلومات Export</h1>
+
+<p>
+د کورنیو او د کورنۍ د ټولو غړو معلومات
+Excel یا CSV ته وباسئ.
+</p>
+
+<div class="actions">
+
+<button
+class="refresh"
+onclick="loadData()">
+
+🔄 معلومات تازه کول
+
+</button>
+
+<button
+class="logout"
+onclick="logout()">
+
+🚪 وتل
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div
+id="systemMessage"
+class="message info">
+
+سیستم چمتو دی.
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+
+<span>
+ټولې کورنۍ
+</span>
+
+<strong id="count">
+0
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>
+ټول نفوس
+</span>
+
+<strong id="population">
+0
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>
+ټول غړي Export کېږي
+</span>
+
+<strong id="peopleCount">
+0
+</strong>
+
+</div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<div class="card">
+
+<h2>
+🔎 د معلوماتو لټون
+</h2>
+
+<div class="filters">
+
+<div>
+
+<label>
+ولایت
+</label>
+
+<select
+id="province"
+onchange="provinceChanged()">
+
+<option value="">
+ټول ولایتونه
+</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>
+ولسوالي
+</label>
+
+<select
+id="district"
+onchange="filterData()">
+
+<option value="">
+ټولې ولسوالۍ
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<label>
+د شخص نوم یا د پلار نوم
+</label>
+
+<input
+id="search"
+type="text"
+placeholder="نوم یا د پلار نوم ولیکئ..."
+oninput="filterData()">
+
+<div
+id="filterMessage"
+class="message info">
+
+معلومات چمتو دي.
+
+</div>
+
+</div>
+
+
+<!-- EXPORT -->
+
+<div class="card">
+
+<h2>
+📥 Export
+</h2>
+
+<p class="small">
+
+Excel فایل کې د هر شخص جلا معلومات شاملېږي.
+CSV هم د همدې معلوماتو پر اساس جوړېږي.
+
+</p>
+
+<button
+class="excel"
+onclick="exportExcel()">
+
+📊 Excel (.xlsx)
+
+</button>
+
+<button
+class="csv"
+onclick="exportCSV()">
+
+📄 CSV
+
+</button>
+
+<div
+id="exportMessage"
+class="message">
+
+</div>
+
+</div>
+
+
+<!-- DATA PREVIEW -->
+
+<div class="card">
+
+<h2>
+📋 د معلوماتو کتنه
+</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>ولایت</th>
+
+<th>ولسوالي</th>
+
+<th>کلی / سیمه</th>
+
+<th>کورنۍ</th>
+
+<th>نارینه</th>
+
+<th>ښځینه</th>
+
+<th>د کورنۍ غړي</th>
+
+<th>د ثبت نېټه</th>
+
+</tr>
+
+</thead>
+
+<tbody id="dataBody">
+
+<tr>
+
+<td
+colspan="9"
+class="empty">
+
+تر اوسه معلومات نه دي لوډ شوي.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://lswxkfkqpkzncbpiqqyz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable__YQz3wIbmc7qXYxJvL9fcw_CpmHhDxT";
+
+
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
+);
+
+
+/* =====================================================
+DATA
+===================================================== */
+
+let rows = [];
+
+let filtered = [];
+
+/*
+FIX: د Supabase-js "setSession" deadlock bug له امله
+(GitHub کې ثبت شوی: supabase-js issues #2013, #2111, #1594)
+موږ نور د client داخلي Session سیسټم نه کاروو.
+پرځای یې token دلته ساتو او مستقیم fetch کاروو.
+*/
+
+let accessToken = null;
+
+let refreshToken = null;
+
+
+/* =====================================================
+UTILITY
+===================================================== */
+
+function escapeHTML(value){
+
+return String(value ?? "")
+
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+MESSAGES
+===================================================== */
+
+function setLoginMessage(
+text,
+type="info"
+){
+
+const box =
+document.getElementById(
+"loginMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+function setSystemMessage(
+text,
+type="info"
+){
+
+const box =
+document.getElementById(
+"systemMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+function setExportMessage(
+text,
+type="success"
+){
+
+const box =
+document.getElementById(
+"exportMessage"
+);
+
+box.className =
+"message " + type;
+
+box.textContent =
+text;
+
+}
+
+
+/* =====================================================
+LOGIN
+===================================================== */
+
+async function login(){
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const password =
+document
+.getElementById("password")
+.value;
+
+const button =
+document
+.getElementById("loginButton");
+
+
+if(!email || !password){
+
+setLoginMessage(
+"❌ Email او Password دواړه ولیکئ.",
+"error"
+);
+
+return;
+
+}
+
+
+button.disabled = true;
+
+button.textContent =
+"⏳ Login...";
+
+
+setLoginMessage(
+"⏳ د Supabase Login روان دی...",
+"info"
+);
+
+
+try{
+
+/*
+د Supabase Auth مستقیم Login
+*/
+
+const controller =
+new AbortController();
+
+
+const timer =
+setTimeout(
+()=>controller.abort(),
+15000
+);
+
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/auth/v1/token?grant_type=password",
+
+{
+method:"POST",
+
+headers:{
+"apikey":SUPABASE_KEY,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+email:email,
+
+password:password
+
+}),
+
+signal:controller.signal
+
+}
+
+);
+
+
+clearTimeout(timer);
+
+
+let result;
+
+
+try{
+
+result =
+await response.json();
+
+}catch(e){
+
+throw new Error(
+"د Supabase ځواب سم JSON نه و."
+);
+
+}
+
+
+if(!response.ok){
+
+throw new Error(
+
+result.error_description ||
+
+result.msg ||
+
+result.message ||
+
+"Email یا Password ناسم دی."
+
+);
+
+}
+
+
+if(
+!result.access_token ||
+!result.refresh_token
+){
+
+throw new Error(
+"Login وشو، خو Session معلومات ترلاسه نه شول."
+);
+
+}
+
+
+/*
+FIX: د db.auth.setSession() پرځای (چې ولاړ پاتې کیده)
+اوس token په مستقیم ډول ساتو.
+*/
+
+accessToken =
+result.access_token;
+
+refreshToken =
+result.refresh_token;
+
+sessionStorage.setItem(
+"access_token",
+accessToken
+);
+
+sessionStorage.setItem(
+"refresh_token",
+refreshToken
+);
+
+
+/*
+Login بریالی
+*/
+
+setLoginMessage(
+"✅ Login بریالی شو. معلومات لوډ کېږي...",
+"success"
+);
+
+
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
+
+
+document
+.getElementById("exportPanel")
+.classList
+.remove("hidden");
+
+
+await loadData();
+
+
+}catch(error){
+
+console.error(
+"LOGIN ERROR: " +
+(error && error.message ? error.message : String(error))
+);
+
+
+let message =
+error.message ||
+String(error);
+
+
+if(
+error.name === "AbortError"
+){
+
+message =
+"Supabase ته د Login غوښتنه 15 ثانیې کې ځواب نه کړه. Internet یا Supabase اتصال وګورئ.";
+
+}
+
+
+setLoginMessage(
+"❌ Login ستونزه: " +
+message,
+"error"
+);
+
+
+button.disabled = false;
+
+button.textContent =
+"🔐 Login";
+
+}
+
+}
+
+
+/* =====================================================
+SESSION CHECK
+===================================================== */
+
+async function checkSession(){
+
+/*
+FIX: د db.auth.getSession() پرځای
+(چې ولاړ پاتې کیدلی شي) اوس مستقیم
+د sessionStorage نه token اخلو.
+*/
+
+try{
+
+const savedAccess =
+sessionStorage.getItem(
+"access_token"
+);
+
+const savedRefresh =
+sessionStorage.getItem(
+"refresh_token"
+);
+
+
+if(savedAccess){
+
+accessToken =
+savedAccess;
+
+refreshToken =
+savedRefresh;
+
+
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
+
+
+document
+.getElementById("exportPanel")
+.classList
+.remove("hidden");
+
+
+await loadData();
+
+}
+
+}catch(error){
+
+console.warn(
+"SESSION CHECK: " +
+(error && error.message ? error.message : String(error))
+);
+
+}
+
+}
+
+
+/* =====================================================
+LOAD DATA
+===================================================== */
+
+async function loadData(){
+
+setSystemMessage(
+"⏳ د نفوس معلومات لوډ کېږي...",
+"info"
+);
+
+
+try{
+
+/*
+FIX: د db.rpc() پرځای (چې د client Session ته اړتیا لري)
+اوس مستقیم fetch کاروو او Authorization header کې
+خپل access_token لیږو.
+*/
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/rest/v1/rpc/admin_get_households",
+
+{
+method:"POST",
+
+headers:{
+"apikey":SUPABASE_KEY,
+"Authorization":"Bearer " + accessToken,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({})
+
+}
+
+);
+
+
+const data =
+await response.json();
+
+
+if(!response.ok){
+
+throw new Error(
+
+data.message ||
+data.error ||
+data.hint ||
+"معلومات ونه موندل شول (Status: " + response.status + ")"
+
+);
+
+}
+
+
+rows =
+Array.isArray(data)
+? data
+: [];
+
+
+filtered =
+[...rows];
+
+
+fillProvinces();
+
+renderInfo();
+
+renderTable();
+
+
+setSystemMessage(
+
+"✅ معلومات په بریالیتوب سره لوډ شول. ټولې کورنۍ: " +
+rows.length,
+
+"success"
+
+);
+
+
+}catch(error){
+
+console.error(
+"LOAD DATA ERROR: " +
+(error && error.message ? error.message : String(error))
+);
+
+
+setSystemMessage(
+
+"❌ معلومات ونه لوډ شول: " +
+(
+error.message ||
+String(error)
+),
+
+"error"
+
+);
+
+
+renderInfo();
+
+renderTable();
+
+}
+
+}
+
+
+/* =====================================================
+PROVINCES
+===================================================== */
+
+function fillProvinces(){
+
+const select =
+document.getElementById(
+"province"
+);
+
+
+const provinces =
+[
+
+...new Set(
+
+rows
+
+.map(
+row => row.province
+)
+
+.filter(Boolean)
+
+)
+
+].sort();
+
+
+select.innerHTML =
+
+`
+<option value="">
+ټول ولایتونه
+</option>
+`;
+
+
+provinces.forEach(
+province => {
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+province;
+
+option.textContent =
+province;
+
+select.appendChild(
+option
+);
+
+});
+
+
+fillDistricts();
+
+}
+
+
+/* =====================================================
+DISTRICTS
+===================================================== */
+
+function provinceChanged(){
+
+fillDistricts();
+
+filterData();
+
+}
+
+
+function fillDistricts(){
+
+const province =
+document
+.getElementById(
+"province"
+)
+.value;
+
+
+let data =
+rows;
+
+
+if(province){
+
+data =
+rows.filter(
+row =>
+String(
+row.province || ""
+) === province
+);
+
+}
+
+
+const districts =
+[
+
+...new Set(
+
+data
+
+.map(
+row => row.district
+)
+
+.filter(Boolean)
+
+)
+
+].sort();
+
+
+const select =
+document.getElementById(
+"district"
+);
+
+
+select.innerHTML =
+
+`
+<option value="">
+ټولې ولسوالۍ
+</option>
+`;
+
+
+districts.forEach(
+district => {
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+district;
+
+option.textContent =
+district;
+
+select.appendChild(
+option
+);
+
+});
+
+}
+
+
+/* =====================================================
+FILTER
+===================================================== */
+
+function filterData(){
+
+const province =
+document
+.getElementById(
+"province"
+)
+.value;
+
+
+const district =
+document
+.getElementById(
+"district"
+)
+.value;
+
+
+const search =
+document
+.getElementById(
+"search"
+)
+.value
+.trim()
+.toLowerCase();
+
+
+filtered =
+rows.filter(
+row => {
+
+
+if(
+province &&
+String(
+row.province || ""
+) !== province
+){
+
+return false;
+
+}
+
+
+if(
+district &&
+String(
+row.district || ""
+) !== district
+){
+
+return false;
+
+}
+
+
+if(search){
+
+const people =
+Array.isArray(
+row.people
+)
+? row.people
+: [];
+
+
+const found =
+people.some(
+person => {
+
+const name =
+String(
+person.name || ""
+)
+.toLowerCase();
+
+
+const father =
+String(
+person.father_name || ""
+)
+.toLowerCase();
+
+
+return (
+
+name.includes(search) ||
+
+father.includes(search)
+
+);
+
+});
+
+
+if(!found){
+
+return false;
+
+}
+
+}
+
+
+return true;
+
+});
+
+
+renderInfo();
+
+renderTable();
+
+}
+
+
+/* =====================================================
+INFO
+===================================================== */
+
+function renderInfo(){
+
+let population = 0;
+
+let peopleCount = 0;
+
+
+filtered.forEach(
+row => {
+
+population +=
+Number(
+row.members || 0
+);
+
+
+const people =
+Array.isArray(
+row.people
+)
+? row.people
+: [];
+
+
+peopleCount +=
+people.length;
+
+});
+
+
+document
+.getElementById(
+"count"
+)
+.textContent =
+filtered.length;
+
+
+document
+.getElementById(
+"population"
+)
+.textContent =
+population;
+
+
+document
+.getElementById(
+"peopleCount"
+)
+.textContent =
+peopleCount;
+
+
+document
+.getElementById(
+"filterMessage"
+)
+.textContent =
+
+"Export لپاره " +
+filtered.length +
+" کورنۍ او " +
+peopleCount +
+" غړي چمتو دي.";
+
+}
+
+
+/* =====================================================
+TABLE
+===================================================== */
+
+function renderTable(){
+
+const body =
+document.getElementById(
+"dataBody"
+);
+
+
+body.innerHTML = "";
+
+
+if(!filtered.length){
+
+body.innerHTML =
+
+`
+<tr>
+
+<td
+colspan="9"
+class="empty">
+
+هیڅ معلومات ونه موندل شول.
+
+</td>
+
+</tr>
+`;
+
+return;
+
+}
+
+
+filtered.forEach(
+row => {
+
+const tr =
+document.createElement(
+"tr"
+);
+
+
+const date =
+row.created_at
+?
+new Date(
+row.created_at
+).toLocaleString(
+"ps-AF"
+)
+: "";
+
+
+tr.innerHTML =
+
+`
+<td>
+${escapeHTML(row.id || "")}
+</td>
+
+<td>
+${escapeHTML(row.province || "")}
+</td>
+
+<td>
+${escapeHTML(row.district || "")}
+</td>
+
+<td>
+${escapeHTML(row.village || "")}
+</td>
+
+<td>
+${Number(row.members || 0)}
+</td>
+
+<td>
+${Number(row.male || 0)}
+</td>
+
+<td>
+${Number(row.female || 0)}
+</td>
+
+<td>
+${
+Array.isArray(row.people)
+?
+row.people.length
+:
+0
+}
+</td>
+
+<td>
+${escapeHTML(date)}
+</td>
+`;
+
+
+body.appendChild(
+tr
+);
+
+});
+
+}
+
+
+/* =====================================================
+MAKE EXPORT DATA
+===================================================== */
+
+function makeExportData(){
+
+const data = [];
+
+
+filtered.forEach(
+row => {
+
+const people =
+Array.isArray(
+row.people
+)
+? row.people
+: [];
+
+
+if(!people.length){
+
+data.push({
+
+"Household ID":
+row.id || "",
+
+"Province":
+row.province || "",
+
+"District":
+row.district || "",
+
+"Village":
+row.village || "",
+
+"Household Members":
+row.members || 0,
+
+"Male":
+row.male || 0,
+
+"Female":
+row.female || 0,
+
+"Name":
+"",
+
+"Father Name":
+"",
+
+"Gender":
+"",
+
+"Age":
+"",
+
+"Marital Status":
+"",
+
+"Relation":
+"",
+
+"Education":
+"",
+
+"Work Status":
+"",
+
+"Occupation":
+"",
+
+"Created At":
+row.created_at || ""
+
+});
+
+return;
+
+}
+
+
+people.forEach(
+person => {
+
+data.push({
+
+"Household ID":
+row.id || "",
+
+"Province":
+row.province || "",
+
+"District":
+row.district || "",
+
+"Village":
+row.village || "",
+
+"Household Members":
+row.members || 0,
+
+"Male":
+row.male || 0,
+
+"Female":
+row.female || 0,
+
+"Name":
+person.name || "",
+
+"Father Name":
+person.father_name || "",
+
+"Gender":
+person.gender || "",
+
+"Age":
+person.age ?? "",
+
+"Marital Status":
+person.marital_status || "",
+
+"Relation":
+person.relation ||
+person.relationship ||
+"",
+
+"Education":
+person.education || "",
+
+"Work Status":
+person.work_status ||
+person.employment ||
+"",
+
+"Occupation":
+person.occupation || "",
+
+"Created At":
+row.created_at || ""
+
+});
+
+});
+
+});
+
+
+return data;
+
+}
+
+
+/* =====================================================
+EXCEL
+===================================================== */
+
+function exportExcel(){
+
+if(!filtered.length){
+
+setExportMessage(
+"❌ د Export لپاره معلومات نشته.",
+"error"
+);
+
+return;
+
+}
+
+
+try{
+
+const data =
+makeExportData();
+
+
+const worksheet =
+XLSX.utils.json_to_sheet(
+data
+);
+
+
+worksheet["!cols"] = [
+
+{wch:25},
+{wch:15},
+{wch:18},
+{wch:20},
+{wch:18},
+{wch:12},
+{wch:12},
+{wch:25},
+{wch:25},
+{wch:12},
+{wch:10},
+{wch:18},
+{wch:18},
+{wch:20},
+{wch:18},
+{wch:20},
+{wch:25}
+
+];
+
+
+const workbook =
+XLSX.utils.book_new();
+
+
+XLSX.utils.book_append_sheet(
+workbook,
+worksheet,
+"Population"
+);
+
+
+XLSX.writeFile(
+
+workbook,
+
+"Afghanistan-Population-" +
+new Date()
+.toISOString()
+.slice(0,10) +
+".xlsx"
+
+);
+
+
+setExportMessage(
+
+"✅ Excel فایل په بریالیتوب سره جوړ شو. " +
+data.length +
+" د غړو ریکارډونه شامل دي.",
+
+"success"
+
+);
+
+
+}catch(error){
+
+console.error(error);
+
+
+setExportMessage(
+
+"❌ Excel جوړ نه شو: " +
+error.message,
+
+"error"
+
+);
+
+}
+
+}
+
+
+/* =====================================================
+CSV
+===================================================== */
+
+function exportCSV(){
+
+if(!filtered.length){
+
+setExportMessage(
+"❌ د Export لپاره معلومات نشته.",
+"error"
+);
+
+return;
+
+}
+
+
+try{
+
+const data =
+makeExportData();
+
+
+const worksheet =
+XLSX.utils.json_to_sheet(
+data
+);
+
+
+const csv =
+XLSX.utils.sheet_to_csv(
+worksheet
+);
+
+
+const blob =
+new Blob(
+
+[
+"\ufeff",
+csv
+],
+
+{
+type:
+"text/csv;charset=utf-8;"
+}
+
+);
+
+
+const url =
+URL.createObjectURL(
+blob
+);
+
+
+const link =
+document.createElement(
+"a"
+);
+
+
+link.href =
+url;
+
+
+link.download =
+"Afghanistan-Population-" +
+new Date()
+.toISOString()
+.slice(0,10) +
+".csv";
+
+
+document
+.body
+.appendChild(
+link
+);
+
+
+link.click();
+
+
+link.remove();
+
+
+setTimeout(
+() =>
+URL.revokeObjectURL(url),
+1000
+);
+
+
+setExportMessage(
+
+"✅ CSV فایل په بریالیتوب سره جوړ شو. " +
+data.length +
+" د غړو ریکارډونه شامل دي.",
+
+"success"
+
+);
+
+
+}catch(error){
+
+console.error(error);
+
+
+setExportMessage(
+
+"❌ CSV جوړ نه شو: " +
+error.message,
+
+"error"
+
+);
+
+}
+
+}
+
+
+/* =====================================================
+LOGOUT
+===================================================== */
+
+async function logout(){
+
+/*
+FIX: د db.auth.signOut() پرځای
+(چې د lock ستونزې سره تړاو لري)
+اوس مستقیم خپل ساتل شوي token پاکوو.
+*/
+
+sessionStorage.removeItem(
+"access_token"
+);
+
+sessionStorage.removeItem(
+"refresh_token"
+);
+
+location.reload();
+
+}
+
+
+/* =====================================================
+ENTER KEY LOGIN
+===================================================== */
+
+document
+.getElementById("password")
+.addEventListener(
+"keydown",
+function(event){
+
+if(event.key === "Enter"){
+
+login();
+
+}
+
+});
+
+
+/* =====================================================
+START
+===================================================== */
+
+checkSession();
+
+</script>
+
+</body>
+
+</html>
